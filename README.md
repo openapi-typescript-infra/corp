@@ -18,6 +18,7 @@ This repo is a monorepo that intends to basically have all relevant source code 
 * [Internal packages](packages) for all manner of things such as [id management](packages.infra/external-id), [authentication and authorization](packages/auth), [service infrastructure](packages/infra/service) and [UI components](packages/ui/ui-kit) and the design system.
 * [Services](services) such as the Envoy ExtAuth Service, [authn-authz-internal](services/authn-authz-internal), [identity-internal](services/identity-internal), [payment-internal](services/payment-internal) implementing a pgledger-derived double entry ledger, [graphql-api](services/graphql-api) providing a public GraphQL API with authentication and authorization support, and [consumer-web](services/consumer-web) providing a consumer facing web application.
 * [mobile-app](mobile-app) providing a React Native mobile application.
+* [Claude-centric skills](.claude/skills) to make the changes you will typically make to this repo to build your company
 
 ## Two tier service architecture
 
