@@ -1,0 +1,44 @@
+post:
+  operationId: searchGroups
+  summary: Get a group or groups by name, including hierarchically-aware queries
+  description: |
+    This is exposed as a POST because there is no clean way to provide structured
+    arguments to a GET request. Given that this is an internal API, bookmarking and caching
+    aren't really relevant, so this seems the best compromise.
+  requestBody:
+    description: A query for the group.
+    required: true
+    content:
+      application/json:
+        schema:
+          description: An array of name or ltree query fragments
+          type: object
+          required:
+            - components
+          properties:
+            components:
+              type: array
+              items:
+                oneOf:
+                  - type: string
+                  - type: object
+                    required:
+                      - query
+                    properties:
+                      query:
+                        type: string
+  responses:
+    200:
+      description: Matching groups were found
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - groups
+            properties:
+              groups:
+                type: array
+                maxItems: 100
+                items:
+                  $ref: ../schemas/GroupWithId.yaml

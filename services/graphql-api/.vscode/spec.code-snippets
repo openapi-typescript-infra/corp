@@ -1,0 +1,30 @@
+{
+  "Resolver": {
+    "prefix": "@resolver",
+    "body": [
+      "import type { Resolvers } from '#src/generated/graphql.js';",
+      "",
+      "export const resolvers: Resolvers = {",
+      "  Query: {",
+      "  },"
+      "  Mutation: {",
+      "  },",
+      "};",
+    ],
+  },
+  "Test": {
+    "prefix": "@test",
+    "body": [
+      "import { describe, expect } from 'vitest';",
+      "import { request } from '@openapi-typescript-infra/service-tester';",
+      "",
+      "import { testWithApp } from '#src/test.fixtures.js';",
+      "",
+      "describe('test', () => {",
+      "  testWithApp('', ({ app }) => {",
+      "    expect(true).toBe(true);",
+      "  });",
+      "});",
+    ],
+  },
+}

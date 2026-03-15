@@ -1,0 +1,11 @@
+{
+  "$schema": "tsschema://src/config#HSConfigurationSchema",
+
+  "DEFAULT_TEMPORAL_CLUSTER": "localhost:7233",
+
+  "defaultTemporal": {
+    "workerEnabled": "env:TEMPORAL_WORKER|b",
+    "address": "config:DEFAULT_TEMPORAL_CLUSTER",
+    "namespace": "default"
+  }
+}

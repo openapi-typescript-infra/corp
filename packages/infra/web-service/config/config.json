@@ -1,0 +1,19 @@
+{
+  "$schema": "tsschema://src/types.ts#HSWebConfigurationSchema",
+  "auth": {
+    "enabled": true
+  },
+  "session": {
+    "enabled": true
+  },
+  "posthog": {
+    "key": "",
+    "host": "https://us.i.posthog.com"
+  },
+  "routing": {
+    "cookieParser": true,
+    "finalHandlers": {
+      "notFound": false
+    }
+  }
+}

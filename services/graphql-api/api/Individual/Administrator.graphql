@@ -1,0 +1,5 @@
+"An employee or internal user"
+type Administrator implements BaseIndividual {
+  "Useless field to make it non-empty"
+  isFounder: Boolean
+}

@@ -1,0 +1,4 @@
+email: jane.doe@example.com
+given_name: "Jane"
+family_name: "Doe"
+# status: suspended

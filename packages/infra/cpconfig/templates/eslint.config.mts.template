@@ -1,0 +1,126 @@
+// Managed by cpconfig
+import js from '@eslint/js';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
+import importPlugin from 'eslint-plugin-import';
+import { fixupPluginRules } from '@eslint/compat';
+import { defineConfig } from 'eslint/config';
+
+const dynamicIgnores = {{ignores}};
+
+export default defineConfig([
+  {
+    files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
+    plugins: { js, import: fixupPluginRules(importPlugin) },
+    extends: ['js/recommended'],
+    languageOptions: { globals: globals.node },
+    rules: {
+      curly: 'error',
+      'import/order': ['error', { 'newlines-between': 'always' }],
+      'import/no-duplicates': 'error',
+      'import/no-default-export': 'error',
+      'import/extensions': [
+        'error',
+        'ignorePackages',
+        {
+          js: 'always',
+          mjs: 'always',
+          cjs: 'always',
+          ts: 'always',
+          tsx: 'always',
+          mts: 'always',
+          cts: 'always',
+        },
+      ],
+      'no-extra-boolean-cast': 'off',
+      'no-restricted-imports': ['error', { patterns: ['moment', 'moment-timezone'] }],
+      'no-console': ['error', { allow: ['info', 'log', 'warn'] }],
+      'no-var': 'error',
+      'prefer-const': 'error',
+      quotes: ['error', 'single', { avoidEscape: true }],
+    },
+  },
+  // Next.js + Storybook exception
+  {
+    files: [
+      '**/eslint.config.mts',
+      '**/next.config.js',
+      'src/pages/**',
+      'src/app/**',
+      '.storybook/**',
+      'src/**/*.@(stories|rn-stories|common-stories|chromatic).@(js|jsx|mjs|ts|tsx)',
+    ],
+    rules: {
+      'import/no-default-export': 'off',
+    },
+  },
+  {
+    files: ['**/*.ts', '**/*.tsx'],
+    ignores: ['**/*.generated.ts'],
+    extends: tseslint.configs.recommended,
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.json'],
+        tsconfigRootDir: import.meta.dirname,
+        ecmaVersion: 'latest',
+      },
+    },
+    settings: {
+      'import/resolver': {
+        typescript: {},
+      },
+    },
+    rules: {
+      '@typescript-eslint/array-type': ['error', { default: 'array' }],
+      '@typescript-eslint/await-thenable': 'error',
+      '@typescript-eslint/ban-ts-comment': [
+        'error',
+        { 'ts-ignore': 'allow-with-description', minimumDescriptionLength: 10 },
+      ],
+      '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
+      '@typescript-eslint/consistent-type-assertions': [
+        'error',
+        { assertionStyle: 'as', objectLiteralTypeAssertions: 'never' },
+      ],
+      '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        { prefer: 'type-imports', disallowTypeAnnotations: true },
+      ],
+      '@typescript-eslint/no-confusing-non-null-assertion': 'error',
+      '@typescript-eslint/no-empty-interface': 'off',
+      '@typescript-eslint/no-namespace': 'error',
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/no-for-in-array': 'error',
+      '@typescript-eslint/no-inferrable-types': 'error',
+      '@typescript-eslint/no-invalid-void-type': 'error',
+      '@typescript-eslint/no-meaningless-void-operator': 'error',
+      '@typescript-eslint/no-non-null-assertion': 'error',
+      '@typescript-eslint/no-unsafe-argument': 'error',
+      '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],
+      '@typescript-eslint/switch-exhaustiveness-check': 'error',
+    },
+  },
+  {
+    ignores: [
+      'eslint.config.mts',
+      '.github/**',
+      'dist/**',
+      'private/**',
+      'public/**',
+      '.next/**',
+      'next-env.d.ts',
+      'coverage',
+      'vitest.config.ts',
+      'tailwind.config.ts',
+      'tsup.config.ts',
+      'src/generated/**',
+      'storybook-static/**',
+      'migrations/*.js',
+      'sentry.*.config.*',
+      'node_modules/**',
+      '.yarn/**',
+      ...dynamicIgnores,
+    ],
+  },
+]);

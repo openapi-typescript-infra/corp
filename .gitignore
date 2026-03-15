@@ -1,0 +1,64 @@
+./docs/OriginalDeck
+**/.claude/**
+!.claude/skills/
+!.claude/skills/**
+.tsbuild.stamp
+
+# OS/editor
+.DS_Store
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment/local config
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.local
+next-env.d.ts
+
+# Node/TypeScript
+node_modules/
+dist/
+build/
+coverage/
+.cache/
+.turbo/
+.next/
+.expo/
+.expo-shared/
+.eslintcache
+.pnp.*
+*.tsbuildinfo
+
+# Yarn Berry
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+terraform.tfvars
+terraform.tfvars.json
+*.auto.tfvars
+*.auto.tfvars.json
+*.tfvars.local
+*.tfvars.json.local

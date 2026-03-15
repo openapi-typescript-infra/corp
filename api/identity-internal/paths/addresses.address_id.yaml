@@ -1,0 +1,17 @@
+parameters:
+  - name: address_id
+    in: path
+    required: true
+    schema:
+      type: string
+get:
+  operationId: getAddress
+  responses:
+    "200":
+      description: Address found
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/AddressWithId.yaml
+    "404":
+      description: Address not found

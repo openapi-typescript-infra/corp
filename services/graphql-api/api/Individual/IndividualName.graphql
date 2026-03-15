@@ -1,0 +1,24 @@
+"""
+A structured representation of the elements of an
+individual's name.
+"""
+type IndividualName {
+  """
+  The individual's full name, which is an automatically
+  stitched together from other component parts, and can be
+  more efficient for front end display
+  """
+  fullName: String!
+  "Any professional credentials or certifications"
+  credentials: [String!]
+  "The individual's first name"
+  first: String
+  "The individual's last name"
+  last: String
+  "The individual's middle name"
+  middle: String
+  "Individual name suffix such as 'Jr.' or 'III'"
+  suffix: String
+  "Any honorific for their name, such as 'Dr.' or 'Ms.'"
+  title: String
+}

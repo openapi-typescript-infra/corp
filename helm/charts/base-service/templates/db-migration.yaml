@@ -1,0 +1,48 @@
+{{- if and .Values.database.gcpId (ne .Values.database.migrate false) }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.database.gcpId }}-db-migration-{{ now | date "200601021504" }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      serviceAccountName: {{ include "base-service.serviceAccountName" . }}
+      containers:
+        - name: {{ .Values.name }}
+          imagePullPolicy: IfNotPresent
+          image: "us-docker.pkg.dev/justtellme-dev/app-images/{{ .Values.name }}:{{ .Values.tag }}"
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: APP_ENV
+              value: {{ ternary "staging" "production" (eq .Values.gcp.env "development") }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.gcpId }}-db-credentials
+                  key: password
+          command:
+            - /nodejs/bin/node
+            - /nodejs/app/node_modules/.bin/wait-for-cloudsql
+            - /nodejs/app/node_modules/.bin/db-migrate
+            - -e
+            - {{ default "production" .Values.database.migrationEnvironment }}
+            - --config
+            - /nodejs/app/migrations/db-migrate.json
+            - up
+        - name: cloudsql-proxy
+          args:
+            - '--structured-logs'
+            - '--quitquitquit'
+            - '--private-ip'
+            - '{{ .Values.gcp.project }}:{{ default "us-central1" .Values.database.region }}:pg-{{- if eq .Values.gcp.env "development" -}}dev-{{- end -}}{{ .Values.database.gcpId }}?port=5432'
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.2.0
+          securityContext:
+            runAsUser: 2 # non-root user
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+      restartPolicy: Never
+{{- end -}}

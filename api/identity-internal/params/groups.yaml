@@ -1,0 +1,6 @@
+name: groups
+description: Get group memberships
+in: query
+required: false
+schema:
+  type: boolean

@@ -1,0 +1,29 @@
+type: object
+required:
+  - patch
+  - name
+properties:
+  name:
+    type: string
+    description: The name of the profile to update
+  instance_name:
+    type: string
+    description: The specific instance of the profile schema to update
+  key:
+    type: object
+    description: Provide a key if you want the data to be encrypted in the database
+    required:
+      - hex_key
+      - id
+    properties:
+      id:
+        type: string
+        description: The ID of the key being used for encryption
+      hex_key:
+        type: string
+        description: The AES key (hex encoded) used to encrypt the profile data
+  patch:
+    type: array
+    maxItems: 50
+    items:
+      $ref: ./JsonPatchOperation.yaml

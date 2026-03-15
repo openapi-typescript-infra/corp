@@ -1,0 +1,3 @@
+#!/bin/sh
+# Managed by cpconfig
+npx commitlint --edit "$1"

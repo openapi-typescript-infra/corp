@@ -1,0 +1,63 @@
+{
+  "name": "@justtellme/consumer-web",
+  "private": true,
+  "version": "0.0.0",
+  "description": "The web site",
+  "main": "./src/index.ts",
+  "exports": "./src/index.ts",
+  "type": "module",
+  "types": "src/index.ts",
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "scripts": {
+    "test": "vitest",
+    "build": "make",
+    "watch": "nodemon",
+    "clean": "make clean",
+    "start": "NODE_OPTIONS='--import tsx/esm' start-service",
+    "repl": "NODE_OPTIONS='--import tsx/esm' start-service --repl",
+    "lint": "eslint .",
+    "check-bundles": "node src/scripts/check-bundle-size.ts",
+    "postinstall": "cpconfig"
+  },
+  "config": {
+    "cpconfig": "@justtellme/cpconfig"
+  },
+  "bundleBudgets": {
+    "page": "200kb",
+    "total": "750kb",
+    "shared": "500kb"
+  },
+  "engines": {
+    "node": ">24.0.0"
+  },
+  "author": "Max Metral <max@pyralis.com>",
+  "license": "UNLICENSED",
+  "keywords": [
+    "typescript",
+    "openapi",
+    "express"
+  ],
+  "devDependencies": {
+    "@openapi-typescript-infra/service-tester": "^7.1.2",
+    "cpconfig": "^1.4.4",
+    "eslint": "^10.0.3",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  },
+  "dependencies": {
+    "@justtellme/cpconfig": "workspace:^",
+    "@justtellme/service": "workspace:^",
+    "@justtellme/state": "workspace:^",
+    "@justtellme/ui-kit": "workspace:^",
+    "@justtellme/web-service": "workspace:^",
+    "@legendapp/state": "^3.0.0-beta.46",
+    "@openapi-typescript-infra/service": "^6.11.0",
+    "@stytch/nextjs": "^22.0.4",
+    "next-urql": "^5.0.2",
+    "posthog-js": "^1.360.2",
+    "urql": "^5.0.1"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "$schema": "tsschema://src/config.ts#HSAuthConfigurationSchema",
+  "session": {
+    "cookieDomain": "",
+    "secureCookie": false
+  }
+}

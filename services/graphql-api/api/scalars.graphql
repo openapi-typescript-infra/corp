@@ -1,0 +1,20 @@
+"""
+YYYY-MM-DD
+"""
+scalar Date
+"""
+ISO date time string
+"""
+scalar DateTime
+"""
+A valid email address
+"""
+scalar EmailAddress
+"""
+A valid uniform resource locator
+"""
+scalar URL
+"""
+A JSON compatible object
+"""
+scalar JSONObject

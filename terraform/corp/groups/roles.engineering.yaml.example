@@ -1,0 +1,8 @@
+email: roles.engineering@example.com
+name: "Roles: Engineering"
+description: Engineering team members
+
+members:
+  - email: jane.doe@example.com
+    role: OWNER
+  - email: john.smith@example.com

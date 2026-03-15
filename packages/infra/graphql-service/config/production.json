@@ -1,0 +1,6 @@
+{
+  "$schema": "tsschema://src/types/config.ts#HSGraphQLConfigurationSchema",
+  "graphql": {
+    "introspection": false
+  }
+}

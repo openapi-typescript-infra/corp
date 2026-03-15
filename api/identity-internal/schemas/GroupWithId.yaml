@@ -1,0 +1,6 @@
+allOf:
+  - $ref: ./Group.yaml
+  - type: object
+    properties:
+      group_id:
+        type: string

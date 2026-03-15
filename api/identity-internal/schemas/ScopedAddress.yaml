@@ -1,0 +1,6 @@
+allOf:
+  - $ref: ./AddressFields.yaml
+  - type: object
+    properties:
+      scope:
+        $ref: ./AddressScope.yaml

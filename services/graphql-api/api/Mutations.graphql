@@ -1,0 +1,23 @@
+"All mutations for the Just Tell Me GraphQL API"
+type Mutation {
+  """
+  Create an authenticated session with a token capable
+  of performing authenticated requests on behalf of the specified
+  individual.
+  """
+  authenticatedSessionCreate(
+    "The identifier and credentials for the session"
+    identification: AuthenticatedSessionInput!
+  ): AuthenticatedSession
+
+  "Create a new consumer account"
+  consumerCreate(
+    "The new consumer account information"
+    consumer: ConsumerCreateInput!
+  ): AuthenticatedSession
+  "Register or manage a request for account deletion"
+  consumerDeletionRequest(
+    "Deletion instructions"
+    deletionRequest: ConsumerDeleteInput!
+  ): ConsumerDeletionStatus!
+}

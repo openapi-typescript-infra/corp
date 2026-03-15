@@ -1,0 +1,4 @@
+charts
+# Ignored because the reference is local. If for some reason you refer
+# to remote charts, you should checkin Chart.lock
+Chart.lock

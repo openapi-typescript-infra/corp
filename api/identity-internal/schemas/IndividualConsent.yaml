@@ -1,0 +1,23 @@
+type: object
+required:
+  - type
+  - version
+  - granted
+properties:
+  type:
+    description: The type of consent
+    $ref: ../enums/ConsentTypes.yaml
+  granted:
+    type: boolean
+  scope:
+    type: string
+    description: The scope of the consent, such as an encounter or provider
+  version:
+    type: string
+    description: The name of the version of the consent
+  evidence:
+    type: object
+    additionalProperties: true
+  detail:
+    type: object
+    additionalProperties: true

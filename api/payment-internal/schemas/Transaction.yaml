@@ -1,0 +1,35 @@
+type: object
+required:
+  - transaction_id
+  - idempotency_id
+  - event_at
+  - created_at
+  - updated_at
+  - transfers
+properties:
+  transaction_id:
+    type: string
+    description: The internal transaction ID (e.g. pgtx_...)
+  idempotency_id:
+    type: string
+    description: The caller-supplied idempotency key
+  individual_uuid:
+    type: string
+    format: uuid
+    description: The UUID of the individual associated with this transaction
+  event_at:
+    type: string
+    format: date-time
+  metadata:
+    type: object
+    additionalProperties: true
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time
+  transfers:
+    type: array
+    items:
+      $ref: ./Transfer.yaml

@@ -1,0 +1,22 @@
+type: object
+required:
+  - subject_individual_uuid
+  - object_individual_uuid
+  - relation
+properties:
+  subject_individual_uuid:
+    type: string
+    format: uuid
+  relation:
+    $ref: ../enums/RelationType.yaml
+  object_individual_uuid:
+    type: string
+    format: uuid
+  identifiers:
+    description: |
+      If alternative identifiers were requested for the subject or object, they will be returned here.
+      For brevity, when this is presented in an object that itself represents an individual, the identifiers
+      for the same individual will NOT be here, only for the "related" individual.
+    type: array
+    items:
+      $ref: ../schemas/IndividualIdentifier.yaml

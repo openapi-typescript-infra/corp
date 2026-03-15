@@ -1,0 +1,10 @@
+allOf:
+  - $ref: ./GroupWithId.yaml
+  - type: object
+    properties:
+      begins_at:
+        type: string
+        format: date-time
+      ends_at:
+        type: string
+        format: date-time

@@ -1,0 +1,45 @@
+{
+  "name": "@justtellme/cloud-sql",
+  "version": "0.0.0",
+  "description": "Just Tell Me-flavored interface to Google CloudSQL Postgres",
+  "exports": {
+    ".": {
+      "production": "./dist/index.js",
+      "default": "./src/index.ts"
+    }
+  },
+  "types": "./src/index.ts",
+  "type": "module",
+  "author": "Developers <developers@justtellme.com>",
+  "license": "UNLICENSED",
+  "packageManager": "yarn@3.6.3",
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "lint": "eslint .",
+    "postinstall": "cpconfig",
+    "test": "vitest"
+  },
+  "keywords": [
+    "typescript",
+    "justtellme"
+  ],
+  "config": {
+    "cpconfig": "@justtellme/cpconfig"
+  },
+  "devDependencies": {
+    "@justtellme/cpconfig": "workspace:^",
+    "@justtellme/service": "workspace:^",
+    "@openapi-typescript-infra/service-tester": "^7.1.2",
+    "@types/node": "^25.5.0",
+    "@types/pg": "^8.18.0",
+    "cpconfig": "^1.4.4",
+    "eslint": "^10.0.3",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  },
+  "dependencies": {
+    "@google-cloud/cloud-sql-connector": "^1.9.1",
+    "pg": "^8.20.0"
+  }
+}

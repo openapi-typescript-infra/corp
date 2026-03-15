@@ -1,0 +1,7 @@
+{
+  "//": "Managed by cpconfig",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "incremental": false
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "defaultEnv": "development",
+  "development": {
+    "driver": "pg",
+    "user": "dbowner",
+    "password": "onlyindev",
+    "host": "localhost",
+    "database": "payment",
+    "port": { "ENV": "PGPORT" }
+  },
+  "production": {
+    "driver": "pg",
+    "user": "payment-owner",
+    "password": { "ENV": "PGPASSWORD" },
+    "host": "localhost",
+    "database": "payment"
+  },
+  "sql-file": true
+}

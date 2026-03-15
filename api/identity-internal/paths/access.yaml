@@ -1,0 +1,40 @@
+post:
+  operationId: checkAccess
+  summary: Check whether an individual has access to information about another individual
+  description: |
+    This endpoint checks whether an individual has access to information about another individual
+    based on a teacher/student relationship or sponsor/guardian/parent relationship.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - accessor
+            - subjects
+            - access_type
+          properties:
+            accessor:
+              oneOf:
+                - $ref: ../schemas/IdentifierInput.yaml
+            subjects:
+              type: array
+              items:
+                $ref: ../schemas/IdentifierInput.yaml
+            access_type:
+              type: string
+              enum:
+                - recordings
+  responses:
+    '200':
+      description: Access information returned
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              grants:
+                type: array
+                items:
+                  $ref: ../schemas/IdentifierInput.yaml

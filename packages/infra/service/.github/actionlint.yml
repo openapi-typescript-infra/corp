@@ -1,0 +1,7 @@
+# Managed by cpconfig
+self-hosted-runner:
+  # Since this repo is for JS projects, we really only need JS relevant runners
+  labels:
+    - node-24
+    - deploy
+    - playwright

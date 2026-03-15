@@ -1,0 +1,65 @@
+get:
+  operationId: getAddresses
+  parameters:
+    - name: address_ids
+      in: query
+      required: true
+      schema:
+        type: array
+        items:
+          type: string
+  responses:
+    "200":
+      description: Address found
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - addresses
+            properties:
+              addresses:
+                type: array
+                items:
+                  $ref: ../schemas/AddressWithId.yaml
+    "404":
+      description: Address not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../common/Error.yaml
+post:
+  operationId: createAddresses
+  parameters:
+    - name: geocode
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - addresses
+          properties:
+            addresses:
+              type: array
+              items:
+                $ref: ../schemas/ScopedAddress.yaml
+  responses:
+    "400":
+      description: Address is invalid
+      content:
+        application/json:
+          schema:
+            $ref: ../../common/Error.yaml
+    "201":
+      description: Address created
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/AddressWithId.yaml

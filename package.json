@@ -1,0 +1,52 @@
+{
+  "name": "just-tell-me",
+  "private": true,
+  "packageManager": "yarn@3.8.7",
+  "workspaces": [
+    "packages/*/*",
+    "services/*",
+    "api",
+    "mobile-app"
+  ],
+  "engines": {
+    "node": ">24.0.0"
+  },
+  "scripts": {
+    "api": "turbo run build --filter=@justtellme/api",
+    "build": "turbo run build",
+    "clean": "turbo run clean",
+    "cpconfig": "yarn workspaces foreach -pt run cpconfig",
+    "ios": "yarn workspace @just-tell-me/mobile-app run ios",
+    "android": "yarn workspace mobile-app run android",
+    "lint": "turbo run lint",
+    "new": "./packages/infra/create/src/index.ts",
+    "prettier": "yarn workspaces foreach -pt run prettier -c src --write",
+    "proxy": "sudo yarn dlx @openapi-typescript-infra/cluster-proxy --config proxy.json",
+    "run-local": "yarn workspace @justtellme/run-local start",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck"
+  },
+  "dependencies": {
+    "@typescript/native-preview": "^7.0.0-dev.20260314.1",
+    "cpconfig": "^1.4.4",
+    "eslint": "^10.0.3",
+    "expo-dev-client": "~55.0.11",
+    "prettier": "^3.8.1",
+    "run-pg-sql": "^1.2.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  },
+  "devDependencies": {
+    "@eslint/compat": "^2.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.57.0",
+    "@typescript-eslint/parser": "^8.57.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0",
+    "jiti": "^2.6.1",
+    "nodemon": "^3.1.14",
+    "tsc-alias": "^1.8.16",
+    "turbo": "^2.8.17",
+    "typescript-eslint": "^8.57.0"
+  }
+}

@@ -1,0 +1,25 @@
+type: object
+required:
+  - idempotency_id
+  - transfers
+properties:
+  idempotency_id:
+    type: string
+    description: Caller-supplied idempotency key. If a transaction with this key already exists, the existing transaction is returned.
+  individual_uuid:
+    type: string
+    format: uuid
+    description: The UUID of the individual associated with this transaction
+  event_at:
+    type: string
+    format: date-time
+    description: When the event occurred. Defaults to now if not provided.
+  metadata:
+    type: object
+    description: Arbitrary metadata to attach to the transaction
+    additionalProperties: true
+  transfers:
+    type: array
+    minItems: 1
+    items:
+      $ref: ./TransferRequest.yaml

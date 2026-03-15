@@ -1,0 +1,49 @@
+name: terraform-corp
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: terraform/corp
+
+jobs:
+  plan_apply:
+    name: plan_and_apply
+    runs-on: ubuntu-latest
+    concurrency: terraform-corp
+    permissions:
+      contents: read
+    env:
+      GOOGLE_APPLICATION_CREDENTIALS: terraform-service-account.json
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Write credentials
+        run: echo '${{ secrets.WORKSPACE_GOOGLE_SA_KEY }}' > terraform-service-account.json
+
+      - name: Terraform init
+        run: terraform init -upgrade -input=false
+
+      - name: Terraform plan
+        run: terraform plan -input=false -no-color -out=tfplan
+
+      - name: Terraform apply
+        run: terraform apply -input=false -auto-approve
+
+      - name: Cleanup credentials
+        if: always()
+        run: rm -f terraform-service-account.json
+
+  formatting:
+    name: formatting
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - name: Check formatting
+        working-directory: terraform/corp
+        run: terraform fmt -check -recursive .

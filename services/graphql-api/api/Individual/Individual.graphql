@@ -1,0 +1,30 @@
+"""
+An individual may be both, but in a particular instantiation
+in the schema, they are considered one or the other. This enum
+allows us to be smarter in the resolvers without always having to
+"look up" the parent tree to figure it out.
+"""
+enum IndividualRole {
+  "An external participant in the platform"
+  CONSUMER
+  "An administrator or internal user"
+  ADMIN
+}
+
+"Fields common to consumers and providers"
+interface BaseIndividual {
+  "An individual's date of birth"
+  dateOfBirth: Date
+  "The main email address for the individual"
+  email: EmailAddress
+  "A unique identifier for the individual"
+  id: ID!
+  "The name of the individual"
+  name: IndividualName
+}
+
+"A type to represent an abstract individual that may be a provider or a consumer or a patient or an admin"
+union Individual = Consumer | Administrator
+
+"Entities that can authenticate to the platform"
+union AuthenticatableIndividual = Consumer | Administrator

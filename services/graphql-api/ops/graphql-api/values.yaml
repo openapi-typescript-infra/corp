@@ -1,0 +1,6 @@
+base-service:
+  name: graphql-api
+  team: platform
+
+  serviceAccount:
+    create: true

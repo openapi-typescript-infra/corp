@@ -1,0 +1,51 @@
+# This file stores common schema elements for Typescript services
+# Make sure to make a conscious decision between this file and schema commons.
+components:
+  schemas:
+    Address:
+      type: object
+      required:
+        - city
+        - state
+        - postal_code
+        - country
+      properties:
+        line_1:
+          type: string
+          description: The first line of the address
+        line_2:
+          type: string
+          description: The second line of the address
+        city:
+          type: string
+        state:
+          description: The state or province (two letter state code in US)
+          type: string
+        postal_code:
+          type: string
+          description: The postal code
+        country:
+          type: string
+          description: The country (two letter country code)
+        geolocation:
+          type: object
+          properties:
+            latitude:
+              type: number
+              format: float
+            longitude:
+              type: number
+              format: float
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        domain:
+          type: string
+        display_message:
+          type: string

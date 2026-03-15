@@ -1,0 +1,29 @@
+openapi: 3.0.1
+info:
+  title: identity-internal
+  description: A service to store and validate identities of individuals and groups of individuals
+  version: 1.0.0
+servers:
+  - url: http://identity-internal.hs.svc.cluster.local
+    description: Within Kubernetes cluster only
+paths:
+  /identity/access:
+    $ref: paths/access.yaml
+  /identity/individuals:
+    $ref: paths/individuals.yaml
+  /identity/individuals/search:
+    $ref: paths/individuals.search.yaml
+  /identity/individuals/{namespace}/{identifier}:
+    $ref: paths/individuals.namespace.identifier.yaml
+  /identity/groups:
+    $ref: paths/groups.yaml
+  /identity/groups/search:
+    $ref: paths/groups.search.yaml
+  /identity/addresses:
+    $ref: paths/addresses.yaml
+  /identity/addresses/search:
+    $ref: paths/addresses.search.yaml
+  /identity/addresses/{address_id}:
+    $ref: paths/addresses.address_id.yaml
+  /identity/postal_codes/{country}/{postal_code}:
+    $ref: paths/addresses.postal_codes.country.postal_code.yaml

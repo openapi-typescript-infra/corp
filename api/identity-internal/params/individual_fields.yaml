@@ -1,0 +1,9 @@
+in: query
+name: fields
+required: false
+description: Which fields of the core individual data should be returned
+schema:
+  type: array
+  maxItems: 10
+  items:
+    $ref: ../enums/IndividualFields.yaml

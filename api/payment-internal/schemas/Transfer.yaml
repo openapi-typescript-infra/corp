@@ -1,0 +1,29 @@
+type: object
+required:
+  - transfer_id
+  - from_account
+  - to_account
+  - amount
+  - created_at
+  - event_at
+properties:
+  transfer_id:
+    type: string
+    description: The internal transfer ID (e.g. pglt_...)
+  idempotency_id:
+    type: string
+  from_account:
+    type: string
+    description: The source account name
+  to_account:
+    type: string
+    description: The destination account name
+  amount:
+    type: string
+    format: decimal
+  created_at:
+    type: string
+    format: date-time
+  event_at:
+    type: string
+    format: date-time

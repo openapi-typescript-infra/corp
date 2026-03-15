@@ -1,0 +1,14 @@
+{{- if and .Values.api.advertise (eq .Values.gcp.env "development") -}}
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  name: {{ .Values.name }}-openapi
+  namespace: {{ .Release.Namespace }}
+spec:
+  prefix: "/{{ .Values.name }}/v3/"
+  service: {{ .Values.name }}:3000
+  ambassador_id:
+  - ambassador-external
+  rewrite: "/"
+  host: swagger.dev.justtellme.com
+{{- end -}}

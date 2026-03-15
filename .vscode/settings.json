@@ -1,0 +1,16 @@
+{
+  "eslint.runtime": "/Users/memetral/.local/share/mise/installs/node/24/bin/node",
+  "eslint.workingDirectories": [
+    {
+      "pattern": "./packages/*/*/"
+    },
+    {
+      "pattern": "./services/*/"
+    },
+    {
+      "pattern": "./api/"
+    }
+  ],
+  "vitest.nodeExecutable": "/Users/memetral/.local/share/mise/installs/node/24/bin/node",
+  "vitest.maximumConfigs": 25
+}

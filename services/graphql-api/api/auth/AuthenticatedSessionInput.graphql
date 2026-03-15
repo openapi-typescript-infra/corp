@@ -1,0 +1,17 @@
+"""
+Information required to establish an authenticated session.
+"""
+input AuthenticatedSessionInput {
+  "The identifier of the individual to authenticate - typically an email address. Can be blank if the identifier is in the token"
+  identifier: String
+  "The password of the individual to authenticate"
+  password: String
+  "The role in which the individual is requesting authentication, which may influence the credentials required"
+  role: IndividualRole!
+  "If a session was established externally or previously, include the token here to 'adopt' it"
+  token: String
+  "The time-based one-time password (TOTP) for the individual"
+  totp: String
+  "If there is an ADDITIONAL token other than the session token, include it here. This is used for things like Google Sign In"
+  providerToken: String
+}

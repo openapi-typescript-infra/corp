@@ -1,0 +1,10 @@
+in: query
+name: profiles
+required: false
+description: |
+  A list of profile schemas that should be retrieved for the individual. Schema requests ending in '#' will
+  match only the null instance of the profile, whereas omitting the '#' will return all instances.
+schema:
+  type: array
+  items:
+    type: string

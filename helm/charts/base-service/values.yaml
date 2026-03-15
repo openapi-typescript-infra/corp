@@ -1,0 +1,79 @@
+# yaml-language-server: $schema=../../docs/html/Values.schema.json
+
+serviceAccount: {}
+
+resources:
+  cpu:
+    requests: 100m
+  memory:
+    requests: 500Mi
+    limits: 500Mi
+
+database: {}
+
+monitoring:
+  enabled: true
+
+logging:
+  logz.io: true
+
+mappings: {}
+
+gcp: {}
+
+api:
+  advertise: true
+
+temporal:
+  resources:
+    cpu: {}
+    memory: {}
+  env:
+    TEMPORAL_CLUSTER: temporal-frontend.hs.svc.cluster.local:7233
+
+tracing:
+  enabled: true
+  otlp_exporter: http://otel.monitoring.svc.cluster.local:4318/v1/traces
+
+autoscale:
+  enabled: false
+  maxReplicas: 10
+  minReplicas: 1
+  additionalContainerEnabled: false
+  additionalContainerName: ""
+  additionalContainerTargetCPUUtilizationPercentage:
+  additionalContainerTargetMemoryUtilizationPercentage:
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 70
+  down:
+    stabilizationWindowSeconds: 300
+    policies:
+      pods:
+        value: 1
+        periodSeconds: 60
+      percent:
+        value: 100
+        periodSeconds: 60
+      selectPolicy: Min
+  up:
+    stabilizationWindowSeconds: 0
+    policies:
+      pods:
+        value: 4
+        periodSeconds: 15
+      percent:
+        value: 100
+        periodSeconds: 15
+      selectPolicy: Max
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 50%
+
+startupProbe:
+  enabled: false
+  initialDelaySeconds: 0
+  periodSeconds: 10
+  failureThreshold: 9
+  successThreshold: 1
+  timeoutSeconds: 1

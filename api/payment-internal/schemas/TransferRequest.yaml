@@ -1,0 +1,19 @@
+type: object
+required:
+  - from_account
+  - to_account
+  - amount
+properties:
+  from_account:
+    type: string
+    description: The source account name (e.g. "users.alice")
+  to_account:
+    type: string
+    description: The destination account name (e.g. "merchant.store")
+  amount:
+    type: string
+    format: decimal
+    description: The amount to transfer (must be positive)
+  idempotency_id:
+    type: string
+    description: Optional per-transfer idempotency key

@@ -1,0 +1,8 @@
+{
+  "$schema": "tsschema://src/config#HSConfigurationSchema",
+  "USE_REGISTRY": true,
+  "registry": {
+    "registryUrl": "http://registry.local.dev.justtellme.com/register",
+    "useRegistry": "config:USE_REGISTRY|b"
+  }
+}

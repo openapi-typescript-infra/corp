@@ -1,0 +1,7 @@
+type: string
+description: The scope of the address, which is used to segment search scopes on proximity lookups
+enum:
+  - consumer
+  - provider
+  - lab
+  - pharmacy

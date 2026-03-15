@@ -1,0 +1,63 @@
+{
+  "name": "@justtellme/service",
+  "version": "0.0.0",
+  "description": "Base module for Just Tell Me Typescript services",
+  "exports": {
+    ".": {
+      "production": "./dist/index.js",
+      "default": "./src/index.ts"
+    },
+    "./Makefile": "./Makefile"
+  },
+  "types": "./src/index.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "test": "vitest",
+    "lint": "eslint src",
+    "postinstall": "cpconfig",
+    "typecheck": "tsgo --noEmit -p tsconfig.json"
+  },
+  "files": [
+    "dist",
+    "config",
+    "src",
+    "common.yaml",
+    "README.md",
+    "Makefile",
+    "ts-extension-replacer.cjs"
+  ],
+  "bin": {
+    "wait-for-cloudsql": "src/bin/wait-for-cloudsql.ts"
+  },
+  "author": "Just Tell Me Developers <developers@justtellme.com>",
+  "config": {
+    "cpconfig": "@justtellme/cpconfig"
+  },
+  "keywords": [
+    "typescript",
+    "justtellme"
+  ],
+  "devDependencies": {
+    "@openapi-typescript-infra/service-tester": "^7.1.2",
+    "@types/node": "^25.5.0",
+    "@typescript-eslint/eslint-plugin": "^8.57.0",
+    "@typescript-eslint/parser": "^8.57.0",
+    "@typescript/native-preview": "^7.0.0-dev.20260314.1",
+    "eslint": "^10.0.3",
+    "prettier": "^3.8.1",
+    "run-pg-sql": "^1.2.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  },
+  "dependencies": {
+    "@google-cloud/secret-manager": "^6.1.1",
+    "@justtellme/api": "workspace:^",
+    "@justtellme/cpconfig": "workspace:^",
+    "@openapi-typescript-infra/service": "^6.11.0",
+    "cpconfig": "^1.4.4",
+    "fetch-to-curl-ts": "^1.0.2",
+    "openapi-fetch": "0.17.0",
+    "tsc-alias": "^1.8.16"
+  }
+}

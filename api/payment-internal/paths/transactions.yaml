@@ -1,0 +1,59 @@
+post:
+  operationId: createTransaction
+  summary: Create a new transaction with one or more transfers
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../schemas/NewTransaction.yaml
+  responses:
+    '201':
+      description: Transaction created
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/Transaction.yaml
+    '409':
+      description: A transaction with this idempotency_id already exists
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/Transaction.yaml
+get:
+  operationId: getTransactions
+  summary: Get transactions by query parameters
+  parameters:
+    - name: idempotency_id
+      in: query
+      required: false
+      schema:
+        type: string
+      description: The caller-supplied idempotency key
+    - name: individual_uuid
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+      description: The UUID of the individual associated with the transaction
+  responses:
+    '200':
+      description: Matching transactions
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - transactions
+            properties:
+              transactions:
+                type: array
+                items:
+                  $ref: ../schemas/Transaction.yaml
+    '404':
+      description: No matching transactions found
+      content:
+        application/json:
+          schema:
+            $ref: ../../common/Error.yaml

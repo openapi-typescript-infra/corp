@@ -1,0 +1,51 @@
+'use strict';
+
+var dbm;
+var type;
+var seed;
+var fs = require('fs');
+var path = require('path');
+var Promise;
+
+/**
+  * We receive the dbmigrate dependency from dbmigrate initially.
+  * This enables us to not have to rely on NODE_PATH.
+  */
+exports.setup = function(options, seedLink) {
+  dbm = options.dbmigrate;
+  type = dbm.dataType;
+  seed = seedLink;
+  Promise = options.Promise;
+};
+
+exports.up = function(db) {
+  var filePath = path.join(__dirname, 'sqls', '20260303005357-initial-schema-up.sql');
+  return new Promise(function (resolve, reject) {
+    fs.readFile(filePath, { encoding: 'utf-8' }, function (err, data) {
+      if (err) return reject(err);
+      // Pull the JS from a file so we can share node and pg implementations
+      const jsonpatch = fs.readFileSync(path.join(__dirname, 'plv8', 'jsonpatch.js'), 'utf8');
+      const replaced = data.replace('{{{jsonpatch.js}}}', jsonpatch);
+      resolve(replaced);
+    });
+  }).then(function (data) {
+    return db.runSql(data);
+  });
+};
+
+exports.down = function(db) {
+  var filePath = path.join(__dirname, 'sqls', '20260303005357-initial-schema-down.sql');
+  return new Promise( function( resolve, reject ) {
+    fs.readFile(filePath, {encoding: 'utf-8'}, function(err,data){
+      if (err) return reject(err);
+      resolve(data);
+    });
+  })
+  .then(function(data) {
+    return db.runSql(data);
+  });
+};
+
+exports._meta = {
+  "version": 1
+};

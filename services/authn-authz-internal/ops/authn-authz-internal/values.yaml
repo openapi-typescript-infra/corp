@@ -1,0 +1,6 @@
+base-service:
+  name: authn-authz-internal
+  team: platform
+
+  serviceAccount:
+    create: true

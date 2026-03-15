@@ -1,0 +1,14 @@
+"All queries for the GraphQL API"
+type Query {
+  "Get information about the current authenticated session"
+  authenticatedSession: Individual
+  "Get the options available for creating an authenticated session for an identifier in a role"
+  authenticatedSessionParameters(
+    "The role in which the individual would be requesting authentication"
+    role: IndividualRole!
+    "The identifier of the individual to authenticate - typically an email address"
+    identifier: String!
+  ): AuthenticatedSessionParameters!
+  "Get details of the current authenticated consumer"
+  consumer("The ID must match the ID of the current authenticated consumer" id: ID!): Consumer
+}

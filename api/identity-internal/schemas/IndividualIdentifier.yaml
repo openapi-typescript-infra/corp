@@ -1,0 +1,22 @@
+type: object
+required:
+  - identifier
+  - identifier_namespace
+  - is_unique
+properties:
+  identifier:
+    type: string
+    description: The canonical identifier
+  identifier_namespace:
+    description: The namespace of the identifier
+    $ref: ../enums/IdentifierNamespaces.yaml
+  display_identifier:
+    type: string
+    description: The identifier as it should be displayed to the user or as it was entered
+  is_unique:
+    type: boolean
+    description: Whether the identifier is uniquely held by a single entity of the type
+    default: true
+  created_at:
+    type: string
+    format: date-time

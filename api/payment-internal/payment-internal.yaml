@@ -1,0 +1,13 @@
+openapi: 3.0.1
+info:
+  title: payment-internal
+  description: A service to store and validate movement of funds between accounts in our financial domain
+  version: 1.0.0
+servers:
+  - url: http://payment-internal.hs.svc.cluster.local
+    description: Within Kubernetes cluster only
+paths:
+  /payment/transactions:
+    $ref: paths/transactions.yaml
+  /payment/transactions/{transaction_id}:
+    $ref: paths/transactions.transaction_id.yaml

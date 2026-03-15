@@ -1,0 +1,20 @@
+dist/
+node_modules/
+*.tsbuildinfo
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.vscode
+
+# Managed by cpconfig
+/.commitlintrc.yaml
+/eslint.config.mts
+/tsconfig.json
+/tsconfig.build.json
+/.prettierrc.yaml
+/vitest.config.ts
+/graphql.config.yml
+/tsconfig.tsup.json

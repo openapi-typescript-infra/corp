@@ -1,0 +1,9 @@
+in: query
+name: identifier_namespaces
+required: false
+description: The identifier namespaces you would like returned. Use '*' for all namespaces (this does not imply you can do wildcarding in general, just * for all)
+schema:
+  type: array
+  maxItems: 10
+  items:
+    $ref: ../enums/IdentifierNamespaces.yaml

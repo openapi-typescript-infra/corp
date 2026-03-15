@@ -1,0 +1,116 @@
+# Use node to resolve the service makefile to accommodate pnpm and other linkers
+SERVICE_MAKEFILE := $(shell node --experimental-import-meta-resolve -e "console.log(new URL(import.meta.resolve('@openapi-typescript-infra/service/Makefile'), import.meta.url).pathname)")
+API_PKG := $(shell node --experimental-import-meta-resolve -e "import fs from 'fs'; import path from 'path'; const p = new URL(import.meta.resolve('@justtellme/api/specs/${SERVICE_NAME}'), import.meta.url).pathname; console.log(fs.realpathSync(path.resolve(p, '../../..')))")
+API_SPEC := $(API_PKG)/dist/specs/$(SERVICE_NAME).json
+TSC = tsgo
+
+# Capture this Makefile's directory BEFORE including (which changes MAKEFILE_LIST)
+_HS_SERVICE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+_TSC_ALIAS := $(shell node --experimental-import-meta-resolve -e "import {createRequire} from 'module'; const r = createRequire(import.meta.url); console.log(r.resolve('tsc-alias/dist/bin/index.js'))")
+
+# Filter out rules we redefine below: service generation and ts build
+include $(shell sed -e '/^src\/generated\/service\/index\.ts:/,/^$$/{d;}' -e '/^\$$(ts_build_stamp):/,/^$$/{d;}' $(SERVICE_MAKEFILE) > /tmp/_filtered_service_makefile && echo /tmp/_filtered_service_makefile)
+
+# Override ts build to handle #src/ subpath imports with .ts extensions:
+# 1. Type-check via tsconfig.json (no rewriteRelativeImportExtensions => no TS2877)
+# 2. Emit via tsconfig.build.json (TS2877 expected, noEmitOnError:false allows emit)
+# 3. tsc-alias rewrites #src/ to relative paths, custom replacer fixes .ts -> .js
+$(ts_build_stamp): $(src_files) tsconfig.build.json tsconfig.json $(if $(missing_ts_outputs),FORCE,)
+	yarn $(TSC) -p tsconfig.json
+	@yarn $(TSC) -p tsconfig.build.json > /dev/null 2>&1 || true
+	node $(_TSC_ALIAS) --project tsconfig.build.json -r $(_HS_SERVICE_DIR)ts-extension-replacer.cjs
+	@mkdir -p $(build_dir)
+	@touch $@
+
+K8S_ENV ?= development
+ifeq ($(K8S_ENV),production)
+	GCP_PROJECT ?= justtellme-prod
+else
+	GCP_PROJECT ?= justtellme-dev
+endif
+
+helm-template:
+	@echo "hs-base-service:" > ops/$(SERVICE_NAME)/values.local.yaml
+	@echo "  gcp:" >> ops/$(SERVICE_NAME)/values.local.yaml
+	@echo "    env: $(K8S_ENV)" >> ops/$(SERVICE_NAME)/values.local.yaml
+	@echo "    project: $(GCP_PROJECT)" >> ops/$(SERVICE_NAME)/values.local.yaml
+	@echo "  changeCause: \"local template run\"" >> ops/$(SERVICE_NAME)/values.local.yaml
+	@echo "  tag: untagged" >> ops/$(SERVICE_NAME)/values.local.yaml
+
+	helm dependency update ops/$(SERVICE_NAME)
+	@if [ -f ops/$(SERVICE_NAME)/values.$(K8S_ENV).yaml ]; then \
+		cd ops/$(SERVICE_NAME) && helm template -f values.$(K8S_ENV).yaml -f values.local.yaml .; \
+	else \
+		cd ops/$(SERVICE_NAME) && helm template -f values.local.yaml .; \
+	fi
+
+	@rm ops/$(SERVICE_NAME)/values.local.yaml
+
+init:
+	yarn
+	@if [ -z "$(DB_NAME)" ]; then \
+		echo "DB_NAME is not set. Skipping dev database."; \
+	else \
+		$(MAKE) -C $$(git rev-parse --show-toplevel) ensure-dev-db; \
+		yarn db:create; \
+		yarn migration:apply; \
+	fi
+
+ACTIONS_DIRECTORY ?= ../github-actions
+DOCKER_REGISTRY ?= us-docker.pkg.dev/justtellme-dev/docker-images
+GITHUB_SHA ?= $(shell git rev-parse HEAD)
+RUN_NUMBER ?= 0
+
+# Build a docker image suitable for deployment
+# Requires GITHUB_SHA and RUN_NUMBER
+container:
+#	Ensure expected directories exist
+	touch api
+	touch private
+	touch public
+	touch migrations
+	touch README.md
+	touch src/config
+	$(eval USE_CACHE=$(shell if docker pull $(DOCKER_REGISTRY)/$(SERVICE_NAME):latest; then echo "--cache-from $(DOCKER_REGISTRY)/$(SERVICE_NAME):latest"; else echo ""; fi))
+	docker build \
+	  --build-arg GOOGLE_PACKAGES_TOKEN=$(shell if [ -f ./.npmrc ]; then sed -n 's/.*_authToken=\(.*\)/\1/gp' ./.npmrc; else sed -n 's/.*_authToken=\(.*\)/\1/gp' ~/.npmrc; fi) \
+	  --build-arg BUILD_VERSION=$(shell node -p "const fs=require('fs'); let pkg=JSON.parse(fs.readFileSync('./package.json')); const parts=pkg.version.split('.'); parts[2]='$(RUN_NUMBER)'; parts.join('.')") \
+		--build-context monorepo=../.. \
+	  --network=host $(USE_CACHE) \
+	  --tag $(DOCKER_REGISTRY)/$(SERVICE_NAME):$(GITHUB_SHA) \
+	  --tag $(DOCKER_REGISTRY)/$(SERVICE_NAME):latest . \
+	  -f ../../docker/service.Dockerfile
+
+check:
+	yarn prettier -c src --write && yarn lint --fix
+
+typecheck: check
+	make ts
+
+apicheck:
+	BUNDLE_OUTPUT=$$(mktemp -d); \
+	make bundlespec BUNDLE_OUTPUT="$$BUNDLE_OUTPUT"; \
+	npx openapi-typescript "$$BUNDLE_OUTPUT/openapi-spec.json" --enum-values -o "$$BUNDLE_OUTPUT/client.ts"; \
+	yarn tsc --noEmit --skipLibCheck "$$BUNDLE_OUTPUT/client.ts"
+
+# Ensure the API package spec is built (cross-package dependency)
+$(API_SPEC): api-build
+
+.PHONY: api-build
+
+api-build:
+	$(MAKE) -C $(API_PKG) all
+
+# Redefines the way api specs are made
+src/generated/service/index.ts: $(API_SPEC)
+	echo "Building service interface"
+ifndef BUNDLE_OUTPUT
+		$(eval BUNDLE_OUTPUT := $(shell mktemp -d))
+		$(eval GENERATED_DIR := true)
+endif
+	yarn dlx openapi-typescript-express $(API_SPEC) \
+		--output ./src/generated/service/index.ts
+	yarn prettier ./src/generated/service/index.ts --write
+ifdef GENERATED_DIR
+		rm -rf $(BUNDLE_OUTPUT)
+endif

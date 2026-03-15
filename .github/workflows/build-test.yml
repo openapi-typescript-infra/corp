@@ -1,0 +1,84 @@
+name: Build, check and test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build-check-test:
+    runs-on: self-hosted
+
+    env:
+      PGPORT: 25432
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGHOST: localhost
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🐘 Start CI Postgres
+        run: |
+          docker build -t ci-postgres -f docker/dev-postgres.Dockerfile docker/
+          docker run -d --name ci-postgres-${{ github.run_id }} \
+            -e POSTGRES_USER=postgres \
+            -e POSTGRES_PASSWORD=postgres \
+            -p 25432:5432 \
+            ci-postgres
+          # Wait for Postgres to be ready
+          for i in $(seq 1 30); do
+            if pg_isready -h localhost -p 25432 -U postgres 2>/dev/null; then
+              echo "Postgres is ready"
+              break
+            fi
+            sleep 1
+          done
+
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-actions/providers/github-oidc
+          service_account: github-actions-ci@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: 🏗️ Build
+        run: |
+          yarn workspaces foreach -pt run ci-setup
+          yarn build
+
+      - name: 🚦 Typecheck
+        run: yarn typecheck
+
+      - name: 💅 Prettier
+        run: yarn prettier --check
+
+      - name: 🧹 Lint
+        run: yarn lint
+
+      - name: 📦 Check bundle sizes
+        run: yarn workspace @justtellme/consumer-web check-bundles
+
+      - name: 🔍 Detect affected services
+        id: affected
+        run: |
+          AFFECTED=$(npx turbo run build --filter='./services/*...[origin/main]' --dry-run=json | jq -r '.packages | map(select(startswith("@justtellme/"))) | join(",")')
+          echo "services=$AFFECTED" >> $GITHUB_OUTPUT
+          echo "Affected services: $AFFECTED"
+
+      - name: 🧹 Cleanup CI Postgres
+        if: always()
+        run: docker rm -f ci-postgres-${{ github.run_id }} || true

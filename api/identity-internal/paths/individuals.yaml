@@ -1,0 +1,107 @@
+get:
+  operationId: getIndividuals
+  summary: Get a list of individuals by uuid
+  parameters:
+    - name: external_ids
+      in: query
+      required: false
+      schema:
+        type: array
+        maxItems: 100
+        items:
+          type: string
+          description: |
+            The "External ID" of the individual(s) which will contain both an
+            identifier namespace (via the type) and a uuid.
+    - name: individual_uuids
+      in: query
+      required: false
+      schema:
+        type: array
+        maxItems: 100
+        items:
+          type: string
+          format: uuid
+          description: The UUID of the individual(s)
+    - $ref: ../params/address_types.yaml
+    - $ref: ../params/consents.yaml
+    - $ref: ../params/identifier_namespaces.yaml
+    - $ref: ../params/individual_fields.yaml
+    - $ref: ../params/profiles.yaml
+    - $ref: ../params/relation_identifiers.yaml
+    - $ref: ../params/relation_types.yaml
+    - $ref: ../params/groups.yaml
+    - $ref: ../params/tags.yaml
+  responses:
+    200:
+      description: One or more individuals were found
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - individuals
+            properties:
+              individuals:
+                type: array
+                maxItems: 100
+                items:
+                  $ref: ../schemas/Individual.yaml
+    404:
+      description: There were no matching individuals found
+      content:
+        application/json:
+          schema:
+            $ref: ../../common/Error.yaml
+post:
+  operationId: createIndividual
+  requestBody:
+    description: Details about the individual
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            birthdate:
+              type: string
+              format: date
+              description: The birthdate of the individual, if available
+            biological_sex:
+              $ref: ../enums/BiologicalSex.yaml
+            individual_uuid:
+              type: string
+              format: uuid
+              description: |
+                If you want to force a UUID, assuming you've geneerated it properly, you can pass it here.
+            identifiers:
+              type: array
+              maxItems: 1000
+              items:
+                $ref: ../schemas/IdentifierInput.yaml
+  responses:
+    '409':
+      description: The specified uuid or one of the identifiers was already in use
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              conflicting_individual_uuid:
+                type: string
+                format: uuid
+                description: |
+                  The UUID of the individual that conflicts with the request. This property is named
+                  differently to reduce the chance of accidentally assuming the insert worked and
+                  cross-polluting accounts
+    '201':
+      description: The individual was saved to the database
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              individual_uuid:
+                type: string
+                format: uuid
+                description: The UUID of the individual

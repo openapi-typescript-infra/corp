@@ -1,0 +1,44 @@
+{
+  "//": "Managed by cpconfig",
+  "include": [
+    "@types/**/*",
+    "src/**/*",
+    ".storybook/**/*",
+    "__tests__/**/*",
+    "__mocks__/**/*",
+    "cpconfig.ts",
+    "next-env.d.ts",
+    "vitest.config.ts",
+    "tsup.config.ts",
+    "private/types/**/*.d.ts",
+    ".next/types/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "compilerOptions": {
+    "lib": [
+      "ES2023",
+      "DOM"
+    ],
+    "target": "ES2023",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "allowJs": true,
+    "preserveWatchOutput": true,
+    "strict": true,
+    "sourceMap": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "rootDir": "."
+  }
+}

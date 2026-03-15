@@ -1,0 +1,29 @@
+type: object
+description: JSON property bag for a profile entry. Only one of profile or encrypted_profile will be provided.
+required:
+  - name
+properties:
+  name:
+    type: string
+    description: The name of the profile schema
+  instance_name:
+    type: string
+    description: The specific instance of the profile schema
+  profile:
+    type: object
+    description: The profile data
+    additionalProperties: true
+  encrypted_profile:
+    type: object
+    description: The encrypted profile data
+    properties:
+      key_id:
+        type: string
+        description: The ID of the key used to encrypt the profile data
+      ciphertext:
+        type: string
+        description: Base64 encoded encrypted profile data (aes-cbc-256 with prepended IV)
+  updated_at:
+    type: string
+    format: date-time
+    description: When this schema was last updated

@@ -1,0 +1,49 @@
+{
+  "name": "@justtellme/state",
+  "version": "0.0.0",
+  "description": "Just Tell Me UI state management",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "production": "./dist/index.js",
+      "default": "./src/index.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "./src/index.ts",
+  "author": "Max Metral <max@pyralis.com>",
+  "license": "UNLICENSED",
+  "packageManager": "yarn@3.8.7",
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "build": "tsgo -p tsconfig.build.json",
+    "clean": "yarn dlx rimraf ./dist",
+    "lint": "eslint .",
+    "postinstall": "cpconfig",
+    "test": "vitest"
+  },
+  "keywords": [
+    "typescript",
+    "justtellme"
+  ],
+  "config": {
+    "cpconfig": "@justtellme/cpconfig"
+  },
+  "dependencies": {
+    "@legendapp/state": "^3.0.0-beta.46"
+  },
+  "devDependencies": {
+    "@justtellme/cpconfig": "workspace:^",
+    "cpconfig": "^1.4.4",
+    "eslint": "^10.0.3",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  }
+}

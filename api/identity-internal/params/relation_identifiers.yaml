@@ -1,0 +1,9 @@
+name: relation_identifiers
+description: When fetching related individuals, include the identifiers in these namespaces
+in: query
+required: false
+schema:
+  type: array
+  maxItems: 10
+  items:
+    $ref: ../enums/IdentifierNamespaces.yaml

@@ -1,0 +1,23 @@
+parameters:
+  - name: transaction_id
+    in: path
+    required: true
+    schema:
+      type: string
+    description: The internal transaction ID (e.g. pgtx_...)
+get:
+  operationId: getTransaction
+  summary: Get a transaction by its internal ID
+  responses:
+    '200':
+      description: Transaction found
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/Transaction.yaml
+    '404':
+      description: Transaction not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../common/Error.yaml

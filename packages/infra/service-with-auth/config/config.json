@@ -1,0 +1,44 @@
+{
+  "$schema": "tsschema://src/config.ts#HSAuthConfigurationSchema",
+  "session": {
+    "enabled": true,
+    "secret": "change-me",
+    "cookieName": "hssession-dev",
+    "cookieDomain": ".dev.justtellme.com",
+    "secureCookie": true,
+    "proxy": true,
+    "resave": false,
+    "rolling": false,
+    "saveUninitialized": false,
+    "store": {
+      "socket": {
+        "host": "env:REDIS_HOST|u",
+        "port": "env:REDIS_PORT|ud"
+      },
+      "password": "env:REDIS_PASSWORD|u"
+    }
+  },
+  "routing": {
+    "cookieParser": true
+  },
+  "auth": {
+    "enabled": true,
+    "token": "decode",
+    "cookie": "s_jwt_dev",
+    "stytch": {
+      "consumer": {
+        "project_id": "gsm:stytch_project_id",
+        "maxTokenAgeSeconds": 600
+      },
+      "admin": {
+        "project_id": "project-test-c21af48b-a384-40e1-b752-13871fb09d0b",
+        "maxTokenAgeSeconds": 600
+      },
+      "partner": {
+        "project_id": "project-test-dab2ed0c-8d9e-4f34-af9c-f76f9270a4f1",
+        "maxTokenAgeSeconds": 600
+      }
+    }
+  },
+  "datasources": {}
+}

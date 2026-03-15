@@ -1,0 +1,6 @@
+base-service:
+  name: consumer-web
+  team: platform
+
+  serviceAccount:
+    create: true

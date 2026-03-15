@@ -1,0 +1,9 @@
+in: query
+name: addresses
+required: false
+description: |
+  A list of addresses that should be retrieved for the individual.
+schema:
+  type: array
+  items:
+    $ref: ../enums/AddressTypes.yaml

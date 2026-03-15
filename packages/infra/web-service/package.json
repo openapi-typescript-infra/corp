@@ -1,0 +1,90 @@
+{
+  "name": "@justtellme/web-service",
+  "version": "0.0.0",
+  "description": "Base module for Just Tell Me Typescript web applications using Next.js and React",
+  "sideEffects": false,
+  "types": "./src/index.ts",
+  "type": "module",
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "exports": {
+    ".": {
+      "production": "./dist/index.js",
+      "default": "./src/index.ts"
+    },
+    "./server": {
+      "production": "./dist/index.js",
+      "default": "./src/index.ts"
+    },
+    "./isomorphic": {
+      "production": "./dist/isomorphic/index.js",
+      "default": "./src/isomorphic/index.ts"
+    },
+    "./env": {
+      "production": "./dist/isomorphic/env.js",
+      "default": "./src/isomorphic/env.ts"
+    },
+    "./Makefile": "./Makefile",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "codegen.yml",
+    "Makefile",
+    "config"
+  ],
+  "scripts": {
+    "test": "vitest",
+    "build": "yarn build:next",
+    "typecheck": "tsgo --noEmit -p tsconfig.json",
+    "build:next": "cd __tests__/justtellme-web && next build",
+    "clean": "yarn dlx rimraf ./build",
+    "lint": "eslint src",
+    "postinstall": "cpconfig",
+    "start": "yarn start-service --rootDirectory __tests__/justtellme-web --codepath src --packageDir __tests__/justtellme-web"
+  },
+  "engines": {
+    "node": ">24.0.0"
+  },
+  "author": "Just Tell Me Developers <developers@justtellme.com>",
+  "config": {
+    "cpconfig": "@justtellme/cpconfig",
+    "entryPoints": [
+      "src/index.ts",
+      "src/isomorphic/index.ts"
+    ]
+  },
+  "keywords": [
+    "typescript",
+    "justtellme"
+  ],
+  "devDependencies": {
+    "@next/eslint-plugin-next": "^16.1.6",
+    "@openapi-typescript-infra/service-tester": "^7.1.2",
+    "@types/express-session": "^1.18.2",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@types/redis-mock": "^0.17.3",
+    "cpconfig": "^1.4.4",
+    "eslint": "^10.0.3",
+    "pino-pretty": "^13.1.3",
+    "prettier": "^3.8.1",
+    "redis-mock": "^0.56.3",
+    "supertest": "^7.2.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  },
+  "dependencies": {
+    "@justtellme/service-with-auth": "workspace:^",
+    "@openapi-typescript-infra/service": "^6.11.0",
+    "@stytch/nextjs": "^22.0.4",
+    "next": "^16.1.6",
+    "posthog-js": "^1.360.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "packageManager": "yarn@3.8.7"
+}

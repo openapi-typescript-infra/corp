@@ -1,0 +1,9 @@
+in: query
+name: consents
+required: false
+description: |
+  A list of consent types that should be retrieved for the individual.
+schema:
+  type: array
+  items:
+    $ref: ../enums/ConsentTypes.yaml

@@ -1,0 +1,34 @@
+type: object
+required:
+  - individual_uuid
+properties:
+  individual_uuid:
+    type: string
+  birthdate:
+    type: string
+    format: date
+  biological_sex:
+    $ref: ../enums/BiologicalSex.yaml
+  created_at:
+    type: string
+    format: date-time
+  profiles:
+    type: array
+    items:
+      $ref: ./ProfileEntry.yaml
+  identifiers:
+    type: array
+    items:
+      $ref: ./IndividualIdentifier.yaml
+  addresses:
+    type: array
+    items:
+      $ref: ./IndividualAddress.yaml
+  relations:
+    type: array
+    items:
+      $ref: ./IndividualRelation.yaml
+  groups:
+    type: array
+    items:
+      $ref: ./IndividualGroupMember.yaml

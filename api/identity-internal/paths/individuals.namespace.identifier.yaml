@@ -1,0 +1,157 @@
+parameters:
+  - $ref: ../params/namespace.yaml
+  - $ref: ../params/identifier.yaml
+get:
+  operationId: getIndividualsByIdentifier
+  summary: Get an individual by namespace and identifier
+  description: Get an individual by namespace and identifier
+  parameters:
+    - $ref: ../params/address_types.yaml
+    - $ref: ../params/consents.yaml
+    - $ref: ../params/identifier_namespaces.yaml
+    - $ref: ../params/individual_fields.yaml
+    - $ref: ../params/profiles.yaml
+    - $ref: ../params/relation_types.yaml
+    - $ref: ../params/relation_identifiers.yaml
+    - $ref: ../params/groups.yaml
+    - $ref: ../params/tags.yaml
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              total:
+                type: number
+              items:
+                type: array
+                items:
+                  $ref: ../schemas/Individual.yaml
+    404:
+      description: |
+        The identifier has not been assigned to an entity of that
+      content:
+        application/json:
+          schema:
+            $ref: ../../common/Error.yaml
+    410:
+      description: |
+        The upstream data has been deleted
+      content:
+        application/json:
+          schema:
+            $ref: ../../common/Error.yaml
+patch:
+  operationId: updateIndividualByIdentifier
+  summary: |
+    Update a single individual by an identifier in a namespace. This method will fail if
+    there is more than one individual with the same identifier (i.e. only use it for unique identifiers).
+    Combines profile updates, identifier assignment, address/consent/tag management into a single endpoint.
+  requestBody:
+    description: The update request
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            birthdate:
+              type: string
+              format: date
+              description: The birthdate of the individual, if available
+            biological_sex:
+              $ref: ../enums/BiologicalSex.yaml
+            profiles:
+              type: array
+              maxItems: 20
+              items:
+                $ref: ../schemas/ProfileUpdateRequest.yaml
+            identifiers:
+              type: array
+              items:
+                $ref: ../schemas/IdentifierInput.yaml
+            addresses:
+              type: array
+              maxItems: 20
+              items:
+                $ref: ../schemas/IndividualAddress.yaml
+            consents:
+              type: array
+              maxItems: 20
+              items:
+                $ref: ../schemas/IndividualConsent.yaml
+            tags:
+              type: array
+              items:
+                type: object
+                required:
+                  - value
+                  - operation
+                properties:
+                  value:
+                    type: string
+                  operation:
+                    type: string
+                    description: Whether to add or remove the tag
+                    enum:
+                      - add
+                      - remove
+            groups:
+              type: array
+              items:
+                type: object
+                required:
+                  - name
+                  - operation
+                properties:
+                  name:
+                    type: array
+                    description: The hierarchical name of the group
+                    items:
+                      type: string
+                  operation:
+                    type: string
+                    description: Whether to add or remove the group membership
+                    enum:
+                      - add
+                      - remove
+                  begins_at:
+                    type: string
+                    format: date-time
+                    description: When the membership should begin
+                  ends_at:
+                    type: string
+                    format: date-time
+                    description: When the membership should end
+                  conflict_resolution:
+                    type: string
+                    description: How to handle existing memberships (for add only)
+                    enum:
+                      - overwrite
+                      - expand
+                      - new
+                      - existing
+  responses:
+    200:
+      description: The specified contents were updated
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - individual_uuid
+            properties:
+              individual_uuid:
+                type: string
+                format: uuid
+                description: The UUID of the individual that was updated
+              profiles:
+                type: array
+                items:
+                  $ref: ../schemas/ProfileEntry.yaml
+    404:
+      description: The individual does not exist
+    409:
+      description: More than one individual was matched

@@ -1,0 +1,6 @@
+base-service:
+  name: identity-internal
+  team: platform
+
+  database:
+    gcpId: main

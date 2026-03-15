@@ -1,0 +1,52 @@
+{
+  "name": "@justtellme/authn-authz-internal",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Authentication and authorization services for Just Tell Me",
+  "main": "./src/index.ts",
+  "exports": "./src/index.ts",
+  "type": "module",
+  "types": "src/index.ts",
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "scripts": {
+    "test": "vitest",
+    "build": "make",
+    "watch": "nodemon",
+    "clean": "make clean",
+    "start": "start-service",
+    "repl": "start-service --repl",
+    "lint": "eslint .",
+    "postinstall": "cpconfig"
+  },
+  "config": {
+    "cpconfig": "@justtellme/cpconfig"
+  },
+  "engines": {
+    "node": ">24.0.0"
+  },
+  "author": "Max Metral <max@pyralis.com>",
+  "license": "UNLICENSED",
+  "keywords": [
+    "typescript",
+    "openapi",
+    "express"
+  ],
+  "devDependencies": {
+    "@openapi-typescript-infra/service-tester": "^7.1.2",
+    "@typescript/native-preview": "^7.0.0-dev.20260314.1",
+    "eslint": "^10.0.3",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  },
+  "dependencies": {
+    "@justtellme/cpconfig": "workspace:^",
+    "@justtellme/service": "workspace:^",
+    "@justtellme/web-auth": "workspace:^",
+    "@openapi-typescript-infra/service": "^6.11.0",
+    "cpconfig": "^1.4.4",
+    "stytch": "^13.1.0"
+  }
+}

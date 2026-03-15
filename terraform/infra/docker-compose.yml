@@ -1,0 +1,24 @@
+services:
+  terraform:
+    build: .
+    volumes:
+      - .:/terraform
+      - gcloud-config:/root/.config/gcloud
+    environment:
+      - DOCKER_HOST=tcp://docker:2375
+    depends_on:
+      - docker
+    stdin_open: true
+    tty: true
+
+  docker:
+    image: docker:dind
+    privileged: true
+    environment:
+      - DOCKER_TLS_CERTDIR=
+    volumes:
+      - docker-data:/var/lib/docker
+
+volumes:
+  gcloud-config:
+  docker-data:

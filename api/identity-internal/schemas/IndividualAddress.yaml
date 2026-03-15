@@ -1,0 +1,39 @@
+type: object
+required:
+  - city
+  - state
+  - postal_code
+  - country
+  - address_type
+properties:
+  line_1:
+    type: string
+    description: The first line of the address
+  line_2:
+    type: string
+    description: The second line of the address
+  city:
+    type: string
+  state:
+    description: The state or province (two letter state code in US)
+    type: string
+  postal_code:
+    type: string
+    description: The postal code
+  country:
+    type: string
+    description: The country (two letter country code)
+  geolocation:
+    type: object
+    properties:
+      latitude:
+        type: number
+        format: float
+      longitude:
+        type: number
+        format: float
+  address_type:
+    $ref: ../enums/AddressTypes.yaml
+  instance_name:
+    type: string
+    description: Optional instance name to allow multiple addresses of the same type (e.g. "home_1", "home_2")

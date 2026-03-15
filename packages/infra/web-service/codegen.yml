@@ -1,0 +1,25 @@
+schema: ${GRAPHQL_ENDPOINT}
+documents: '**/*.graphql'
+ignoreNoDocuments: true
+generates:
+  src/generated/graphql-api.ts:
+    schema:
+      - ${GRAPHQL_ENDPOINT}
+    documents:
+      - '**/*.graphql'
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-urql
+    config:
+      declarationKind: interface
+      scalars:
+        Date: string
+        DateTime: string
+        EmailAddress: string
+        GUID: string
+        URL: string
+
+hooks:
+  afterAllFileWrite:
+    - node -e "fs=require('fs'); f='src/generated/graphql-api.ts'; fs.writeFileSync(f, fs.readFileSync(f, 'utf8').replace(/import gql from 'graphql-tag'/g, 'import { gql } from \\'graphql-tag\\''));"

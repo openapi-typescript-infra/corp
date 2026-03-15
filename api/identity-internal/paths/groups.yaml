@@ -1,0 +1,122 @@
+post:
+  operationId: createGroup
+  summary: Create a group
+  requestBody:
+    description: Details about the group
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../schemas/Group.yaml
+  responses:
+    201:
+      description: Group was created
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/GroupWithId.yaml
+    409:
+      description: Group already exists
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/GroupWithId.yaml
+patch:
+  operationId: modifyGroup
+  summary: |
+    Modify a group's metadata and manage members. The group is identified by name.
+    Combines display name updates, member additions, and member removals into a single endpoint.
+  requestBody:
+    description: The group modifications
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - name
+          properties:
+            name:
+              type: array
+              description: The hierarchical name of the group to modify
+              items:
+                type: string
+            display_name:
+              type: string
+              description: Update the display name of the group
+            members:
+              type: array
+              maxItems: 50
+              items:
+                type: object
+                required:
+                  - individual
+                  - operation
+                properties:
+                  individual:
+                    oneOf:
+                      - type: string
+                        format: uuid
+                        description: The individual UUID
+                      - type: object
+                        required:
+                          - identifier
+                          - namespace
+                        properties:
+                          identifier:
+                            type: string
+                          namespace:
+                            $ref: ../enums/IdentifierNamespaces.yaml
+                  operation:
+                    type: string
+                    description: Whether to add or remove the member
+                    enum:
+                      - add
+                      - remove
+                  begins_at:
+                    type: string
+                    format: date-time
+                    description: When the membership should begin
+                  ends_at:
+                    type: string
+                    format: date-time
+                    description: When the membership should end
+                  conflict_resolution:
+                    description: |
+                      How to handle an existing membership with the same individual.
+                      * new will just insert a new row every time.
+                      * existing will only insert if an existing valid membership does not exist
+                      * overwrite will overwrite any existing valid membership or insert a new one
+                      * expand will extend the existing membership to include the new time range
+                    type: string
+                    enum:
+                      - overwrite
+                      - expand
+                      - new
+                      - existing
+  responses:
+    200:
+      description: The group was modified
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              group_id:
+                type: string
+              name:
+                type: array
+                items:
+                  type: string
+              display_name:
+                type: string
+              members:
+                type: array
+                items:
+                  $ref: ../schemas/GroupMember.yaml
+    404:
+      description: Group not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../common/Error.yaml

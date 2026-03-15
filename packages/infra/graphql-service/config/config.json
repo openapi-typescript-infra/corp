@@ -1,0 +1,21 @@
+{
+  "$schema": "tsschema://src/types#HSGraphQLConfigurationSchema",
+  "session": {
+    "enabled": true
+  },
+  "auth": {
+    "enabled": true,
+    "token": "decode"
+  },
+  "routing": {
+    "openapi": false,
+    "cookieParser": true,
+    "finalHandlers": {
+      "notFound": false
+    }
+  },
+  "graphql": {
+    "introspection": true,
+    "maximumComplexity": 1000
+  }
+}

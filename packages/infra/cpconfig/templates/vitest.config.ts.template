@@ -1,0 +1,165 @@
+// Managed by cpconfig
+import fs from 'node:fs';
+import path from 'node:path';
+import { configDefaults, defineConfig } from 'vitest/config';
+
+const dynamicImport = new Function('specifier', 'return import(specifier)');
+
+type VitestUserConfig = Exclude<
+  Parameters<typeof defineConfig>[0],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Promise<any> | ((...args: any[]) => any)
+>;
+
+export default async function vitestConfig() {
+  const testConfig: VitestUserConfig['test'] = {
+    watch: false,
+    exclude: ['.trunk', '**/build/**', ...configDefaults.exclude],
+  };
+
+  const config: VitestUserConfig = {
+    test: testConfig,
+    esbuild: {
+      sourcemap: 'both',
+    },
+    define: {
+      'process.env.TEST_RUNNER': JSON.stringify('vitest'),
+    },
+  };
+
+  if (process.env.VITEST_TIMEOUT) {
+    testConfig.testTimeout = parseInt(process.env.VITEST_TIMEOUT, 10);
+  }
+
+  try {
+    const pkg = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
+    if (pkg.config?.vitest?.timeout) {
+      testConfig.testTimeout = pkg.config.vitest.timeout;
+    }
+  } catch {
+    // ignore
+  }
+
+  if (hasPackage('dotenv')) {
+    testConfig.setupFiles = ['dotenv/config'];
+  }
+
+  if (fs.existsSync('__tests__/vitest.setup.ts')) {
+    testConfig.globalSetup = '__tests__/vitest.setup.ts';
+  }
+
+  if (hasPackage('jsdom') && hasPackage('react')) {
+    const nodeSpecPattern = '**/*.node.spec.ts';
+    const browserSpecPattern = '**/*.browser.spec.ts';
+
+    if (!config.test) {
+      config.test = {};
+    }
+
+    config.test.environment = 'jsdom';
+    const baseExclude = (config.test.exclude as string[]) ?? [];
+    const exclude = new Set(baseExclude);
+    exclude.add(nodeSpecPattern);
+    exclude.add(browserSpecPattern);
+    config.test.exclude = Array.from(exclude);
+
+    config.test.projects = [
+      {
+        test: {
+          name: 'default',
+          environment: 'jsdom',
+          // Exclude environment-specific tests from the default project
+          exclude: [...baseExclude, nodeSpecPattern, browserSpecPattern],
+        },
+      },
+      {
+        test: {
+          name: 'node',
+          environment: 'node',
+          include: [nodeSpecPattern],
+          // Override exclude to only exclude browser specs, not node specs
+          exclude: [...baseExclude, browserSpecPattern],
+        },
+      },
+      {
+        test: {
+          name: 'browser',
+          environment: 'jsdom',
+          include: [browserSpecPattern],
+          // Override exclude to only exclude node specs, not browser specs
+          exclude: [...baseExclude, nodeSpecPattern],
+        },
+      },
+    ];
+  }
+
+  if (hasPackage('js-yaml')) {
+    config.plugins = config.plugins || [];
+    config.plugins.push(
+      dynamicImport('js-yaml').then(async (yaml: Parameters<typeof loadYAMLWithIncludes>[0]) => ({
+        name: 'vite-plugin-custom-js-yaml',
+        enforce: 'pre',
+        transform(src: unknown, id: string) {
+          if (id.endsWith('.yaml') || id.endsWith('.yml')) {
+            const parsedYAML = loadYAMLWithIncludes(yaml, id);
+            // Convert YAML to JSON and return it as a JS module
+            return {
+              code: `export default ${JSON.stringify(parsedYAML)};`,
+              map: null, // No source map needed for YAML
+            };
+          }
+        },
+      })),
+    );
+  }
+
+  return defineConfig(config);
+}
+
+// Custom loader for handling `!include` tag
+function loadYAMLWithIncludes(
+  yamlApi: {
+    DEFAULT_SCHEMA: { extend: (types: unknown[]) => unknown };
+    Type: { new (name: string, options: unknown): unknown };
+    load(data: string, opts: { schema: unknown }): unknown;
+  },
+  filePath: string,
+) {
+  const baseDir = path.dirname(filePath);
+
+  const includeType = new yamlApi.Type('!include', {
+    kind: 'scalar',
+    construct: (includePath: string) => {
+      const fullPath = path.resolve(baseDir, includePath);
+      return loadYAMLWithIncludes(yamlApi, fullPath); // Recursively load included YAML
+    },
+  });
+
+  const schema = yamlApi.DEFAULT_SCHEMA.extend([includeType]);
+
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+  return yamlApi.load(fileContent, { schema });
+}
+
+function hasPackage(name: string) {
+  try {
+    require.resolve(name);
+    return true;
+  } catch (err) {
+    const error = err as { message: string; code?: string };
+    if (/Dynamic require of .* is not supported/.test(error.message)) {
+      return true;
+    }
+    if (error.message.includes('is not a function')) {
+      // Let's try a different way
+      if (fs.existsSync(path.resolve(process.cwd(), 'node_modules', name))) {
+        return true;
+      }
+      return false;
+    }
+    if (!['ERR_MODULE_NOT_FOUND', 'MODULE_NOT_FOUND'].includes(error.code || '')) {
+      throw error;
+    }
+    return false;
+  }
+}

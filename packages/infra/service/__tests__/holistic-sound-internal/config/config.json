@@ -1,0 +1,14 @@
+{
+  "USE_REGISTRY": false,
+  "logging": {
+    "level": "debug"
+  },
+  "datasources": {
+    "identity-internal": {
+      "logRequests": true,
+      "logResponses": true
+    }
+  },
+  "secret": "gsm:redis_general_purpose_port|d",
+  "gcp_identity": "gcp:email"
+}

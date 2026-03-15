@@ -1,0 +1,4 @@
+{
+  "$schema": "tsschema://src/config#HSConfigurationSchema",
+  "DEFAULT_TEMPORAL_CLUSTER": "temporal-frontend.hs.svc.cluster.local:7233"
+}

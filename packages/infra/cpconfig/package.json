@@ -1,0 +1,42 @@
+{
+  "name": "@justtellme/cpconfig",
+  "version": "0.0.0",
+  "description": "Standard Typescript/Node/React configuration for Just Tell Me projects",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": {
+      "production": "./dist/index.js",
+      "default": "./src/index.ts"
+    }
+  },
+  "type": "module",
+  "types": "./src/index.ts",
+  "author": "Developers <developers@justtellme.com>",
+  "license": "UNLICENSED",
+  "packageManager": "yarn@3.8.7",
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "eslint .",
+    "postinstall": "cpconfig",
+    "test": "vitest"
+  },
+  "keywords": [
+    "typescript",
+    "justtellme"
+  ],
+  "config": {
+    "cpconfig": "./src/index.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@typescript/native-preview": "^7.0.0-dev.20260314.1",
+    "cpconfig": "^1.4.4",
+    "eslint": "^10.0.3",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  }
+}

@@ -1,0 +1,41 @@
+openapi: 3.0.1
+info:
+  title: authn-authz-internal
+  description: Authentication and authorization for Just Tell Me services
+  license:
+    name: MIT
+  version: 1.0.0
+servers:
+  - url: http://authn-authz-internal.hs.svc.cluster.local
+paths:
+  /authentication:
+    get:
+      operationId: getAuthenticationToken
+      parameters:
+        - name: Cookie
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  x-auth-token:
+                    type: string
+                    description: The authentication JWT for the caller
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: ../common/Error.yaml

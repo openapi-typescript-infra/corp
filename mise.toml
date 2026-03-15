@@ -1,0 +1,11 @@
+[tools]
+node = "24"
+
+[env]
+CLOUDSDK_CONFIG = "{{env.HOME}}/.config/gcloud-justtellme"
+GOOGLE_APPLICATION_CREDENTIALS = "{{env.HOME}}/.config/gcloud-justtellme/application_default_credentials.json"
+PGPORT = 15432
+STYTCH_TOKEN= "public-token-test-something"
+APP_ENV = "development"
+WHOAMI = "https://consumer.local.dev.justtellme.com"
+POSTHOG_KEY = "phc_something"

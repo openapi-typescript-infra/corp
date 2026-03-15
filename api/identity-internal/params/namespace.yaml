@@ -1,0 +1,5 @@
+name: namespace
+in: path
+required: true
+schema:
+  $ref: ../enums/IdentifierNamespaces.yaml

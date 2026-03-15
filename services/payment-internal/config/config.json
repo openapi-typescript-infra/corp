@@ -1,0 +1,3 @@
+{
+  "$schema": "tsschema://src/types/config.ts#PaymentInternalConfigSchema"
+}

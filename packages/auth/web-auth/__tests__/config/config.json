@@ -1,0 +1,32 @@
+{
+  "$schema": "tsschema://src/index#TestConfig",
+  "OAUTH_CLIENT_ID": "cardinal-dev",
+  "OAUTH_CLIENT_SECRET": "cardinal",
+  "session": {
+    "enabled": true,
+    "secret": "change-me",
+    "cookieName": "hssession-dev",
+    "cookieDomain": ".dev.justtellme.com",
+    "secureCookie": true,
+    "proxy": true,
+    "resave": false,
+    "rolling": false,
+    "saveUninitialized": false,
+    "store": {
+      "socket": {
+        "host": "env:REDIS_HOST|u",
+        "port": "env:REDIS_PORT|ud",
+      },
+      "password": "env:REDIS_PASSWORD|u"
+    }
+  },
+  "auth": {
+    "enabled": true,
+    "authToken": "decode",
+    "stytch": {
+      "consumer": {},
+      "admin": {},
+      "partner": {}
+    }
+  }
+}

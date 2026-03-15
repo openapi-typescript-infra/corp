@@ -1,0 +1,63 @@
+{
+  "name": "@justtellme/identity-internal",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Individual and group entity management",
+  "main": "./src/index.ts",
+  "exports": "./src/index.ts",
+  "type": "module",
+  "types": "src/index.ts",
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "scripts": {
+    "test": "vitest",
+    "build": "make",
+    "watch": "nodemon",
+    "clean": "make clean",
+    "start": "start-service",
+    "repl": "start-service --repl",
+    "ci-setup": "make db-ci",
+    "db:create": "yarn dlx run-pg-sql postgres ./migrations/setup/db_setup.sql",
+    "migration:apply": "db-migrate --config migrations/db-migrate.json up",
+    "migration:undo": "db-migrate --config migrations/db-migrate.json down",
+    "migration:create": "db-migrate --config migrations/db-migrate.json create",
+    "lint": "eslint .",
+    "postinstall": "cpconfig"
+  },
+  "config": {
+    "cpconfig": "@justtellme/cpconfig"
+  },
+  "engines": {
+    "node": ">24.0.0"
+  },
+  "author": "Max Metral <max@pyralis.com>",
+  "license": "UNLICENSED",
+  "keywords": [
+    "typescript",
+    "openapi",
+    "express"
+  ],
+  "devDependencies": {
+    "@openapi-typescript-infra/service-tester": "^7.1.2",
+    "@typescript/native-preview": "^7.0.0-dev.20260314.1",
+    "cpconfig": "^1.4.4",
+    "eslint": "^10.0.3",
+    "kysely-codegen": "^0.20.0",
+    "prettier": "^3.8.1",
+    "run-pg-sql": "^1.2.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  },
+  "dependencies": {
+    "@justtellme/cpconfig": "workspace:^",
+    "@justtellme/service": "workspace:^",
+    "@openapi-typescript-infra/service": "^6.11.0",
+    "date-fns": "^4.1.0",
+    "db-migrate": "^0.11.14",
+    "db-migrate-pg": "^1.5.2",
+    "kysely": "^0.28.12",
+    "pg": "^8.20.0",
+    "states-us": "^1.1.1"
+  }
+}

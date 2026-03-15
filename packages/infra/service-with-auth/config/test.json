@@ -1,0 +1,13 @@
+{
+  "$schema": "tsschema://src/config.ts#HSAuthConfigurationSchema",
+  "session": {
+    "cookieName": "hssession-dev",
+    "cookieDomain": "",
+    "secureCookie": false,
+    "store": {
+      "socket": {
+        "host": "localhost"
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+type: string
+enum:
+  - is_partner_of
+  - is_guardian_of
+  - is_child_of
+  - is_sibling_of
+  - booked_as_friend_of
+  - booked_for
+  - played_with
+  - studied_with

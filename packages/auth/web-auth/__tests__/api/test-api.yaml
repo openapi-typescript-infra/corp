@@ -1,0 +1,38 @@
+openapi: 3.0.1
+info:
+  title: test-api
+  description: An API to test middleware
+  license:
+    name: MIT
+  version: 1.0.0
+servers:
+- url: /
+components:
+  securitySchemes:
+    justtellme:
+      # This is fake. But it is what will get express-openapi-validator to leave the request alone.
+      # Issue filed: https://github.com/cdimascio/express-openapi-validator/issues/731
+      type: openIdConnect
+      openIdConnectUrl: https://auth.justtellme.com/.well-known/openid-configuration
+paths:
+  /test-it/{some_uuid}/identifier:
+    parameters:
+      - name: some_uuid
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: getTest
+      security:
+        - justtellme:
+          - role == "consumer" and userUuid == params.some_uuid
+      responses:
+        '204':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Patient was not found

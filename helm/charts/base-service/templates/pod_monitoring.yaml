@@ -1,0 +1,52 @@
+{{- if .Values.monitoring.enabled -}}
+apiVersion: monitoring.googleapis.com/v1
+kind: PodMonitoring
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  endpoints: #https://github.com/GoogleCloudPlatform/prometheus-engine/blob/v0.4.3-gke.0/doc/api.md#scrapeendpoint
+    - port: 3000
+      path: '/metrics'
+      scheme: http
+      interval: 30s
+{{- if .Values.temporal.workers }}
+---
+# Worker prometheus metrics
+apiVersion: monitoring.googleapis.com/v1
+kind: PodMonitoring
+metadata:
+  name: {{ .Values.name }}-worker
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}-worker
+  endpoints:
+    - port: 3000
+      path: '/metrics'
+      scheme: http
+      interval: 30s
+{{- if eq .Values.temporal.scrapeMetrics true }}
+---
+# Worker temporal prometheus metrics
+apiVersion: monitoring.googleapis.com/v1
+kind: PodMonitoring
+metadata:
+  name: {{ .Values.name }}-worker-temporal
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}-worker
+  endpoints:
+    - port: 9464
+      path: '/metrics'
+      scheme: http
+      interval: 30s
+{{- end -}}
+{{- end -}}
+{{- end -}}

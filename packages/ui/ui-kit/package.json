@@ -1,0 +1,64 @@
+{
+  "name": "@justtellme/ui-kit",
+  "version": "0.0.0",
+  "description": "Just Tell Me UI component library and design system",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "production": "./dist/index.js",
+      "default": "./src/index.ts"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "types": "./src/index.ts",
+  "author": "Developers <developers@justtellme.com>",
+  "license": "UNLICENSED",
+  "packageManager": "yarn@3.8.7",
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "build": "tsup && tailwindcss -i src/styles/globals.css -o dist/styles.css --minify",
+    "clean": "yarn dlx rimraf ./dist",
+    "lint": "eslint .",
+    "postinstall": "cpconfig",
+    "test": "vitest",
+    "dev:css": "tailwindcss -i src/styles/globals.css -o dist/styles.css --watch"
+  },
+  "keywords": [
+    "typescript",
+    "justtellme"
+  ],
+  "config": {
+    "cpconfig": "@justtellme/cpconfig"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.5.0"
+  },
+  "devDependencies": {
+    "@justtellme/cpconfig": "workspace:^",
+    "@tailwindcss/cli": "^4.2.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "cpconfig": "^1.4.4",
+    "eslint": "^10.0.3",
+    "prettier": "^3.8.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwindcss": "^4.2.1",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  }
+}

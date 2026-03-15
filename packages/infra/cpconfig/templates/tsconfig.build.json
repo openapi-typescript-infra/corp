@@ -1,0 +1,27 @@
+{
+  "//": "Managed by cpconfig",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "noEmitOnError": false,
+    "outDir": "dist/",
+    "incremental": false,
+    "rootDir": "./src",
+    "rewriteRelativeImportExtensions": true,
+    "paths": {
+      "#src/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "src",
+  ],
+  "exclude": [
+    "src/**/*.spec.*",
+    "src/**/*.test.*",
+    "src/**/*.stories.*",
+    "src/**/*.chromatic.*",
+    "src/**/*.fixtures.*",
+    "src/codegen",
+    "src/.storybook",
+  ]
+}

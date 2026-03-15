@@ -1,0 +1,16 @@
+{
+  "$schema": "tsschema://src/types.ts#HSWebConfigurationSchema",
+  "USE_REGISTRY": false,
+  "routing": {
+    "openapi": false
+  },
+  "session": {
+    "cookieDomain": "",
+    "secureCookie": false
+  },
+  "csrf": {
+    "autoAssignCookie": true,
+    "action": "block",
+    "headerAndCookieName": "testcsrf"
+  }
+}

@@ -1,0 +1,6 @@
+name: tags
+description: Get individual tags
+in: query
+required: false
+schema:
+  type: boolean

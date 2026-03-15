@@ -1,0 +1,8 @@
+name: relation_types
+description: When fetching related individuals, you can specify the types of relations to include
+in: query
+required: false
+schema:
+  type: array
+  items:
+    $ref: ../enums/RelationType.yaml

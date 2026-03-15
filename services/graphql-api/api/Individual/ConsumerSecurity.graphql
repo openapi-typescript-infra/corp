@@ -1,0 +1,77 @@
+"The status of an identifier"
+enum IdentifierStatus {
+  "No identifier is set"
+  NONE
+  "The identifier is active"
+  UNVERIFIED
+  "The identifier is verified"
+  VERIFIED
+}
+
+"Information about the security settings on an account"
+type ConsumerSecurity {
+  "The credential types available for THIS account"
+  credentialTypes: [CredentialType!]!
+  "The status of the email identifier used for authentication"
+  emailStatus: IdentifierStatus!
+  "The status of the phone identifier used for authentication"
+  phoneStatus: IdentifierStatus!
+  "A list of active sessions for this consumer account"
+  sessions: [ConsumerSession!]
+}
+
+"An authenticated session for a consumer account"
+type ConsumerSession {
+  "The session id"
+  id: ID!
+  "The date and time the session was created"
+  createdAt: DateTime!
+  "The date and time the session will expire"
+  expiresAt: DateTime!
+  "The user agent of the session"
+  userAgent: UserAgent
+  "The IP address at which the session was created"
+  ipAddress: String
+  "The factors used to authenticate the session"
+  factors: [ConsumerFactor!]
+}
+
+"A method of proving identity and account ownership to the system"
+enum ConsumerFactorType {
+  "A password was used to authenticate the session"
+  PASSWORD
+  "A code was sent to an email address to authenticate the session"
+  EMAIL_CODE
+  "A code was sent to a phone number to authenticate the session"
+  SMS_CODE
+  "A passkey was used to authenticate the session"
+  PASSKEY
+  "A Google account was used to authenticate the session"
+  GOOGLE
+  "An Apple account was used to authenticate the session"
+  APPLE
+}
+
+"A factor used to authenticate a session"
+type ConsumerFactor {
+  "The type of factor used to authenticate the session"
+  type: ConsumerFactorType!
+}
+
+"Information about the user agent of a session"
+type UserAgent {
+  "The full user agent string"
+  id: ID!
+  "The browser name"
+  browser: String
+  "The browser version"
+  version: String
+  "The model of the device"
+  deviceModel: String
+  "The type of device"
+  deviceType: String
+  "The name of the operating system"
+  osName: String
+  "The version of the operating system"
+  osVersion: String
+}

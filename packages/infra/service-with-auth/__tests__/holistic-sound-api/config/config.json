@@ -1,0 +1,7 @@
+{
+  "$schema": "tsschema://src/config.ts#HSAuthConfigurationSchema",
+  "USE_REGISTRY": false,
+  "routing": {
+    "openapi": false
+  }
+}

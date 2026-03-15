@@ -1,0 +1,6 @@
+base-service:
+  name: payment-internal
+  team: platform
+
+  database:
+    gcpId: main

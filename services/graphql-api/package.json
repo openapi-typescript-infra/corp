@@ -1,0 +1,53 @@
+{
+  "name": "@justtellme/graphql-api",
+  "private": true,
+  "version": "0.0.0",
+  "description": "The API to end all APIs",
+  "main": "./src/index.ts",
+  "exports": "./src/index.ts",
+  "type": "module",
+  "types": "src/index.ts",
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "scripts": {
+    "test": "vitest",
+    "build": "make",
+    "watch": "nodemon",
+    "clean": "make clean",
+    "start": "start-service",
+    "repl": "start-service --repl",
+    "lint": "eslint .",
+    "postinstall": "cpconfig"
+  },
+  "config": {
+    "cpconfig": "@justtellme/cpconfig"
+  },
+  "engines": {
+    "node": ">24.0.0"
+  },
+  "author": "Max Metral <max@pyralis.com>",
+  "license": "UNLICENSED",
+  "keywords": [
+    "typescript",
+    "openapi",
+    "express"
+  ],
+  "devDependencies": {
+    "@graphql-codegen/cli": "^6.2.1",
+    "@openapi-typescript-infra/service-tester": "^7.1.2",
+    "@typescript/native-preview": "^7.0.0-dev.20260314.1",
+    "cpconfig": "^1.4.4",
+    "eslint": "^10.0.3",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  },
+  "dependencies": {
+    "@justtellme/cpconfig": "workspace:^",
+    "@justtellme/graphql-service": "workspace:^",
+    "@openapi-typescript-infra/service": "^6.11.0",
+    "dataloader": "^2.2.3",
+    "redis": "^5.11.0"
+  }
+}

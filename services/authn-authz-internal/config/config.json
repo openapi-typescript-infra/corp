@@ -1,0 +1,19 @@
+{
+  "$schema": "tsschema://src/types/config.ts#AuthnAuthzInternalConfigSchema",
+  "session": {
+    "secret": "gsm:session_secret",
+    "cookieName": "hssession",
+    "cookieDomain": ".dev.justtellme.com",
+    "maxAge": 604800000,
+  },
+  "auth": {
+    "cookie": "s_jwt_dev",
+    "stytch": {
+      "project_id": "project-test-ee450dab-6841-4a48-8d7e-8654cbd12c1b",
+      "secret": "gsm:stytch_secret"
+    }
+  },
+  "routing": {
+    "cookieParser": true
+  }
+}

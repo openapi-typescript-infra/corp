@@ -1,0 +1,26 @@
+{
+  "name": "@justtellme/api",
+  "version": "0.0.0",
+  "description": "Just Tell Me API",
+  "type": "module",
+  "author": "Just Tell Me Developers <developers@justtellme.com>",
+  "license": "UNLICENSED",
+  "exports": {
+    "./specs/*": "./dist/specs/*.json",
+    "./authn-authz-internal": "./dist/AuthnAuthzInternal.ts",
+    "./identity-internal": "./dist/IdentityInternal.ts"
+  },
+  "config": {
+    "cpconfig": "@justtellme/cpconfig"
+  },
+  "scripts": {
+    "build": "make",
+    "clean": "make clean",
+    "postinstall": "cpconfig",
+    "typecheck": "tsgo --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@justtellme/cpconfig": "workspace:^",
+    "cpconfig": "^1.4.4"
+  }
+}

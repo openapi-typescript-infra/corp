@@ -1,0 +1,16 @@
+# Keep these in sync manually with the db just to make
+# referencing them safer internally. Note that individual-uuid
+# is a virtual namespace to allow a single endpoint to serve
+# direct and indirect lookup
+type: string
+enum:
+  - individual-uuid
+  - consumer-apple
+  - consumer-email
+  - consumer-google
+  - consumer-phone
+  - consumer-uuid
+  - individual-name
+  - phone
+  - stripe-customer
+  - stytch

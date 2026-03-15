@@ -1,0 +1,14 @@
+type: object
+required:
+  - identifier
+  - namespace
+properties:
+  identifier:
+    type: string
+    description: |
+      The identifier to be used (such as email address or phone number). Individual names should be provided as
+      last|first|middle. Generally we wouldn't expect pipes in names, but if for some reason you
+      need that, use || to escape the pipe.
+  namespace:
+    description: The namespace in which this identifier exists (e.g. email)
+    $ref: ../enums/IdentifierNamespaces.yaml

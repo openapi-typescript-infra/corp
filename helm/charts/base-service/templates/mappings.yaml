@@ -1,0 +1,54 @@
+{{- if gt (len .Values.mappings) 0 -}}
+{{- $root := . -}}
+{{- range $key, $value := .Values.mappings -}}
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  name: {{ $root.Values.name }}-{{ $key }}-mapping
+  namespace: {{ .Release.Namespace }}
+spec:
+  prefix: {{ $value.prefix }}
+  service: {{ $root.Values.name -}}{{- if hasKey $value "port" -}}:{{ $value.port }}{{- end }}
+  {{ if hasKey $value "host" }}host: {{ $value.host }}{{- end }}
+  ambassador_id:
+    {{- range $value.ambassadors }}
+    - ambassador-{{ . }}
+    {{- end }}
+  rewrite: {{ default "" $value.rewrite | quote }}
+  {{- if hasKey $value "retry" }}
+  retry_policy:
+    num_retries: {{ default 2 $value.retry.attempts }}
+    retry_on: {{ default "5xx" $value.retry.on }}
+  {{- end }}
+  {{- if $value.websockets }}
+  allow_upgrade:
+  - websocket
+  {{- end }}
+  {{- if hasKey $value "headers" }}
+  add_request_headers:
+    {{- range $key, $value := $value.headers }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+  {{- if hasKey $value "timeout" }}
+  timeout_ms: {{ $value.timeout }}
+  {{- end }}
+  {{- if hasKey $value "idle_timeout" }}
+  idle_timeout_ms: {{ $value.idle_timeout }}
+  {{- end }}
+  {{- if hasKey $value "prefix_regex" }}
+  prefix_regex: {{ $value.prefix_regex }}
+  {{- end }}
+  {{- if hasKey $value "status" }}
+  error_response_overrides:
+  {{- range $code, $spec := $value.status }}
+  - on_status_code: {{ $code }}
+    body:
+      content_type: {{ default "text/html" $spec.mimeType }}
+      text_format_source:
+        filename: {{ ternary (printf "/ambassador/errorpages/%s.html" $code) $spec.file (empty $spec.file) }}
+  {{- end -}}
+  {{- end }}
+---
+{{ end -}}
+{{- end -}}

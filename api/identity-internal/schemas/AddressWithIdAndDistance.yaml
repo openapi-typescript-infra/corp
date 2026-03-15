@@ -1,0 +1,7 @@
+allOf:
+  - $ref: ./AddressWithId.yaml
+  - type: object
+    properties:
+      distance:
+        type: number
+        description: The distance from the search point to the address in meters

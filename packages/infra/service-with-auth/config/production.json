@@ -1,0 +1,23 @@
+{
+  "$schema": "tsschema://src/config.ts#HSConfigurationSchema",
+  "session": {
+    "secret": "env:SESSION_SECRET",
+    "cookieName": "hssession",
+    "cookieDomain": ".justtellme.com",
+    "maxAge": 604800000
+  },
+  "auth": {
+    "cookie": "s_jwt",
+    "stytch": {
+      "consumer": {
+        "project_id": "project-live-3e555804-1642-4fda-8928-7a43b6dfe455"
+      },
+      "admin": {
+        "project_id": "project-live-f8a91106-fc68-4546-8e47-8d27a7876152"
+      },
+      "partner": {
+        "project_id": "project-live-f7df0302-900d-4bed-bd77-68786503e61a"
+      }
+    }
+  }
+}

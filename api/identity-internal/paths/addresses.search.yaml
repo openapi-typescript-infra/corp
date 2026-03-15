@@ -1,0 +1,48 @@
+get:
+  operationId: searchAddresses
+  parameters:
+    - name: lat
+      in: query
+      required: true
+      schema:
+        type: number
+    - name: lon
+      in: query
+      required: true
+      schema:
+        type: number
+    - name: radius
+      in: query
+      required: false
+      schema:
+        type: number
+    - name: scope
+      in: query
+      required: true
+      schema:
+        $ref: ../schemas/AddressScope.yaml
+    - name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+    - name: page_size
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 50
+        maximum: 100
+        minimum: 1
+  responses:
+    "200":
+      description: Addresses found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              addresses:
+                type: array
+                items:
+                  $ref: ../schemas/AddressWithIdAndDistance.yaml

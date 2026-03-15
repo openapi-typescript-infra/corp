@@ -1,0 +1,9 @@
+allOf:
+  - $ref: ./ScopedAddress.yaml
+  - type: object
+    required:
+      - address_id
+    properties:
+      address_id:
+        type: string
+        description: The unique identifier for the address

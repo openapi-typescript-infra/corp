@@ -1,0 +1,19 @@
+openapi: 3.0.1
+info:
+  title: consumer-web
+  description: The web site
+  license:
+    name: MIT
+  version: 1.0.0
+servers:
+- url: /
+paths:
+  /ping:
+    get:
+      responses:
+        '204':
+          description: Ping complete
+          content:
+              application/json:
+                schema:
+                  type: boolean

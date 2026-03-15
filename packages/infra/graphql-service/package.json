@@ -1,0 +1,90 @@
+{
+  "name": "@justtellme/graphql-service",
+  "version": "0.0.0",
+  "description": "Base module for Just Tell Me Typescript GraphQL server applications using Apollo",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "type": "module",
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "exports": {
+    ".": {
+      "production": "./dist/index.js",
+      "default": "./src/index.ts"
+    },
+    "./sdl": {
+      "production": "./dist/gql-plugin/sdl.js",
+      "default": "./src/gql-plugin/sdl.ts"
+    },
+    "./typescript": {
+      "production": "./dist/gql-plugin/typescript.js",
+      "default": "./src/gql-plugin/typescript.ts"
+    },
+    "./Makefile": "./Makefile"
+  },
+  "scripts": {
+    "test": "vitest",
+    "build": "tsgo -p tsconfig.build.json",
+    "clean": "yarn dlx rimraf ./build",
+    "lint": "eslint src",
+    "postinstall": "cpconfig",
+    "typecheck": "tsgo --noEmit -p tsconfig.json",
+    "start": "yarn start-service --rootDirectory __tests__/hs-gql --codepath src --packageDir __tests__/hs-gql"
+  },
+  "engines": {
+    "node": ">24.0.0"
+  },
+  "author": "Just Tell Me Developers <developers@justtellme.com>",
+  "config": {
+    "cpconfig": "@justtellme/cpconfig"
+  },
+  "keywords": [
+    "typescript",
+    "justtellme"
+  ],
+  "devDependencies": {
+    "@graphql-codegen/cli": "^6.2.1",
+    "@graphql-codegen/typescript-resolvers": "^5.1.7",
+    "@justtellme/cpconfig": "workspace:^",
+    "@openapi-typescript-infra/service-tester": "^7.1.2",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/exec": "^7.1.0",
+    "@semantic-release/github": "^12.0.6",
+    "@semantic-release/release-notes-generator": "^14.1.0",
+    "@types/cors": "^2.8.19",
+    "@types/express-session": "^1.18.2",
+    "@types/lodash-es": "^4.17.12",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@typescript/native-preview": "^7.0.0-dev.20260314.1",
+    "cpconfig": "^1.4.4",
+    "eslint": "^10.0.3",
+    "graphql-tag": "^2.12.6",
+    "pino-pretty": "^13.1.3",
+    "prettier": "^3.8.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  },
+  "dependencies": {
+    "@apollo/server": "^5.4.0",
+    "@as-integrations/express5": "^1.1.2",
+    "@graphql-tools/utils": "^11.0.0",
+    "@justtellme/service-with-auth": "workspace:^",
+    "@justtellme/web-auth": "workspace:^",
+    "@openapi-typescript-infra/service": "^6.11.0",
+    "graphql": "^16.13.1",
+    "graphql-query-complexity": "^1.1.0",
+    "graphql-scalars": "^1.25.0",
+    "graphql-ws": "^6.0.7",
+    "lodash-es": "^4.17.23",
+    "ws": "^8.19.0"
+  },
+  "resolutions": {
+    "express": "5.1.0",
+    "graphql@^16.12.0": "patch:graphql@npm%3A16.12.0#./.yarn/patches/graphql-npm-16.12.0-6b85a803c3.patch"
+  },
+  "packageManager": "yarn@3.8.1"
+}

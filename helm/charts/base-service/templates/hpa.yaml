@@ -1,0 +1,65 @@
+{{- if .Values.autoscale.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Values.name }}-hpa
+spec:
+  maxReplicas: {{ .Values.autoscale.maxReplicas }}
+  minReplicas: {{ .Values.autoscale.minReplicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ .Values.name }}
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: {{ .Values.autoscale.down.stabilizationWindowSeconds }}
+      policies:
+        - type: Pods
+          value: {{ .Values.autoscale.down.policies.pods.value }}
+          periodSeconds: {{ .Values.autoscale.down.policies.pods.periodSeconds }}
+        - type: Percent
+          value: {{ .Values.autoscale.down.policies.percent.value }}
+          periodSeconds: {{ .Values.autoscale.down.policies.percent.periodSeconds }}
+      selectPolicy: {{ .Values.autoscale.down.policies.selectPolicy }}
+    scaleUp:
+      stabilizationWindowSeconds: {{ .Values.autoscale.up.stabilizationWindowSeconds }}
+      policies:
+        - type: Pods
+          value: {{ .Values.autoscale.up.policies.pods.value }}
+          periodSeconds: {{ .Values.autoscale.up.policies.pods.periodSeconds }}
+        - type: Percent
+          value: {{ .Values.autoscale.up.policies.percent.value }}
+          periodSeconds: {{ .Values.autoscale.up.policies.percent.periodSeconds }}
+      selectPolicy: {{ .Values.autoscale.up.policies.selectPolicy }}
+  metrics:
+    - type: ContainerResource
+      containerResource:
+        name: cpu
+        container: {{ .Values.name }}
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.autoscale.targetCPUUtilizationPercentage }}
+    - type: ContainerResource
+      containerResource:
+        name: memory
+        container: {{ .Values.name }}
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.autoscale.targetMemoryUtilizationPercentage }}
+    {{- if .Values.autoscale.additionalContainerEnabled }}
+    - type: ContainerResource
+      containerResource:
+        name: cpu
+        container: {{ .Values.autoscale.additionalContainerName }}
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.autoscale.additionalContainerTargetCPUUtilizationPercentage }}
+    - type: ContainerResource
+      containerResource:
+        name: memory
+        container: {{ .Values.autoscale.additionalContainerName }}
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.autoscale.additionalContainerTargetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

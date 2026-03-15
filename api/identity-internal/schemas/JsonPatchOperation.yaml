@@ -1,0 +1,45 @@
+type: object
+required:
+  - op
+  - path
+properties:
+  op:
+    description: The operation to be performed
+    type: string
+    enum:
+      - add
+      - remove
+      - replace
+      - copy
+      - move
+      - test
+      - inc
+      - clear
+      - merge
+      - push
+  path:
+    description: The JsonPointer path to the value to be modified
+    type: string
+  from:
+    description: Some operations require a from argument, such as move. This is a JSONPointer value.
+    type: string
+  value:
+    description: |
+      The value to be added or replaced, if necessary for the operation.
+      Note that you can only fill out one of the properties. To keep the
+      generated code cross-platform and simple, we don't use discriminated union
+      types as they are picky with validation libraries and such. An error
+      will be thrown if you fill out more than one of these properties.
+    properties:
+      text:
+        type: string
+      number:
+        type: number
+      array:
+        type: array
+        items: {}
+      object:
+        type: object
+        additionalProperties: true
+      boolean:
+        type: boolean

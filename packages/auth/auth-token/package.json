@@ -1,0 +1,49 @@
+{
+  "name": "@justtellme/auth-token",
+  "version": "0.0.0",
+  "description": "Authentication token management functions for Just Tell Me",
+  "exports": {
+    ".": {
+      "production": "./dist/index.js",
+      "default": "./src/index.ts"
+    }
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "type": "module",
+  "author": "Developers <developers@justtellme.com>",
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "lint": "eslint .",
+    "postinstall": "cpconfig",
+    "test": "vitest",
+    "typecheck": "tsgo --noEmit -p tsconfig.json"
+  },
+  "keywords": [
+    "typescript",
+    "justtellme"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "src"
+  ],
+  "config": {
+    "cpconfig": "@justtellme/cpconfig"
+  },
+  "dependencies": {
+    "@justtellme/external-id": "workspace:^",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "@justtellme/cpconfig": "workspace:^",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@typescript/native-preview": "^7.0.0-dev.20260314.1",
+    "cpconfig": "^1.4.4",
+    "eslint": "^10.0.3",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  }
+}

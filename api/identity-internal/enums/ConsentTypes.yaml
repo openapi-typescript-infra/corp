@@ -1,0 +1,7 @@
+# Keep these in sync manually with the db just to make
+# referencing them safer internally.
+type: string
+enum:
+  - marketing
+  - privacy-policy
+  - terms-of-service

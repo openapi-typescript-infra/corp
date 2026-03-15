@@ -1,0 +1,54 @@
+parameters:
+  - name: postal_code
+    in: path
+    required: true
+    schema:
+      type: string
+  - name: country
+    in: path
+    required: true
+    schema:
+      $ref: ../schemas/SupportedCountry.yaml
+get:
+  operationId: getPostalCode
+  description: Get postal code information for a given postal code
+  responses:
+    "200":
+      description: Postal code found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              locations:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - city
+                    - state
+                    - geolocation
+                  properties:
+                    city:
+                      type: string
+                    state:
+                      description: The state or province (two letter state code in US)
+                      type: string
+                    geolocation:
+                      type: object
+                      required:
+                        - latitude
+                        - longitude
+                      properties:
+                        latitude:
+                          type: number
+                          format: float
+                        longitude:
+                          type: number
+                          format: float
+    "404":
+      description: Postal code not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../common/Error.yaml

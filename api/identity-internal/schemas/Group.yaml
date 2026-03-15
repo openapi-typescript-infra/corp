@@ -1,0 +1,13 @@
+type: object
+required:
+  - name
+  - group_type
+properties:
+  name:
+    type: array
+    items:
+      type: string
+  group_type:
+    type: string
+  display_name:
+    type: string

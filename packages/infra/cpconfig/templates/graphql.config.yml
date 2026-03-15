@@ -1,0 +1,6 @@
+# Managed by cpconfig
+# This exists to get autocomplete/intellisense working in the IDE
+projects:
+  default:
+    schema: https://dev.justtellme.com/graphql
+    documents: ./common/services/src/gql/**/*.graphql

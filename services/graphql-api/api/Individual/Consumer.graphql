@@ -1,0 +1,48 @@
+"An external participant in the platform"
+type Consumer implements BaseIndividual {
+  "Security settings for the consumer"
+  security: ConsumerSecurity!
+}
+
+"Information required to create a new consumer account"
+input ConsumerCreateInput {
+  """
+  The version of the terms of service that the consumer has accepted
+  as a condition of creating an account.
+  """
+  acceptedTerms: String
+  """
+  The identifier of the consumer to create - typically an email address.
+  If the token already contains this identifier, it does not need to be
+  passed twice.
+  """
+  identifier: String
+  "If a password will be used for identification, specify it here."
+  password: String
+  """
+  If a session was established externally or previously,
+  include the token here to attach a new consumer to it.
+  This is most common for social auth.
+  """
+  token: String
+  """
+  If an additional token is provided, it can be used to prefill data or validate other information
+  """
+  providerToken: String
+}
+
+"Input to request or cancel the deletion of a consumer account"
+input ConsumerDeleteInput {
+  "True to delete, false to cancel any outstanding deletion request"
+  delete: Boolean!
+}
+
+"Information about account deletion status"
+type ConsumerDeletionStatus {
+  "Whether the account can be deleted"
+  canDelete: Boolean!
+  "The time at which the request to delete the account was initiated"
+  requestedAt: DateTime
+  "The time at which the request to delete will be completed unless cancelled before hand"
+  deletionAt: DateTime
+}

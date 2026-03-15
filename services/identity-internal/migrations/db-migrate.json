@@ -1,0 +1,19 @@
+{
+  "defaultEnv": "development",
+  "development": {
+    "driver": "pg",
+    "user": "dbowner",
+    "password": "onlyindev",
+    "host": "localhost",
+    "database": "identity",
+    "port": { "ENV": "PGPORT" }
+  },
+  "production": {
+    "driver": "pg",
+    "user": "identity-owner",
+    "password": { "ENV": "PGPASSWORD" },
+    "host": "localhost",
+    "database": "identity"
+  },
+  "sql-file": true
+}
