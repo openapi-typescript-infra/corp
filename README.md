@@ -2,6 +2,8 @@
 
 This repo embodies our current set of best practices for building modern digital companies. It is in many ways intended to be a good template to get AI on the right track in how it builds the real application of the company. The fictional company here is called JustTellMe (abbreviated JTM in certain contexts). To get started for your company, tell a coding agent to change JustTellMe to your company name, and the jtm abbreviation to an abbreviation or single-word company name as necessary. For example, if your company name was Acme Widgets, you would likely run the following replacements:
 
+| Current Value | Updated Value |
+| ------------ | ------------ |
 | Just Tell Me | Acme Widgets |
 | justtellme | acmewidgets |
 | JTM | AW |
