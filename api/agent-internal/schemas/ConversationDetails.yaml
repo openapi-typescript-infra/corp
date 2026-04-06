@@ -1,0 +1,32 @@
+type: object
+required:
+  - conversation_id
+  - status
+  - turns
+properties:
+  conversation_id:
+    type: string
+  status:
+    type: string
+    enum:
+      - active
+      - archived
+      - deleted
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time
+  system_prompt:
+    type: string
+  model:
+    type: string
+  turns:
+    type: array
+    items:
+      $ref: Turn.yaml
+  starting_tools:
+    type: array
+    items:
+      type: string

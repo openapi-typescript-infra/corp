@@ -40,22 +40,22 @@
   ],
   "devDependencies": {
     "@openapi-typescript-infra/service-tester": "^7.1.2",
-    "@types/node": "^25.5.0",
-    "@typescript-eslint/eslint-plugin": "^8.57.0",
-    "@typescript-eslint/parser": "^8.57.0",
-    "@typescript/native-preview": "^7.0.0-dev.20260314.1",
-    "eslint": "^10.0.3",
+    "@types/node": "^25.5.2",
+    "@typescript-eslint/eslint-plugin": "^8.58.0",
+    "@typescript-eslint/parser": "^8.58.0",
+    "@typescript/native-preview": "^7.0.0-dev.20260404.1",
+    "eslint": "^10.2.0",
     "prettier": "^3.8.1",
     "run-pg-sql": "^1.2.0",
-    "typescript": "^5.9.3",
-    "vitest": "^4.1.0"
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
   },
   "dependencies": {
     "@google-cloud/secret-manager": "^6.1.1",
     "@justtellme/api": "workspace:^",
     "@justtellme/cpconfig": "workspace:^",
-    "@openapi-typescript-infra/service": "^6.11.0",
-    "cpconfig": "^1.4.4",
+    "@openapi-typescript-infra/service": "^6.13.1",
+    "cpconfig": "^1.5.0",
     "fetch-to-curl-ts": "^1.0.2",
     "openapi-fetch": "0.17.0",
     "tsc-alias": "^1.8.16"

@@ -1,0 +1,4 @@
+oneOf:
+  - $ref: TurnTextPart.yaml
+  - $ref: TurnImagePart.yaml
+  - $ref: TurnFilePart.yaml

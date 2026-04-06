@@ -1,0 +1,22 @@
+type: object
+required:
+  - id
+  - type
+  - function
+properties:
+  id:
+    type: string
+  type:
+    type: string
+    enum:
+      - function
+  function:
+    type: object
+    required:
+      - name
+      - arguments
+    properties:
+      name:
+        type: string
+      arguments:
+        type: string

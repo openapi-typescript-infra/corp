@@ -27,12 +27,11 @@ jobs:
 
       - name: 🐘 Start CI Postgres
         run: |
-          docker build -t ci-postgres -f docker/dev-postgres.Dockerfile docker/
           docker run -d --name ci-postgres-${{ github.run_id }} \
             -e POSTGRES_USER=postgres \
             -e POSTGRES_PASSWORD=postgres \
             -p 25432:5432 \
-            ci-postgres
+            ghcr.io/openapi-typescript-infra/pg-postgis-plv8
           # Wait for Postgres to be ready
           for i in $(seq 1 30); do
             if pg_isready -h localhost -p 25432 -U postgres 2>/dev/null; then

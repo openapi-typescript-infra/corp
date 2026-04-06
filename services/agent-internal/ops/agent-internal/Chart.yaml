@@ -1,0 +1,12 @@
+apiVersion: v2
+name: agent-internal
+description: AI agent harness using Temporal
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+dependencies:
+  - name: service
+    version: ">=0.0.0"
+    repository: "oci://us-docker.pkg.dev/justtellme/helm"
+    condition: service.enabled
+    alias: service

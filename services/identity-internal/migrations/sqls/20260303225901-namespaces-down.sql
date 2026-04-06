@@ -1,1 +1,1 @@
-/* Replace with your SQL commands */
+/* Content consolidated into initial migration */

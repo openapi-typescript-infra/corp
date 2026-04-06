@@ -1,0 +1,15 @@
+type: object
+required:
+  - type
+  - image
+properties:
+  type:
+    type: string
+    enum:
+      - image
+  image:
+    type: string
+    format: uri
+    description: URL of the image
+  mimeType:
+    type: string

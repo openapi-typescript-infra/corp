@@ -3,15 +3,12 @@ export PGPASSWORD ?= postgres
 export PGHOST ?= localhost
 export PGPORT ?= 15432
 
-.PHONY: ensure-dev-db dev-postgres-create dev-postgres-build check
+.PHONY: ensure-dev-db dev-postgres-create check
 
-dev-postgres-build:
-	docker build -t hs-dev-postgres -f docker/dev-postgres.Dockerfile docker
-
-dev-postgres-create: dev-postgres-build
+dev-postgres-create:
 	docker run -d --name hspg --env=POSTGRES_PASSWORD=postgres \
 		--health-cmd "pg_isready -U postgres" --health-interval 10s --health-timeout 5s --health-retries 5 \
-		-p 15432:5432 hs-dev-postgres
+		-p 15432:5432 ghcr.io/openapi-typescript-infra/pg-postgis-plv8
 	@printf "Waiting for Postgres container.";
 	@while [ $$(docker inspect --format='{{.State.Health.Status}}' hspg) != "healthy" ]; do \
 		sleep 2; \

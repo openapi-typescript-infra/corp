@@ -1,0 +1,14 @@
+type: object
+required:
+  - client
+properties:
+  client:
+    $ref: ClientInfo.yaml
+  system_prompt:
+    type: string
+  model:
+    type: string
+  starting_tools:
+    type: array
+    items:
+      type: string

@@ -1,0 +1,35 @@
+type: object
+properties:
+  model:
+    type: string
+    description: The model used for this turn
+  provider:
+    type: string
+    description: The provider used for this turn
+  input_tokens:
+    type: integer
+    description: The number of tokens in the input
+  output_tokens:
+    type: integer
+    description: The number of tokens in the output
+  cache_read_tokens:
+    type: integer
+    description: The number of tokens read from the cache
+  cache_write_tokens:
+    type: integer
+    description: The number of tokens written to the cache
+  reasoning_tokens:
+    type: integer
+    description: The number of tokens used for reasoning
+  first_token_ms:
+    type: integer
+    description: The time in milliseconds to generate the first token
+  total_ms:
+    type: integer
+    description: The total time in milliseconds to generate the turn
+  cost_micros:
+    type: integer
+    description: The estimated cost of the turn in microdollars
+  finish_reason:
+    type: string
+    description: The reason the turn finished

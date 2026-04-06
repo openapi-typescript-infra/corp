@@ -1,0 +1,53 @@
+{
+  "name": "@justtellme/rest-api",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Public REST API",
+  "main": "./src/index.ts",
+  "exports": "./src/index.ts",
+  "type": "module",
+  "types": "src/index.ts",
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "scripts": {
+    "test": "vitest",
+    "build": "make",
+    "watch": "nodemon",
+    "clean": "make clean",
+    "start": "start-service",
+    "repl": "start-service --repl",
+    "lint": "eslint .",
+    "postinstall": "cpconfig"
+  },
+  "config": {
+    "cpconfig": "@justtellme/cpconfig"
+  },
+  "engines": {
+    "node": ">24.0.0"
+  },
+  "author": "Max Metral <max@pyralis.com>",
+  "license": "UNLICENSED",
+  "keywords": [
+    "typescript",
+    "openapi",
+    "express"
+  ],
+  "devDependencies": {
+    "@openapi-typescript-infra/service-tester": "^7.1.2",
+    "@typescript/native-preview": "^7.0.0-dev.20260404.1",
+    "cpconfig": "^1.5.0",
+    "eslint": "^10.2.0",
+    "prettier": "^3.8.1",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
+  },
+  "dependencies": {
+    "@justtellme/cpconfig": "workspace:^",
+    "@justtellme/service-with-auth": "workspace:^",
+    "@openapi-typescript-infra/service": "^6.13.1",
+    "@temporalio/client": "^1.15.0",
+    "kysely": "^0.28.15",
+    "pg": "^8.20.0"
+  }
+}

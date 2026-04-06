@@ -1,0 +1,6 @@
+type: object
+properties:
+  system_prompt:
+    type: string
+  model:
+    type: string

@@ -33,12 +33,12 @@
   "devDependencies": {
     "@justtellme/cpconfig": "workspace:^",
     "@types/jwt-encode": "^1.0.3",
-    "@types/node": "^25.5.0",
-    "cpconfig": "^1.4.4",
-    "eslint": "^10.0.3",
+    "@types/node": "^25.5.2",
+    "cpconfig": "^1.5.0",
+    "eslint": "^10.2.0",
     "prettier": "^3.8.1",
-    "typescript": "^5.9.3",
-    "vitest": "^4.1.0"
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
   },
   "peerDependencies": {
     "vitest": ">=1.3.1"
@@ -49,7 +49,7 @@
     "@openapi-typescript-infra/service-tester": "^7.1.2",
     "@types/express-session": "^1.18.2",
     "jwt-encode": "^1.0.1",
-    "msw": "^2.12.10",
+    "msw": "^2.12.14",
     "node-mocks-http": "^1.17.2"
   }
 }

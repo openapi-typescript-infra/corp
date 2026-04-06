@@ -1,0 +1,26 @@
+openapi: 3.0.1
+info:
+  title: rest-api
+  description: Public REST API
+  license:
+    name: MIT
+  version: 1.0.0
+servers:
+  - url: http://rest-api.default.svc.cluster.local
+paths:
+  /customer-support:
+    post:
+      operationId: customerSupport
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../agent-internal/schemas/CustomerSupportConversationRequest.yaml
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: ../agent-internal/schemas/ConversationDetails.yaml

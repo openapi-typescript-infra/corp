@@ -41,11 +41,11 @@
   ],
   "devDependencies": {
     "@openapi-typescript-infra/service-tester": "^7.1.2",
-    "cpconfig": "^1.4.4",
-    "eslint": "^10.0.3",
+    "cpconfig": "^1.5.0",
+    "eslint": "^10.2.0",
     "prettier": "^3.8.1",
-    "typescript": "^5.9.3",
-    "vitest": "^4.1.0"
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
   },
   "dependencies": {
     "@justtellme/cpconfig": "workspace:^",
@@ -54,10 +54,10 @@
     "@justtellme/ui-kit": "workspace:^",
     "@justtellme/web-service": "workspace:^",
     "@legendapp/state": "^3.0.0-beta.46",
-    "@openapi-typescript-infra/service": "^6.11.0",
-    "@stytch/nextjs": "^22.0.4",
+    "@openapi-typescript-infra/service": "^6.13.1",
+    "@stytch/nextjs": "^22.0.5",
     "next-urql": "^5.0.2",
-    "posthog-js": "^1.360.2",
+    "posthog-js": "^1.364.7",
     "urql": "^5.0.1"
   }
 }

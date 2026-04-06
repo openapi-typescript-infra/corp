@@ -554,5 +554,3 @@ ORDER BY transfer_id;
 END;
 
 $$ LANGUAGE plpgsql;
-
-GRANT "payment-manager" TO "payment-internal";

@@ -1,0 +1,12 @@
+type: object
+required:
+  - name
+  - version
+properties:
+  name:
+    type: string
+  version:
+    type: string
+  agent_id:
+    type: string
+    description: An identifier for the agent that will be used for the conversation. Must be unique within the client.

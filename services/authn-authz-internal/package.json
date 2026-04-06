@@ -35,18 +35,18 @@
   ],
   "devDependencies": {
     "@openapi-typescript-infra/service-tester": "^7.1.2",
-    "@typescript/native-preview": "^7.0.0-dev.20260314.1",
-    "eslint": "^10.0.3",
+    "@typescript/native-preview": "^7.0.0-dev.20260404.1",
+    "eslint": "^10.2.0",
     "prettier": "^3.8.1",
-    "typescript": "^5.9.3",
-    "vitest": "^4.1.0"
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
   },
   "dependencies": {
     "@justtellme/cpconfig": "workspace:^",
     "@justtellme/service": "workspace:^",
     "@justtellme/web-auth": "workspace:^",
-    "@openapi-typescript-infra/service": "^6.11.0",
-    "cpconfig": "^1.4.4",
-    "stytch": "^13.1.0"
+    "@openapi-typescript-infra/service": "^6.13.1",
+    "cpconfig": "^1.5.0",
+    "stytch": "^13.2.3"
   }
 }

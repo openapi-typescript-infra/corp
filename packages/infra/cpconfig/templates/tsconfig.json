@@ -22,7 +22,8 @@
       "ES2023",
       "DOM"
     ],
-    "target": "ES2023",
+    "target": "ES2024",
+    "noUncheckedSideEffectImports": true,
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "allowJs": true,

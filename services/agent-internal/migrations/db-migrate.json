@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "driver": "pg",
+    "user": "agent-internal",
+    "password": "agent-internal-pw",
+    "host": { "ENV": "PGHOST" },
+    "port": { "ENV": "PGPORT" },
+    "database": "agent_internal",
+    "schema": "public"
+  },
+  "ci": {
+    "driver": "pg",
+    "user": "agent-internal",
+    "password": "agent-internal-pw",
+    "host": { "ENV": "PGHOST" },
+    "port": { "ENV": "PGPORT" },
+    "database": "agent_internal",
+    "schema": "public"
+  }
+}

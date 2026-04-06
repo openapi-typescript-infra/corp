@@ -1,0 +1,5 @@
+oneOf:
+  - type: string
+  - type: array
+    items:
+      $ref: TurnMessageContentPart.yaml

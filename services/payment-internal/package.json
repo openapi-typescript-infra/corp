@@ -40,24 +40,24 @@
   ],
   "devDependencies": {
     "@openapi-typescript-infra/service-tester": "^7.1.2",
-    "@typescript/native-preview": "^7.0.0-dev.20260314.1",
-    "cpconfig": "^1.4.4",
-    "eslint": "^10.0.3",
+    "@typescript/native-preview": "^7.0.0-dev.20260404.1",
+    "cpconfig": "^1.5.0",
+    "eslint": "^10.2.0",
     "kysely-codegen": "^0.20.0",
     "prettier": "^3.8.1",
     "run-pg-sql": "^1.2.0",
-    "typescript": "^5.9.3",
-    "vitest": "^4.1.0"
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
   },
   "dependencies": {
     "@justtellme/cpconfig": "workspace:^",
     "@justtellme/external-id": "workspace:^",
     "@justtellme/service": "workspace:^",
-    "@openapi-typescript-infra/service": "^6.11.0",
+    "@openapi-typescript-infra/service": "^6.13.1",
     "date-fns": "^4.1.0",
     "db-migrate": "^0.11.14",
     "db-migrate-pg": "^1.5.2",
-    "kysely": "^0.28.12",
+    "kysely": "^0.28.15",
     "pg": "^8.20.0"
   }
 }

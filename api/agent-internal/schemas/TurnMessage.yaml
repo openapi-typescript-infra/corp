@@ -1,0 +1,16 @@
+type: object
+required:
+  - role
+  - content
+properties:
+  role:
+    type: string
+    enum:
+      - assistant
+      - tool
+  content:
+    $ref: TurnMessageContent.yaml
+  tool_calls:
+    type: array
+    items:
+      $ref: ToolCall.yaml

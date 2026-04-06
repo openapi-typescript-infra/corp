@@ -1,0 +1,21 @@
+type: object
+required:
+  - turn_id
+  - status
+properties:
+  turn_id:
+    type: string
+  status:
+    type: string
+    enum:
+      - pending
+      - streaming
+      - complete
+      - error
+      - tool_call
+  messages:
+    type: array
+    items:
+      $ref: TurnMessage.yaml
+  metadata:
+    $ref: TurnMetadata.yaml

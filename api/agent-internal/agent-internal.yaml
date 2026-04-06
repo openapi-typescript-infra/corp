@@ -1,0 +1,14 @@
+openapi: 3.0.1
+info:
+  title: agent-internal
+  description: AI agent harness using Temporal
+  license:
+    name: MIT
+  version: 1.0.0
+servers:
+  - url: http://agent-internal.default.svc.cluster.local
+paths:
+  /conversations/{conversation_id}:
+    $ref: ./paths/conversations.conversation_id.yaml
+  /conversations/{conversation_id}/turns/{turn_id}:
+    $ref: ./paths/conversations.conversation_id.turns.turn_id.yaml

@@ -10,3 +10,5 @@ BEGIN
    END IF;
 END
 $body$;
+
+GRANT "payment-manager" TO "payment-internal";

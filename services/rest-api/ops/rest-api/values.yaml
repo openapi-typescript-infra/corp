@@ -1,0 +1,6 @@
+service:
+  enabled: true
+  image:
+    tag: latest
+  service:
+    port: 3000

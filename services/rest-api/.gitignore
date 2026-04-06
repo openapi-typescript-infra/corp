@@ -1,0 +1,8 @@
+# Managed by cpconfig
+/.commitlintrc.yaml
+/eslint.config.mts
+/tsconfig.json
+/tsconfig.build.json
+/.prettierrc.yaml
+/vitest.config.ts
+/tsconfig.tsup.json

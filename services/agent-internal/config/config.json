@@ -1,0 +1,8 @@
+{
+  "temporal": {
+    "address": "temporal.default.svc.cluster.local:7233"
+  },
+  "db": {
+    "default": "agent_internal"
+  }
+}

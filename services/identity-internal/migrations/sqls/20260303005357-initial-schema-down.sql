@@ -1,3 +1,8 @@
+DROP FUNCTION IF EXISTS create_address;
+DROP TABLE IF EXISTS address_map;
+DROP TABLE IF EXISTS address_scopes;
+DROP TABLE IF EXISTS addresses;
+DROP EXTENSION IF EXISTS postgis;
 DROP FUNCTION IF EXISTS public.upsert_identifiers (uuid, json);
 DROP TYPE IF EXISTS identifier_detail;
 DROP FUNCTION IF EXISTS public.upsert_identifier (text, text, text, boolean, timestamp without time zone);
@@ -5,7 +10,6 @@ DROP TYPE IF EXISTS upserted_individual;
 DROP FUNCTION IF EXISTS public.update_individual_encrypted_profile (uuid, text, text, integer, text, text, json);
 DROP FUNCTION IF EXISTS public.update_individual_profile (uuid, text, text, integer, json);
 DROP FUNCTION IF EXISTS json_patch (jsonb, json);
-DROP TABLE IF EXISTS sequential_identifiers;
 DROP TABLE IF EXISTS individual_consents;
 DROP TABLE IF EXISTS consent_versions;
 DROP TABLE IF EXISTS consent_types;

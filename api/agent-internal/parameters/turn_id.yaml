@@ -1,0 +1,6 @@
+name: turn_id
+in: path
+required: true
+description: The unique identifier of the turn
+schema:
+  type: string

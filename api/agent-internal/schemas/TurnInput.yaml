@@ -1,0 +1,16 @@
+type: object
+properties:
+  message:
+    $ref: TurnMessageContent.yaml
+  tool_results:
+    type: array
+    items:
+      $ref: ToolResponse.yaml
+  model:
+    type: string
+    description: Override the model for this turn
+  extra_tools:
+    type: array
+    items:
+      type: string
+    description: Additional tools to make available for this turn

@@ -1,0 +1,28 @@
+parameters:
+  - $ref: ../parameters/conversation_id.yaml
+  - $ref: ../parameters/turn_id.yaml
+get:
+  operationId: getTurn
+  parameters:
+    - name: metadata
+      in: query
+      required: false
+      description: If true, include server-side execution metadata on the turn
+      schema:
+        type: boolean
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/Turn.yaml
+    '404':
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string

@@ -1,0 +1,18 @@
+type: object
+required:
+  - type
+  - data
+  - mimeType
+properties:
+  type:
+    type: string
+    enum:
+      - file
+  data:
+    type: string
+    format: byte
+    description: Base64-encoded file content
+  mimeType:
+    type: string
+  filename:
+    type: string

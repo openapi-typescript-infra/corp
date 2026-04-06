@@ -15,5 +15,13 @@ export const ExternalIDType = {
   LedgerTransfer: 'lt',
   // A ledger entry
   LedgerEntry: 'le',
+  // An agent conversation
+  AgentConversation: 'agco',
+  // An agent model
+  AgentModel: 'agmo',
+  // An agent client
+  AgentClient: 'agcl',
+  // An agent conversation turn
+  AgentConversationTurn: 'agct',
 } as const;
 export type ExternalIDType = (typeof ExternalIDType)[keyof typeof ExternalIDType];
