@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
-import { parseArgs, type ParseArgsConfig } from 'node:util';
-
-import { ExternalIDType } from './registry.ts';
+import { type ParseArgsConfig, parseArgs } from 'node:util';
 import { fromBaseShortUuid, fromExternalID, toBareShortUuid, toExternalID } from './codec.ts';
+import { ExternalIDType } from './registry.ts';
 
 const uuidRegex = /^[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}$/i;
 

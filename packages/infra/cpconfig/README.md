@@ -6,8 +6,7 @@ Shared configuration files for Just Tell Me Typescript projects
 - tsconfig.build.json - emits to dist
 - tsconfig.tsup.json - disables incremental compilation
 - .commitlintrc.yaml - force conventional commit format
-- .prettierrc.yaml - stylez for days
-- eslint.config.mts - follow the rules AI
+- biome.jsonc - lint and format rules
 - vitest.config.ts - test framework setup
 - .git/hooks/commit-msg - enforce commitlint rules
 

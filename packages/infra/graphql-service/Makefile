@@ -14,11 +14,11 @@ graphql: $(GENERATED_GRAPHQL_FILE) $(GENERATED_TYPES_FILE)
 
 $(GENERATED_TYPES_FILE): $(SCHEMA) $(TS_GQL_CONFIG)
 	APOLLO_CONTEXT=$(APOLLO_CONTEXT) yarn graphql-codegen --config $(TS_GQL_CONFIG)
-	yarn prettier --write $(GENERATED_TYPES_FILE)
+	yarn biome format --write $(GENERATED_TYPES_FILE)
 
 $(GENERATED_GRAPHQL_FILE): $(SCHEMA) $(SDL_CONFIG)
 	yarn graphql-codegen --config $(SDL_CONFIG)
-	yarn prettier --write $(GENERATED_GRAPHQL_FILE)
+	yarn biome format --write $(GENERATED_GRAPHQL_FILE)
 
 %.graphql:
 	@echo "Detected change in $@"

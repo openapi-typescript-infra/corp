@@ -1,8 +1,7 @@
 import fs from 'node:fs';
-
-import { GoogleAuth, JWT } from 'google-auth-library';
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
 import { getNodeEnv, type ServiceOptions } from '@openapi-typescript-infra/service';
+import { GoogleAuth, JWT } from 'google-auth-library';
 
 export function getGcpProjectId(): string {
   if (getNodeEnv() === 'production') {
@@ -80,7 +79,7 @@ function loadServiceAccount() {
 async function getGcpIdentity(part: string) {
   const sa = loadServiceAccount();
 
-  let client;
+  let client: JWT | Awaited<ReturnType<GoogleAuth['getClient']>>;
 
   if (sa) {
     // NEW recommended path
@@ -107,7 +106,6 @@ async function getGcpIdentity(part: string) {
   const tokenResponse = await client.getAccessToken();
   const token = typeof tokenResponse === 'string' ? tokenResponse : tokenResponse?.token;
   if (!token) {
-    // eslint-disable-next-line no-console
     console.error('No GCP identity token found');
     return null;
   }

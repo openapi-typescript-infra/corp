@@ -1,5 +1,5 @@
-import type { CookieOptions } from 'express-serve-static-core';
 import type { HSAuthConfigurationSchema } from '@justtellme/service-with-auth';
+import type { CookieOptions } from 'express-serve-static-core';
 
 export interface HSWebConfigurationSchema extends HSAuthConfigurationSchema {
   csrf: {

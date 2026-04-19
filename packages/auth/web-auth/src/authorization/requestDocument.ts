@@ -1,7 +1,6 @@
 import type { HSServiceRequest } from '@justtellme/service';
-
-import type { HSServiceWithSessionLocals } from '../types.ts';
 import type { HSPrincipal } from '../authentication/index.ts';
+import type { HSServiceWithSessionLocals } from '../types.ts';
 
 export interface EndUserData<
   SLocals extends HSServiceWithSessionLocals = HSServiceWithSessionLocals,

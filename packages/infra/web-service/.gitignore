@@ -21,10 +21,9 @@ vitest.config.cts
 
 # Managed by cpconfig
 /.commitlintrc.yaml
-/eslint.config.mts
+/biome.jsonc
 /tsconfig.json
 /tsconfig.build.json
-/.prettierrc.yaml
 /vitest.config.ts
 /next.config.js
 /tsconfig.tsup.json

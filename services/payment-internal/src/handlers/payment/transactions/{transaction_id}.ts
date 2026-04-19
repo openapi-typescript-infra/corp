@@ -1,8 +1,7 @@
-import { getUuidFromString, ExternalIDType } from '@justtellme/external-id';
-
-import type { PaymentInternalApi } from '#src/types/service.ts';
+import { ExternalIDType, getUuidFromString } from '@justtellme/external-id';
 import type { LedgerTransfer } from '#src/lib/ledger.ts';
 import { toTransactionResponse } from '#src/lib/serialize.ts';
+import type { PaymentInternalApi } from '#src/types/service.ts';
 
 export const GET: PaymentInternalApi['getTransaction'] = async (req, res) => {
   const uuid = getUuidFromString(req.params.transaction_id, ExternalIDType.Transaction);

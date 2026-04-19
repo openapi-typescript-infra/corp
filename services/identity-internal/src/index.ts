@@ -1,8 +1,8 @@
-import { useHSService } from '@justtellme/service';
-import { createClient } from 'redis';
-import { createTableCache, getPgPool } from '@justtellme/cloud-sql';
-import { Kysely, PostgresDialect } from 'kysely';
 import ApiSpec from '@justtellme/api/specs/identity-internal' with { type: 'json' };
+import { createTableCache, getPgPool } from '@justtellme/cloud-sql';
+import { useHSService } from '@justtellme/service';
+import { Kysely, PostgresDialect } from 'kysely';
+import { createClient } from 'redis';
 
 import type { DB } from './generated/database.ts';
 import type { IdentityInternal, IdentityInternalLocals } from './types/index.ts';

@@ -1,7 +1,7 @@
-import type createClient from 'openapi-fetch';
-import type { RedisClientOptions } from 'redis';
 import type { paths as IdentityInternal } from '@justtellme/api/identity-internal';
 import type { HSServiceLocals } from '@justtellme/service';
+import type createClient from 'openapi-fetch';
+import type { RedisClientOptions } from 'redis';
 import type { Client } from 'stytch';
 
 export interface HSAuthConfiguration {

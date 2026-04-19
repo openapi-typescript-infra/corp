@@ -12,9 +12,7 @@
       "#src/*": ["./src/*"]
     }
   },
-  "include": [
-    "src",
-  ],
+  "include": ["src"],
   "exclude": [
     "src/**/*.spec.*",
     "src/**/*.test.*",
@@ -22,6 +20,6 @@
     "src/**/*.chromatic.*",
     "src/**/*.fixtures.*",
     "src/codegen",
-    "src/.storybook",
+    "src/.storybook"
   ]
 }

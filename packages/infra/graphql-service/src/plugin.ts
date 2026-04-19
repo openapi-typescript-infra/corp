@@ -1,14 +1,14 @@
-import { trace, context as otelContext } from '@opentelemetry/api';
 import type { GraphQLRequestListener } from '@apollo/server';
+import { ApolloServerErrorCode } from '@apollo/server/errors';
+import type { ServiceExpress } from '@openapi-typescript-infra/service';
+import { context as otelContext, trace } from '@opentelemetry/api';
 import type { DocumentNode, GraphQLSchema, OperationDefinitionNode } from 'graphql';
 import { GraphQLError, separateOperations } from 'graphql';
 import { directiveEstimator, getComplexity, simpleEstimator } from 'graphql-query-complexity';
-import { type ServiceExpress } from '@openapi-typescript-infra/service';
-import { ApolloServerErrorCode } from '@apollo/server/errors';
 
 import type { HttpHSGraphQLContext } from './Context.ts';
-import type { HSGraphQLRequestLocals, HSGraphQLServiceLocals } from './types.ts';
 import type { HSGraphQLConfigurationSchema } from './config.ts';
+import type { HSGraphQLRequestLocals, HSGraphQLServiceLocals } from './types.ts';
 
 function getOperationName(document: DocumentNode) {
   const operationDef = document.definitions.find(
@@ -19,8 +19,8 @@ function getOperationName(document: DocumentNode) {
 }
 
 export function hsApolloPlugin<
-  SLocals extends HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> =
-    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
+  SLocals extends
+    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
   RLocals extends HSGraphQLRequestLocals = HSGraphQLRequestLocals,
 >(app: ServiceExpress<SLocals>, schema: GraphQLSchema) {
   const maximumComplexity = app.locals.config.graphql.maximumComplexity;

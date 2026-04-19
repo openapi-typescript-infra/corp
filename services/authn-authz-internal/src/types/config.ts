@@ -4,6 +4,8 @@ import type { HSAuthConfiguration, HSSessionConfiguration } from '@justtellme/we
 import type { createAuthnAuthzInternalDatasources } from './datasources.ts';
 
 export interface AuthnAuthzInternalConfigSchema
-  extends HSConfigurationSchema, HSAuthConfiguration, HSSessionConfiguration {
+  extends HSConfigurationSchema,
+    HSAuthConfiguration,
+    HSSessionConfiguration {
   datasources: ReturnType<typeof createAuthnAuthzInternalDatasources>;
 }

@@ -1,12 +1,11 @@
-import type { IncomingHttpHeaders } from 'http';
-
+import type { BaseContext } from '@apollo/server';
+import { getPrincipal, type HSPrincipal } from '@justtellme/web-auth';
+import type { ServiceExpress } from '@openapi-typescript-infra/service';
 import type { GraphQLErrorExtensions } from 'graphql';
 import { GraphQLError } from 'graphql';
-import type { BaseContext } from '@apollo/server';
-import type { ServiceExpress } from '@openapi-typescript-infra/service';
 import type { Context } from 'graphql-ws';
-import { getPrincipal, type HSPrincipal } from '@justtellme/web-auth';
-
+import type { IncomingHttpHeaders } from 'http';
+import { wrapAsCaseInsensitiveMap } from './caseInsensitiveMap.ts';
 import type { HSGraphQLConfigurationSchema } from './config.ts';
 import type {
   HSGraphQLRequestLocals,
@@ -14,11 +13,10 @@ import type {
   HSGraphQLServiceRequest,
   HSGraphQLServiceResponse,
 } from './types.ts';
-import { wrapAsCaseInsensitiveMap } from './caseInsensitiveMap.ts';
 
 export interface HSGraphQLContext<
-  SLocals extends HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> =
-    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
+  SLocals extends
+    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
 > extends BaseContext {
   locals: SLocals;
   app: ServiceExpress<SLocals>;
@@ -38,9 +36,10 @@ export interface HSGraphQLContext<
 }
 
 abstract class BaseContextClass<
-  SLocals extends HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> =
-    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
-> implements HSGraphQLContext<SLocals> {
+  SLocals extends
+    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
+> implements HSGraphQLContext<SLocals>
+{
   app: ServiceExpress<SLocals>;
 
   constructor(app: ServiceExpress<SLocals>) {
@@ -93,8 +92,8 @@ abstract class BaseContextClass<
 }
 
 export class WsHSGraphQLContext<
-  SLocals extends HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> =
-    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
+  SLocals extends
+    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
 > extends BaseContextClass<SLocals> {
   wsContext: Context;
   user: HSPrincipal | undefined;
@@ -114,8 +113,8 @@ export class WsHSGraphQLContext<
 }
 
 export class HttpHSGraphQLContext<
-  SLocals extends HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> =
-    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
+  SLocals extends
+    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
   RLocals extends HSGraphQLRequestLocals = HSGraphQLRequestLocals,
 > extends BaseContextClass<SLocals> {
   req: HSGraphQLServiceRequest<SLocals>;

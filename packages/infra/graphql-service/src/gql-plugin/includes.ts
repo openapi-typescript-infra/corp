@@ -1,16 +1,15 @@
-import { Kind, visit } from 'graphql';
 import type {
-  ObjectTypeDefinitionNode,
-  DocumentNode,
   ASTVisitor,
-  InterfaceTypeDefinitionNode,
+  DocumentNode,
   FieldDefinitionNode,
   InputObjectTypeDefinitionNode,
+  InterfaceTypeDefinitionNode,
+  ObjectTypeDefinitionNode,
 } from 'graphql';
-
-import { extractTypeName, readPickOmitArguments, replaceNamedType } from './type-utils.ts';
+import { Kind, visit } from 'graphql';
 import type { AsInputArguments } from './input-types.ts';
 import { addAsInputDirective } from './input-types.ts';
+import { extractTypeName, readPickOmitArguments, replaceNamedType } from './type-utils.ts';
 
 export interface IncludesArguments {
   sourceType: string;

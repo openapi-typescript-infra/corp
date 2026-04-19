@@ -1,6 +1,6 @@
-import session from 'express-session';
 import type { HSServiceLocals } from '@justtellme/service';
 import type { ServiceExpress } from '@openapi-typescript-infra/service';
+import session from 'express-session';
 
 import type { HSSessionConfiguration } from '../types.ts';
 

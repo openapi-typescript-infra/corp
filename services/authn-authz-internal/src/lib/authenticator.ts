@@ -1,6 +1,6 @@
-import { trace } from '@opentelemetry/api';
 import { getStytchTokenDetail } from '@justtellme/web-auth';
 import { ServiceError } from '@openapi-typescript-infra/service';
+import { trace } from '@opentelemetry/api';
 import { StytchError } from 'stytch';
 
 import type { AuthnAuthzInternal } from '#src/types/service.ts';

@@ -1,10 +1,8 @@
+import { ServiceError } from '@openapi-typescript-infra/service';
 import type { RawBuilder } from 'kysely';
 import { sql } from 'kysely';
-import { ServiceError } from '@openapi-typescript-infra/service';
-
-import type { IndividualId, IndividualUuid, WithIndividualUuid } from './types.ts';
-
 import type { IdentityInternal } from '#src/types/index.ts';
+import type { IndividualId, IndividualUuid, WithIndividualUuid } from './types.ts';
 
 export function escapeGroupName(value: string): string;
 export function escapeGroupName(value: string[]): string[];

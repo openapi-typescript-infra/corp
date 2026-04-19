@@ -1,4 +1,4 @@
-import { sql, type RawBuilder, type Selectable } from 'kysely';
+import { type RawBuilder, type Selectable, sql } from 'kysely';
 
 import type { Accounts, Transfers } from '#src/generated/database.ts';
 import type { PaymentInternal } from '#src/types/service.ts';

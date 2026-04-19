@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { FullPageLoader, cn } from './index.ts';
+import { cn, FullPageLoader } from './index.ts';
 
 describe('Module exports', () => {
   test('should export FullPageLoader component', () => {

@@ -1,10 +1,15 @@
-import { useEffect, useMemo } from 'react';
-import { useRouter } from 'next/router';
-import { useValue } from '@legendapp/state/react';
-import { StytchLogin, Products, OAuthProviders, type StytchLoginConfig } from '@stytch/nextjs';
-import { useStytch } from '@stytch/nextjs';
-import { getEnvVar } from '@justtellme/web-service/isomorphic';
 import { app$ } from '@justtellme/state';
+import { getEnvVar } from '@justtellme/web-service/isomorphic';
+import { useValue } from '@legendapp/state/react';
+import {
+  OAuthProviders,
+  Products,
+  StytchLogin,
+  type StytchLoginConfig,
+  useStytch,
+} from '@stytch/nextjs';
+import { useRouter } from 'next/router';
+import { useEffect, useMemo } from 'react';
 
 function useLoginConfig(): StytchLoginConfig {
   const router = useRouter();

@@ -21,4 +21,4 @@ ensure-dev-db:
 	@yarn run-pg-sql postgres -q -e 'SELECT 1' 2>/dev/null || make dev-postgres-create
 
 check:
-	yarn prettier -c src --write && yarn lint -- --fix && yarn typecheck
+	yarn format && yarn typecheck

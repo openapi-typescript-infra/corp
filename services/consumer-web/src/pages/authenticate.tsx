@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { useStytch, useStytchSession } from '@stytch/nextjs';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 /**
  * Stytch redirect callback page. Handles the token exchange after OAuth

@@ -1,15 +1,13 @@
-import path from 'path';
-
-import { Client } from 'stytch';
-import type { Service } from '@openapi-typescript-infra/service';
-import { insertConfigurationBefore } from '@openapi-typescript-infra/service';
 import { useHSService } from '@justtellme/service';
 import type { HSPrincipal } from '@justtellme/web-auth';
 import { getMiddleware, getPrincipal } from '@justtellme/web-auth';
-
-import type { HSAuthRequestLocals, HSAuthServiceLocals } from './types.ts';
+import type { Service } from '@openapi-typescript-infra/service';
+import { insertConfigurationBefore } from '@openapi-typescript-infra/service';
+import path from 'path';
+import { Client } from 'stytch';
 import type { HSAuthConfigurationSchema } from './config.ts';
 import { createAuthDatasources } from './datasources.ts';
+import type { HSAuthRequestLocals, HSAuthServiceLocals } from './types.ts';
 
 function stytchClient(config: HSAuthConfigurationSchema['auth']['stytch']) {
   return new Client({
@@ -19,8 +17,8 @@ function stytchClient(config: HSAuthConfigurationSchema['auth']['stytch']) {
 }
 
 export function useHSServiceWithAuth<
-  SLocals extends HSAuthServiceLocals<HSAuthConfigurationSchema> =
-    HSAuthServiceLocals<HSAuthConfigurationSchema>,
+  SLocals extends
+    HSAuthServiceLocals<HSAuthConfigurationSchema> = HSAuthServiceLocals<HSAuthConfigurationSchema>,
   RLocals extends HSAuthRequestLocals = HSAuthRequestLocals,
 >(baseService?: Service<SLocals, RLocals>): Service<SLocals, RLocals> {
   const base = useHSService(baseService);

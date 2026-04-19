@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
 import posthog, { type PostHog } from 'posthog-js';
 import { PostHogProvider } from 'posthog-js/react';
+import { useEffect } from 'react';
 
 import { getEnvVar } from './env.ts';
 

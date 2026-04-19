@@ -1,15 +1,13 @@
-import { describe, it, expect } from 'vitest';
-
+import { describe, expect, it } from 'vitest';
+import type { PaymentInternal } from '#src/types/service.ts';
 import {
+  buildTransferMatrix,
   Ledger,
-  TransactionBuilder,
-  validateTransaction,
   resolveDestinations,
   resolveSources,
-  buildTransferMatrix,
+  TransactionBuilder,
+  validateTransaction,
 } from './ledger.ts';
-
-import type { PaymentInternal } from '#src/types/service.ts';
 
 // ── Validation ──────────────────────────────────────────────────────────────
 

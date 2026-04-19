@@ -1,5 +1,5 @@
+import { identifyUser, resetAnalytics, setAnalyticsClient, setStytch } from '@justtellme/state';
 import { useStytchSession, useStytchUser } from '@stytch/react-native';
-import { setStytch, setAnalyticsClient, identifyUser, resetAnalytics } from '@justtellme/state';
 import { usePostHog } from 'posthog-react-native';
 import { useEffect } from 'react';
 
@@ -34,7 +34,7 @@ export function StytchStateBridge() {
     } else {
       resetAnalytics();
     }
-  }, [user, isInitialized, posthog]);
+  }, [user, isInitialized]);
 
   return null;
 }

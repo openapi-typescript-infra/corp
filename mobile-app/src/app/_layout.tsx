@@ -1,7 +1,7 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { StytchProvider } from '@stytch/react-native';
-import { PostHogProvider } from 'posthog-react-native';
 import Constants from 'expo-constants';
+import { PostHogProvider } from 'posthog-react-native';
 import React from 'react';
 import { useColorScheme } from 'react-native';
 
@@ -16,11 +16,7 @@ const posthogHost = Constants.expoConfig?.extra?.POSTHOG_HOST ?? 'https://us.i.p
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   return (
-    <PostHogProvider
-      apiKey={posthogKey}
-      options={{ host: posthogHost }}
-      autocapture
-    >
+    <PostHogProvider apiKey={posthogKey} options={{ host: posthogHost }} autocapture>
       <StytchProvider stytch={stytchClient}>
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
           <StytchStateBridge />

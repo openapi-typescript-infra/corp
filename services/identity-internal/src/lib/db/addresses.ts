@@ -1,10 +1,8 @@
 import { sql } from 'kysely';
-
-import type { IndividualId, IndividualUuid, WithIndividualUuid } from './types.ts';
-
 import type { components } from '#src/generated/service/index.ts';
-import type { IdentityInternal } from '#src/types/index.ts';
 import { getAddressWithKey } from '#src/lib/normalize.ts';
+import type { IdentityInternal } from '#src/types/index.ts';
+import type { IndividualId, IndividualUuid, WithIndividualUuid } from './types.ts';
 
 const AddressTypeCache: Record<string, number> = {};
 const AddressTypesById: Record<number, string> = {};

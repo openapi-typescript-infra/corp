@@ -1,9 +1,8 @@
-import { useHSGraphQLService, type HSGraphQLService } from '@justtellme/graphql-service';
-
-import { createGraphqlApiDatasources } from './types/datasources.ts';
-import type { GraphqlApi, GraphqlApiLocals, GraphqlApiRequestLocals } from './types/index.ts';
+import { type HSGraphQLService, useHSGraphQLService } from '@justtellme/graphql-service';
 import { getTranslatedAuthHeaders } from './lib/auth/wss.ts';
 import { GraphQLApiWsContext, GraphQLHttpApiContext } from './types/context.ts';
+import { createGraphqlApiDatasources } from './types/datasources.ts';
+import type { GraphqlApi, GraphqlApiLocals, GraphqlApiRequestLocals } from './types/index.ts';
 
 export function service(): HSGraphQLService<GraphqlApiLocals, GraphqlApiRequestLocals> {
   const base = useHSGraphQLService<GraphqlApiLocals, GraphqlApiRequestLocals>();

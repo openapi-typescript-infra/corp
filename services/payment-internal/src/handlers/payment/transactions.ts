@@ -1,8 +1,7 @@
 import { sql } from 'kysely';
-
-import type { PaymentInternalApi } from '#src/types/service.ts';
 import type { LedgerTransfer } from '#src/lib/ledger.ts';
 import { toTransactionResponse } from '#src/lib/serialize.ts';
+import type { PaymentInternalApi } from '#src/types/service.ts';
 
 export const POST: PaymentInternalApi['createTransaction'] = async (req, res) => {
   const { transfers, idempotency_id, individual_uuid, event_at, metadata } = req.body;

@@ -1,7 +1,7 @@
-import pg from 'pg';
 import { AuthTypes, Connector, IpAddressTypes } from '@google-cloud/cloud-sql-connector';
-import { getNodeEnv } from '@openapi-typescript-infra/service';
 import type { AnyHSServiceLocals, HSExpress, HSServiceLocals } from '@justtellme/service';
+import { getNodeEnv } from '@openapi-typescript-infra/service';
+import pg from 'pg';
 
 import type { HSCloudSqlConfiguration } from './types.ts';
 

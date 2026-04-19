@@ -1,9 +1,9 @@
 import type { HSPrincipal } from './authentication/index.ts';
 
 export * from './authentication/index.ts';
+export * from './authorization/requestDocument.ts';
 export * from './middleware.ts';
 export * from './types.ts';
-export * from './authorization/requestDocument.ts';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

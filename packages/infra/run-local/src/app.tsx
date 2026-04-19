@@ -1,9 +1,8 @@
-import fs from 'fs';
-import path from 'path';
 import { execSync, spawn } from 'child_process';
-
-import React, { useEffect, useMemo, useState } from 'react';
+import fs from 'fs';
 import { Box, Text, useApp, useInput, useStdout } from 'ink';
+import path from 'path';
+import React, { useEffect, useMemo, useState } from 'react';
 
 const MAX_LOG_LINES = 1200;
 const MAX_VISIBLE_LOG_LINES = 400;

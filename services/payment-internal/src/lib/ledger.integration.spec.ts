@@ -1,8 +1,6 @@
 import { describe, expect } from 'vitest';
-
-import { Ledger, autoCreateAccountResolver } from './ledger.ts';
-
 import { testWithApp } from '#src/test.fixtures.ts';
+import { autoCreateAccountResolver, Ledger } from './ledger.ts';
 
 // Helper to create unique names per test to avoid collisions
 let counter = 0;

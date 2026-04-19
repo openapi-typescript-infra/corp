@@ -1,5 +1,4 @@
-import crypto from 'crypto';
-
+import crypto from 'node:crypto';
 import type { RequestWithApp, ResponseFromApp } from '@openapi-typescript-infra/service';
 import { ServiceError } from '@openapi-typescript-infra/service';
 
@@ -41,7 +40,7 @@ function shouldValidate(url: string, exclude?: (string | RegExp)[], include?: (s
 
 export function assignCsrfCookie(
   config: HSWebConfigurationSchema['csrf'],
-  req: RequestWithApp,
+  _req: RequestWithApp,
   res: ResponseFromApp,
 ) {
   // 1 is a "version number" in case we want to change this at some point
@@ -59,7 +58,7 @@ export function isValidCsrf(
 ) {
   // Assign the cookie
   if (config.autoAssignCookie) {
-    if (!req.cookies || !req.cookies[config.headerAndCookieName || DEFAULT_COOKIE_NAME]) {
+    if (!req.cookies?.[config.headerAndCookieName || DEFAULT_COOKIE_NAME]) {
       assignCsrfCookie(config, req, res);
     }
   }
@@ -112,8 +111,8 @@ export function validateCsrf(
 }
 
 export function getCsrf<
-  SLocals extends HSWebServiceLocals<HSWebConfigurationSchema> =
-    HSWebServiceLocals<HSWebConfigurationSchema>,
+  SLocals extends
+    HSWebServiceLocals<HSWebConfigurationSchema> = HSWebServiceLocals<HSWebConfigurationSchema>,
 >(req: RequestWithApp<SLocals>) {
   const conf = req.app.locals.config.csrf;
   const cookie = req.cookies?.[conf.headerAndCookieName || DEFAULT_COOKIE_NAME];

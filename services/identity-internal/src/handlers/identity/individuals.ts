@@ -1,7 +1,6 @@
-import { parse } from 'date-fns';
 import { ServiceError } from '@openapi-typescript-infra/service';
-
-import type { IdentityInternalApi, IdentityInternal } from '#src/types/index.ts';
+import { parse } from 'date-fns';
+import type { components } from '#src/generated/service/index.ts';
 import {
   createIndividual,
   toBiologicalSex,
@@ -9,10 +8,10 @@ import {
   toIndividualIdMap,
   updateIndividualByUuid,
 } from '#src/lib/db/individual.ts';
+import { toDatabaseIdentifierDetail } from '#src/lib/db/namespaces.ts';
 import { resolveAncillaryData } from '#src/lib/db/resolvers.ts';
 import type { IndividualUuid } from '#src/lib/db/types.ts';
-import { toDatabaseIdentifierDetail } from '#src/lib/db/namespaces.ts';
-import type { components } from '#src/generated/service/index.ts';
+import type { IdentityInternal, IdentityInternalApi } from '#src/types/index.ts';
 
 /**
  * Parse external_ids in "namespace:identifier" format into IdentifierInput objects.

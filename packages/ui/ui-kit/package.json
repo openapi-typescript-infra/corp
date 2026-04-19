@@ -25,7 +25,7 @@
     "typecheck": "tsc -p tsconfig.json",
     "build": "tsup && tailwindcss -i src/styles/globals.css -o dist/styles.css --minify",
     "clean": "yarn dlx rimraf ./dist",
-    "lint": "eslint .",
+    "lint": "biome check .",
     "postinstall": "cpconfig",
     "test": "vitest",
     "dev:css": "tailwindcss -i src/styles/globals.css -o dist/styles.css --watch"
@@ -47,13 +47,12 @@
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.10",
     "@justtellme/cpconfig": "workspace:^",
     "@tailwindcss/cli": "^4.2.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "cpconfig": "^1.5.0",
-    "eslint": "^10.2.0",
-    "prettier": "^3.8.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tailwindcss": "^4.2.2",

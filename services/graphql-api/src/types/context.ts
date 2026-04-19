@@ -1,10 +1,8 @@
 import type { HSGraphQLContext } from '@justtellme/graphql-service';
 import { HttpHSGraphQLContext, WsHSGraphQLContext } from '@justtellme/graphql-service';
 import type { Context } from 'graphql-ws';
-
-import type { GraphqlApi, GraphqlApiLocals, GraphqlApiRequestLocals } from './service.ts';
-
 import { dataloaders } from '#src/lib/dataloaders/index.ts';
+import type { GraphqlApi, GraphqlApiLocals, GraphqlApiRequestLocals } from './service.ts';
 
 export interface GraphQLApiContext extends HSGraphQLContext<GraphqlApiLocals> {
   loaders: ReturnType<typeof dataloaders>;

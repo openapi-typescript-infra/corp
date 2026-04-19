@@ -1,5 +1,5 @@
-import Document, { Html, Head, Main, NextScript } from 'next/document';
 import { getNodeEnv } from '@openapi-typescript-infra/service';
+import Document, { Head, Html, Main, NextScript } from 'next/document';
 
 const readEnv = (name: string, fallback = ''): string => {
   const env = process.env as Record<string, string | undefined>;

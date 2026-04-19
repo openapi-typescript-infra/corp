@@ -1,5 +1,8 @@
 import { parseISO } from 'date-fns';
-
+import type { components } from '#src/generated/service/index.ts';
+import { saveAddresses } from '#src/lib/db/addresses.ts';
+import { saveConsents } from '#src/lib/db/consents.ts';
+import { addMemberToGroup, removeGroupMember } from '#src/lib/db/groups.ts';
 import {
   assignIdentifiers,
   resolveIdentifier,
@@ -9,14 +12,10 @@ import {
   toIndividualIdMap,
   updateIndividualByUuid,
 } from '#src/lib/db/individual.ts';
-import type { IdentityInternalApi } from '#src/types/index.ts';
-import type { components } from '#src/generated/service/index.ts';
-import { resolveAncillaryData } from '#src/lib/db/resolvers.ts';
 import { modifyProfile } from '#src/lib/db/profile.ts';
-import { saveAddresses } from '#src/lib/db/addresses.ts';
-import { saveConsents } from '#src/lib/db/consents.ts';
+import { resolveAncillaryData } from '#src/lib/db/resolvers.ts';
 import { addIndividualTag, removeIndividualTag } from '#src/lib/db/tags.ts';
-import { addMemberToGroup, removeGroupMember } from '#src/lib/db/groups.ts';
+import type { IdentityInternalApi } from '#src/types/index.ts';
 
 export const GET: IdentityInternalApi['getIndividualsByIdentifier'] = async (req, res) => {
   const { identifier, namespace } = req.params;

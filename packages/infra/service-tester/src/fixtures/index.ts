@@ -1,10 +1,10 @@
+import type { HSConfigurationSchema, HSServiceLocals } from '@justtellme/service';
+import type { ServiceUnderTest } from '@openapi-typescript-infra/service-tester';
+import { getReusableApp } from '@openapi-typescript-infra/service-tester';
+import type { TestAPI } from '@vitest/runner';
 import openapiCreateClient from 'openapi-fetch';
 import type { expect } from 'vitest';
 import { test } from 'vitest';
-import type { TestAPI } from '@vitest/runner';
-import type { ServiceUnderTest } from '@openapi-typescript-infra/service-tester';
-import { getReusableApp } from '@openapi-typescript-infra/service-tester';
-import type { HSConfigurationSchema, HSServiceLocals } from '@justtellme/service';
 
 type AnyHSServiceLocals = HSServiceLocals<HSConfigurationSchema>;
 

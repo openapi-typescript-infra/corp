@@ -1,9 +1,8 @@
-import path from 'path';
-
-import { describe, expect, test } from 'vitest';
-import { getReusableApp } from '@openapi-typescript-infra/service-tester';
 import type { HSConfigurationSchema, HSServiceLocals } from '@justtellme/service';
 import { useHSService } from '@justtellme/service';
+import { getReusableApp } from '@openapi-typescript-infra/service-tester';
+import path from 'path';
+import { describe, expect, test } from 'vitest';
 
 import { getPgPool } from './index.ts';
 

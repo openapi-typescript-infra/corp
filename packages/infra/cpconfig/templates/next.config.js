@@ -1,7 +1,7 @@
 // Managed by cpconfig
 import fs from 'node:fs';
-import path from 'node:path';
 import { createRequire } from 'node:module';
+import path from 'node:path';
 
 function hasPackage(name) {
   try {
@@ -44,9 +44,7 @@ function nextConfig() {
     .catch(() => (config) => config)
     .then((withNextIntl) => {
       return withNextIntl({
-        transpilePackages: [
-          '@justtellme/web-service/src/client',
-        ],
+        transpilePackages: ['@justtellme/web-service/src/client'],
         // Test builds overwrite build files, so get them out of the way
         distDir: process.env.NODE_ENV === 'test' ? undefined : 'private',
         generateBuildId() {

@@ -1,10 +1,9 @@
-import createClient, { type Middleware } from 'openapi-fetch';
-import { fetchToCurl } from 'fetch-to-curl-ts';
-import type { ServiceExpress } from '@openapi-typescript-infra/service';
 import { HSPrincipal } from '@justtellme/web-auth';
-
-import type { AnyHSServiceLocals, HSServiceLocals } from './types.ts';
+import type { ServiceExpress } from '@openapi-typescript-infra/service';
+import { fetchToCurl } from 'fetch-to-curl-ts';
+import createClient, { type Middleware } from 'openapi-fetch';
 import type { DatasourceSpec, HSConfigurationSchema } from './config.ts';
+import type { AnyHSServiceLocals, HSServiceLocals } from './types.ts';
 
 type ClientOptions = Exclude<Parameters<typeof createClient>[0], undefined>;
 

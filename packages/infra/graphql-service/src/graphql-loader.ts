@@ -1,7 +1,7 @@
-import path from 'path';
-
-import { mergeWith, isFunction, isObject } from 'lodash-es';
 import { getFilesInDir } from '@openapi-typescript-infra/service';
+
+import { isFunction, isObject, mergeWith } from 'lodash-es';
+import path from 'path';
 
 export async function loadResolvers(rootDirectory: string, codepath: string) {
   const codePattern = codepath === 'src' ? '**/*.ts' : '**/*.js';

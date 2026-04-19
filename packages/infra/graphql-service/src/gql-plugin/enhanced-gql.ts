@@ -1,11 +1,10 @@
 /**
  * A GraphQL codegen plugin to simplify SDL authoring
  */
-import fs from 'fs';
-import path from 'path';
 
 import type { PluginFunction, Types } from '@graphql-codegen/plugin-helpers';
 import { printSchemaWithDirectives } from '@graphql-tools/utils';
+import fs from 'fs';
 import type {
   ASTVisitor,
   DocumentNode,
@@ -15,13 +14,13 @@ import type {
   ObjectTypeDefinitionNode,
 } from 'graphql';
 import { Kind, parse, print, visit } from 'graphql';
-
-import { addPaginatedTypes, fieldPaginationArguments } from './pagination-types.ts';
+import path from 'path';
+import type { IncludesArguments } from './includes.ts';
+import { addIncludedFields, INCLUDE_DIRECTIVE, readInclude } from './includes.ts';
 import type { AsInputArguments } from './input-types.ts';
 import { AS_INPUT_DIRECTIVE, addAsInputDirective, addInputTypes } from './input-types.ts';
+import { addPaginatedTypes, fieldPaginationArguments } from './pagination-types.ts';
 import { extractTypeName, replaceNamedType } from './type-utils.ts';
-import type { IncludesArguments } from './includes.ts';
-import { INCLUDE_DIRECTIVE, addIncludedFields, readInclude } from './includes.ts';
 
 interface EnhancedPluginConfig {
   sdlOutputFile: string;

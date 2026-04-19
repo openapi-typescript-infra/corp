@@ -12,7 +12,8 @@ type WithIdAndName<IdKey extends string, NameKey extends string> = Record<IdKey,
   Record<NameKey, string>;
 
 // There is some problem with @types/pg missing this declaration even though it really is there.
-const escape = (pg as unknown as { escapeIdentifier: (str: string) => string }).escapeIdentifier;
+const escapeIdentifier = (pg as unknown as { escapeIdentifier: (str: string) => string })
+  .escapeIdentifier;
 
 export interface TableCache<
   T extends WithIdAndName<IdColumn, NameColumn>,
@@ -70,7 +71,7 @@ export function createTableCache<
         const { rows } = await db.query<QueryType>(
           // The identifier check above prevents this from being SQL-injectable, even though it would be FROM INSIDE THE HOUSE
           // in all but the most pathological cases.
-          `SELECT * FROM ${escape(options.tableName)} WHERE ${escape(options.nameColumn)} = ANY($1)`,
+          `SELECT * FROM ${escapeIdentifier(options.tableName)} WHERE ${escapeIdentifier(options.nameColumn)} = ANY($1)`,
           [Array.from(missingNames)],
         );
         rows.forEach(cacheRow);
@@ -99,7 +100,7 @@ export function createTableCache<
         const { rows } = await db.query<QueryType>(
           // The identifier check above prevents this from being SQL-injectable, even though it would be FROM INSIDE THE HOUSE
           // in all but the most pathological cases.
-          `SELECT * FROM ${escape(options.tableName)} WHERE ${escape(options.idColumn)} = ANY($1)`,
+          `SELECT * FROM ${escapeIdentifier(options.tableName)} WHERE ${escapeIdentifier(options.idColumn)} = ANY($1)`,
           [Array.from(missingIds)],
         );
         rows.forEach(cacheRow);

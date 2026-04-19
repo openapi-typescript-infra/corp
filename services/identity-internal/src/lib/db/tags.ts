@@ -1,6 +1,5 @@
-import type { IndividualId, IndividualUuid, WithIndividualUuid } from './types.ts';
-
 import type { IdentityInternal } from '#src/types/index.ts';
+import type { IndividualId, IndividualUuid, WithIndividualUuid } from './types.ts';
 
 export async function getTagsForIndividuals(
   app: IdentityInternal['App'],

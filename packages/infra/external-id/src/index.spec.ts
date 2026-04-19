@@ -4,10 +4,10 @@ import { describe, expect, test } from 'vitest';
 
 import {
   ExternalIDType,
-  parseExternalID,
-  toExternalID,
   fromExternalID,
+  parseExternalID,
   stringToExternalID,
+  toExternalID,
 } from './index.ts';
 
 describe('Basic test', () => {
