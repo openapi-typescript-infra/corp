@@ -1,5 +1,5 @@
-import { OAuthProviders, OTPMethods, RNUIProducts, StytchClient } from '@stytch/react-native';
 import type { StytchUIConfig } from '@stytch/react-native';
+import { OAuthProviders, OTPMethods, RNUIProducts, StytchClient } from '@stytch/react-native';
 import Constants from 'expo-constants';
 
 // Shared STYTCH_TOKEN env var — same value used by consumer-web.

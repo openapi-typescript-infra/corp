@@ -2,11 +2,10 @@ import crypto from 'crypto';
 
 import type { ExpressionBuilder } from 'kysely';
 import { sql } from 'kysely';
-
-import type { IndividualId, IndividualUuid, WithIndividualUuid } from './types.ts';
+import type { DB, IndividualProfiles, ProfileSchemas } from '#src/generated/database.ts';
 
 import type { IdentityInternal } from '#src/types/index.ts';
-import type { DB, IndividualProfiles, ProfileSchemas } from '#src/generated/database.ts';
+import type { IndividualId, IndividualUuid, WithIndividualUuid } from './types.ts';
 
 export interface JsonPatchRawType {
   op: 'add' | 'remove' | 'replace' | 'move' | 'copy' | 'test' | 'inc' | 'clear' | 'merge' | 'push';

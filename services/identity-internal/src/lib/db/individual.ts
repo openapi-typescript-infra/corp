@@ -1,8 +1,10 @@
-import { sql } from 'kysely';
-import { format, parse, parseISO } from 'date-fns';
 import { ServiceError } from '@openapi-typescript-infra/service';
+import { format, parse, parseISO } from 'date-fns';
 import type { NotNull, Selectable } from 'kysely';
-
+import { sql } from 'kysely';
+import type { BiologicalSexEnum, Individuals } from '#src/generated/database.ts';
+import type { components } from '#src/generated/service/index.ts';
+import type { IdentityInternal } from '#src/types/index.ts';
 import type { CanonicalIdentifier } from './namespaces.ts';
 import {
   resolveNamespaceIds,
@@ -10,11 +12,7 @@ import {
   toCanonicalIdentifierDetail,
   toDatabaseIdentifierDetail,
 } from './namespaces.ts';
-import type { IndividualUuid, IndividualId, WithIndividualUuid } from './types.ts';
-
-import type { components } from '#src/generated/service/index.ts';
-import type { IdentityInternal } from '#src/types/index.ts';
-import type { BiologicalSexEnum, Individuals } from '#src/generated/database.ts';
+import type { IndividualId, IndividualUuid, WithIndividualUuid } from './types.ts';
 
 function getNewIndividualQuery(db: IdentityInternal['App']['locals']['db'], uuid?: string) {
   const baseQuery = db.insertInto('individuals');

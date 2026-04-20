@@ -1,4 +1,4 @@
-import type { StytchClientOptions, StytchClient } from '@stytch/nextjs';
+import type { StytchClient, StytchClientOptions } from '@stytch/nextjs';
 import { createStytchClient } from '@stytch/nextjs';
 
 declare global {

@@ -1,8 +1,8 @@
-function unescape(str: string): string {
+function unescapeNameComponent(str: string): string {
   return str.replace(/\|\|/g, '|');
 }
 
-function escape(str?: string) {
+function escapeNameComponent(str?: string) {
   return str?.replace(/\|/g, '||');
 }
 
@@ -46,8 +46,8 @@ export function encodeName({
   middleName?: string;
   credentials?: string;
 }) {
-  const namePart = `${escape(lastName)}|${escape(firstName) || ''}${middleName ? '|' : ''}${
-    escape(middleName) || ''
+  const namePart = `${escapeNameComponent(lastName)}|${escapeNameComponent(firstName) || ''}${middleName ? '|' : ''}${
+    escapeNameComponent(middleName) || ''
   }`;
   return appendAttributes(namePart, { c: credentials });
 }
@@ -63,9 +63,9 @@ export function canonicalizeName({
   middleName?: string;
   credentials?: string;
 }) {
-  const eFirst = escape(firstName)?.toLocaleLowerCase();
-  const eLast = escape(lastName)?.toLocaleLowerCase();
-  const eMiddle = escape(middleName)?.toLocaleLowerCase() || '';
+  const eFirst = escapeNameComponent(firstName)?.toLocaleLowerCase();
+  const eLast = escapeNameComponent(lastName)?.toLocaleLowerCase();
+  const eMiddle = escapeNameComponent(middleName)?.toLocaleLowerCase() || '';
   const namePart = `${eLast || ''}|${eFirst || ''}${eMiddle ? '|' : ''}${eMiddle || ''}`;
   return appendAttributes(namePart, { c: credentials?.toLocaleLowerCase() });
 }
@@ -92,7 +92,7 @@ export function parseName(encodedName: string) {
   let temp = '';
   for (let i = 0; i < namePart.length; i++) {
     if (namePart[i] === '|' && (i === namePart.length - 1 || namePart[i + 1] !== '|')) {
-      parts.push(unescape(temp));
+      parts.push(unescapeNameComponent(temp));
       temp = '';
     } else if (namePart[i] === '|' && namePart[i + 1] === '|') {
       temp += '||';
@@ -102,7 +102,7 @@ export function parseName(encodedName: string) {
     }
   }
   if (temp) {
-    parts.push(unescape(temp));
+    parts.push(unescapeNameComponent(temp));
   }
 
   return {

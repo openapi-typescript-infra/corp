@@ -1,9 +1,9 @@
+import { getEnvVar } from '@justtellme/web-service/isomorphic';
 import snakeCase from 'lodash-es/snakeCase';
 import type { GetServerSidePropsContext, NextPageContext } from 'next';
-import type { SSRExchange, ClientOptions, Client, CombinedError } from 'urql';
-import { cacheExchange, fetchExchange, ssrExchange } from 'urql';
 import { initUrqlClient } from 'next-urql';
-import { getEnvVar } from '@justtellme/web-service/isomorphic';
+import type { Client, ClientOptions, CombinedError, SSRExchange } from 'urql';
+import { cacheExchange, fetchExchange, ssrExchange } from 'urql';
 
 import type { ConsumerWebClientSideVariables, SerializedCombinedError } from '#src/types/index.ts';
 

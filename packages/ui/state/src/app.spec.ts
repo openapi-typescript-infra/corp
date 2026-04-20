@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import { app$, setStytch, type StytchUserInput, type StytchSessionInput } from './app.ts';
+import { app$, type StytchSessionInput, type StytchUserInput, setStytch } from './app.ts';
 
 describe('app$', () => {
   beforeEach(() => {

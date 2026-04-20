@@ -1,9 +1,8 @@
 import { sql } from 'kysely';
-
-import type { IndividualId, IndividualUuid, WithIndividualUuid } from './types.ts';
+import type { components } from '#src/generated/service/index.ts';
 
 import type { IdentityInternal } from '#src/types/index.ts';
-import type { components } from '#src/generated/service/index.ts';
+import type { IndividualId, IndividualUuid, WithIndividualUuid } from './types.ts';
 
 async function getMostRecentForIndividuals(
   app: IdentityInternal['App'],

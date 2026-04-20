@@ -1,14 +1,13 @@
+import type { components } from '#src/generated/service/index.ts';
+import type { IdentityInternal } from '#src/types/index.ts';
 import { getAddressesForIndividuals } from './addresses.ts';
 import { getConsentsForIndividuals } from './consents.ts';
 import { getGroupsForIndividuals } from './groups.ts';
 import { getIdentifiersForIndividuals } from './individual.ts';
 import { getProfilesForIndividuals } from './profile.ts';
 import { getRelationsForIndividuals } from './relations.ts';
-import type { IndividualId, WithIndividualUuid } from './types.ts';
 import { getTagsForIndividuals } from './tags.ts';
-
-import type { components } from '#src/generated/service/index.ts';
-import type { IdentityInternal } from '#src/types/index.ts';
+import type { IndividualId, WithIndividualUuid } from './types.ts';
 
 const EMPTY = Object.freeze({
   identifiers: {},

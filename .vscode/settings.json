@@ -1,16 +1,5 @@
 {
-  "eslint.runtime": "/Users/memetral/.local/share/mise/installs/node/24/bin/node",
-  "eslint.workingDirectories": [
-    {
-      "pattern": "./packages/*/*/"
-    },
-    {
-      "pattern": "./services/*/"
-    },
-    {
-      "pattern": "./api/"
-    }
-  ],
+  "editor.defaultFormatter": "biomejs.biome",
   "vitest.nodeExecutable": "/Users/memetral/.local/share/mise/installs/node/24/bin/node",
   "vitest.maximumConfigs": 25
 }

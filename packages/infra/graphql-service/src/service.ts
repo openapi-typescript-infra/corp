@@ -1,24 +1,27 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-import type { Gauge } from '@opentelemetry/api';
-import cors from 'cors';
-import { WebSocketServer } from 'ws';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@as-integrations/express5';
 import { makeExecutableSchema } from '@graphql-tools/schema';
+import { useHSServiceWithAuth } from '@justtellme/service-with-auth';
 import type { Service } from '@openapi-typescript-infra/service';
 import {
   insertConfigurationBefore,
   isProd,
   setTelemetryHooks,
 } from '@openapi-typescript-infra/service';
-import { useHSServiceWithAuth } from '@justtellme/service-with-auth';
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@as-integrations/express5';
-import type { GraphQLSchema, ExecutionArgs } from 'graphql';
-import { useServer } from 'graphql-ws/use/ws';
+import type { Gauge } from '@opentelemetry/api';
+import cors from 'cors';
+import fs from 'fs';
+import type { ExecutionArgs, GraphQLSchema } from 'graphql';
 import type { SubscribeMessage } from 'graphql-ws';
-
+import { useServer } from 'graphql-ws/use/ws';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { WebSocketServer } from 'ws';
+import type { HSGraphQLContext } from './Context.ts';
+import { HttpHSGraphQLContext, WsHSGraphQLContext } from './Context.ts';
+import type { HSGraphQLConfigurationSchema } from './config.ts';
+import { loadResolvers } from './graphql-loader.ts';
+import { hsApolloPlugin } from './plugin.ts';
 import type {
   HSGraphQLRequestLocals,
   HSGraphQLService,
@@ -26,15 +29,10 @@ import type {
   HSGraphQLServiceRequest,
   HSGraphQLServiceResponse,
 } from './types.ts';
-import type { HSGraphQLConfigurationSchema } from './config.ts';
-import { loadResolvers } from './graphql-loader.ts';
-import { hsApolloPlugin } from './plugin.ts';
-import type { HSGraphQLContext } from './Context.ts';
-import { HttpHSGraphQLContext, WsHSGraphQLContext } from './Context.ts';
 
 export function useHSGraphQLService<
-  SLocals extends HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> =
-    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
+  SLocals extends
+    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
   RLocals extends HSGraphQLRequestLocals = HSGraphQLRequestLocals,
 >(baseService?: Service<SLocals, RLocals>): HSGraphQLService<SLocals, RLocals> {
   const base = useHSServiceWithAuth(baseService);

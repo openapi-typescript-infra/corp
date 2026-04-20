@@ -1,7 +1,6 @@
 import { sql } from 'kysely';
-
-import type { IdentityInternalApi } from '#src/types/service.ts';
 import type { components } from '#src/generated/service/index.ts';
+import type { IdentityInternalApi } from '#src/types/service.ts';
 
 const DEFAULT_RADIUS_METERS = 5000;
 const MAX_RADIUS_METERS = 50000;

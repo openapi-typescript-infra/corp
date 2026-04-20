@@ -1,5 +1,5 @@
-import { ServiceError } from '@openapi-typescript-infra/service';
 import type { components as IdentityInternal } from '@justtellme/api/identity-internal';
+import { ServiceError } from '@openapi-typescript-infra/service';
 import DataLoader from 'dataloader';
 
 import type { GraphQLApiContext } from '#src/types/context.ts';

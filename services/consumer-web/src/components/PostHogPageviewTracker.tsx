@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { track } from '@justtellme/state';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 /** Captures pageview events on Next.js route changes. Render inside HSPostHogProvider. */
 export function PostHogPageviewTracker() {

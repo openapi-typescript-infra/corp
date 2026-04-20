@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
-import { useStytchUser, useStytchSession } from '@stytch/nextjs';
-import { setStytch, setAnalyticsClient, identifyUser, resetAnalytics } from '@justtellme/state';
+import { identifyUser, resetAnalytics, setAnalyticsClient, setStytch } from '@justtellme/state';
+import { useStytchSession, useStytchUser } from '@stytch/nextjs';
 import { usePostHog } from 'posthog-js/react';
+import { useEffect } from 'react';
 
 /** Syncs Stytch auth state into app$. Render inside HSStytchProvider. */
 export function StytchStateBridge() {

@@ -1,5 +1,5 @@
-import { beforeAll, describe, expect } from 'vitest';
 import { getReusableApp, request } from '@openapi-typescript-infra/service-tester';
+import { beforeAll, describe, expect } from 'vitest';
 
 import { testWithApp } from './test.fixtures.ts';
 import type { AuthnAuthzInternalLocals } from './types/service.ts';

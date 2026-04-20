@@ -1,5 +1,5 @@
-import { request } from 'undici';
 import { getDatasourceConfiguration } from '@justtellme/service';
+import { request } from 'undici';
 
 import type { GraphqlApi } from '#src/types/index.js';
 

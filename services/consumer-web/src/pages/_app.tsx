@@ -1,19 +1,18 @@
-import { withUrqlClient } from 'next-urql';
+import { app$ } from '@justtellme/state';
+import { FullPageLoader } from '@justtellme/ui-kit';
+import { HSPostHogProvider, HSStytchProvider } from '@justtellme/web-service/isomorphic';
+import { useValue } from '@legendapp/state/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useValue } from '@legendapp/state/react';
-import { HSStytchProvider, HSPostHogProvider } from '@justtellme/web-service/isomorphic';
-import { FullPageLoader } from '@justtellme/ui-kit';
-import { app$ } from '@justtellme/state';
+import { withUrqlClient } from 'next-urql';
 
 import '@justtellme/ui-kit/styles.css';
 
-import type { HSAppProps } from '#src/types/NextPage.ts';
-
-import { getUrqlClientOptions } from '#src/lib/urql.ts';
-import { getSingletonStytchHeadlessClient } from '#src/lib/stytch.ts';
-import { StytchStateBridge } from '#src/components/StytchStateBridge.tsx';
 import { PostHogPageviewTracker } from '#src/components/PostHogPageviewTracker.tsx';
+import { StytchStateBridge } from '#src/components/StytchStateBridge.tsx';
+import { getSingletonStytchHeadlessClient } from '#src/lib/stytch.ts';
+import { getUrqlClientOptions } from '#src/lib/urql.ts';
+import type { HSAppProps } from '#src/types/NextPage.ts';
 
 const HSAppComponent = ({ Component, pageProps }: HSAppProps) => {
   const router = useRouter();

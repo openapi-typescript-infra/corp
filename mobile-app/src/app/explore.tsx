@@ -1,6 +1,6 @@
-import { StytchUI, useStytch } from '@stytch/react-native';
 import { app$ } from '@justtellme/state';
 import { useValue } from '@legendapp/state/react';
+import { StytchUI, useStytch } from '@stytch/react-native';
 import React, { useEffect } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,9 +17,7 @@ function LoggedInView() {
 
   return (
     <ThemedView style={styles.loggedInContainer}>
-      <ThemedText type="subtitle">
-        Welcome{user?.name ? `, ${user.name}` : ''}
-      </ThemedText>
+      <ThemedText type="subtitle">Welcome{user?.name ? `, ${user.name}` : ''}</ThemedText>
       {user?.emails && user.emails.length > 0 && (
         <ThemedText themeColor="textSecondary">{user.emails.join(', ')}</ThemedText>
       )}

@@ -1,3 +1,10 @@
+import type { ContextFunction } from '@apollo/server';
+import type { ExpressContextFunctionArgument } from '@as-integrations/express5';
+import type {
+  HSAuthRequestLocals,
+  HSAuthService,
+  HSAuthServiceLocals,
+} from '@justtellme/service-with-auth';
 import type {
   RequestLike,
   RequestWithApp,
@@ -5,18 +12,10 @@ import type {
   ServiceRouter,
 } from '@openapi-typescript-infra/service';
 import type { NextFunction, Request, Response } from 'express';
-import type {
-  HSAuthRequestLocals,
-  HSAuthService,
-  HSAuthServiceLocals,
-} from '@justtellme/service-with-auth';
-import type { ContextFunction } from '@apollo/server';
-import type { ExpressContextFunctionArgument } from '@as-integrations/express5';
-import type { Context, SubscribeMessage } from 'graphql-ws';
 import type { ExecutionArgs } from 'graphql';
-
-import type { HSGraphQLConfigurationSchema } from './config.ts';
+import type { Context, SubscribeMessage } from 'graphql-ws';
 import type { HSGraphQLContext } from './Context.ts';
+import type { HSGraphQLConfigurationSchema } from './config.ts';
 
 export interface HSGraphQLServiceLocals<
   Config extends HSGraphQLConfigurationSchema = HSGraphQLConfigurationSchema,
@@ -46,8 +45,8 @@ export interface HSGraphQLRequestLocals extends HSAuthRequestLocals {
 }
 
 export interface HSGraphQLService<
-  ServiceLocals extends HSAuthServiceLocals<HSGraphQLConfigurationSchema> =
-    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
+  ServiceLocals extends
+    HSAuthServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
   RequestLocals extends HSGraphQLRequestLocals = HSGraphQLRequestLocals,
 > extends HSAuthService<ServiceLocals, RequestLocals> {
   getContext: ContextFunction<[ExpressContextFunctionArgument], HSGraphQLContext<ServiceLocals>>;
@@ -63,8 +62,8 @@ export interface HSGraphQLService<
  * Convenience types for the basic request and response
  */
 export type HSGraphQLServiceRequest<
-  ServiceLocals extends HSAuthServiceLocals<HSGraphQLConfigurationSchema> =
-    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
+  ServiceLocals extends
+    HSAuthServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
 > = RequestWithApp<ServiceLocals>;
 
 export type HSGraphQLServiceResponse<
@@ -86,7 +85,7 @@ export type HSGraphQLServiceRouter<
  * logger.
  */
 export type HSGraphQLRequestLike<
-  SLocals extends HSAuthServiceLocals<HSGraphQLConfigurationSchema> =
-    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
+  SLocals extends
+    HSAuthServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
   RLocals extends HSGraphQLRequestLocals = HSGraphQLRequestLocals,
 > = RequestLike<SLocals, RLocals>;

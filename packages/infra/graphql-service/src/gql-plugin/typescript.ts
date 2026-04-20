@@ -5,8 +5,7 @@ const config: CodegenConfig = {
   generates: {
     './src/generated/graphql.ts': {
       config: {
-        contextType:
-          process.env.APOLLO_CONTEXT || '@justtellme/graphql-service#HSGraphQLContext',
+        contextType: process.env.APOLLO_CONTEXT || '@justtellme/graphql-service#HSGraphQLContext',
         strictScalars: true,
         useTypeImports: true,
         scalars: {

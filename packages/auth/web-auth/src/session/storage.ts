@@ -1,9 +1,9 @@
+import type { HSServiceLocals } from '@justtellme/service';
+import type { ServiceExpress } from '@openapi-typescript-infra/service';
 import { RedisStore } from 'connect-redis';
 import type session from 'express-session';
 import type { RedisClientOptions } from 'redis';
 import { createClient } from 'redis';
-import type { HSServiceLocals } from '@justtellme/service';
-import type { ServiceExpress } from '@openapi-typescript-infra/service';
 
 import { CONSUMER_APP_SESSION_TIMEOUT_MS } from './constants.ts';
 

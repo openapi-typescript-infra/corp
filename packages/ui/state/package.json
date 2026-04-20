@@ -24,7 +24,7 @@
     "typecheck": "tsc -p tsconfig.json",
     "build": "tsgo -p tsconfig.build.json",
     "clean": "yarn dlx rimraf ./dist",
-    "lint": "eslint .",
+    "lint": "biome check .",
     "postinstall": "cpconfig",
     "test": "vitest"
   },
@@ -39,10 +39,9 @@
     "@legendapp/state": "^3.0.0-beta.46"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.10",
     "@justtellme/cpconfig": "workspace:^",
     "cpconfig": "^1.5.0",
-    "eslint": "^10.2.0",
-    "prettier": "^3.8.1",
     "typescript": "^6.0.2",
     "vitest": "^4.1.2"
   }

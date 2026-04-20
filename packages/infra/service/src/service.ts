@@ -1,11 +1,9 @@
-import path from 'path';
-
+import path from 'node:path';
 import type { Service } from '@openapi-typescript-infra/service';
-import { useService, insertConfigurationBefore } from '@openapi-typescript-infra/service';
-
-import type { AnyHSServiceLocals, HSRequestLocals, HSServiceLocals } from './types.ts';
+import { insertConfigurationBefore, useService } from '@openapi-typescript-infra/service';
 import type { HSConfigurationSchema } from './config.ts';
 import { addShortstopHandlers, getGcpProjectId } from './shortstops/index.ts';
+import type { AnyHSServiceLocals, HSRequestLocals, HSServiceLocals } from './types.ts';
 
 export function useHSService<
   SLocals extends AnyHSServiceLocals = HSServiceLocals<HSConfigurationSchema>,

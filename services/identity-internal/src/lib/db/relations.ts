@@ -1,10 +1,9 @@
-import type { IndividualId, IndividualUuid, WithIndividualUuid } from './types.ts';
-import { toApiIdentifierDetail } from './namespaces.ts';
-import { getIdentifiersForIndividuals } from './individual.ts';
-
-import type { components } from '#src/generated/service/index.ts';
 import type { RelationTypeEnum } from '#src/generated/database.ts';
+import type { components } from '#src/generated/service/index.ts';
 import type { IdentityInternal } from '#src/types/index.ts';
+import { getIdentifiersForIndividuals } from './individual.ts';
+import { toApiIdentifierDetail } from './namespaces.ts';
+import type { IndividualId, IndividualUuid, WithIndividualUuid } from './types.ts';
 
 export async function getRelationsForIndividuals(
   app: IdentityInternal['App'],

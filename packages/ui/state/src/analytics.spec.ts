@@ -1,11 +1,11 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
-  setAnalyticsClient,
-  track,
+  type AnalyticsClient,
   identifyUser,
   resetAnalytics,
-  type AnalyticsClient,
+  setAnalyticsClient,
+  track,
 } from './analytics.ts';
 
 function mockClient(): AnalyticsClient {

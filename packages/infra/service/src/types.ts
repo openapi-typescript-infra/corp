@@ -11,15 +11,14 @@ import type { Response } from 'express';
 
 import type { HSConfigurationSchema } from './config.ts';
 
-export interface HSServiceLocals<
-  Config extends HSConfigurationSchema = HSConfigurationSchema,
-> extends ServiceLocals<Config> {
+export interface HSServiceLocals<Config extends HSConfigurationSchema = HSConfigurationSchema>
+  extends ServiceLocals<Config> {
   gcpProjectId: string;
 }
 
 // This allows our type constraints to be loose but to extract
 // config type when necessary
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: This intentionally accepts any service config type.
 export type AnyHSServiceLocals = HSServiceLocals<any>;
 
 /**

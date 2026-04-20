@@ -17,7 +17,7 @@
     "clean": "make clean",
     "start": "NODE_OPTIONS='--import tsx/esm' start-service",
     "repl": "NODE_OPTIONS='--import tsx/esm' start-service --repl",
-    "lint": "eslint .",
+    "lint": "biome check .",
     "check-bundles": "node src/scripts/check-bundle-size.ts",
     "postinstall": "cpconfig"
   },
@@ -40,10 +40,9 @@
     "express"
   ],
   "devDependencies": {
+    "@biomejs/biome": "^2.4.10",
     "@openapi-typescript-infra/service-tester": "^7.1.2",
     "cpconfig": "^1.5.0",
-    "eslint": "^10.2.0",
-    "prettier": "^3.8.1",
     "typescript": "^6.0.2",
     "vitest": "^4.1.2"
   },

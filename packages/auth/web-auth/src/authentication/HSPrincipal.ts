@@ -1,6 +1,6 @@
 export {
-  HSPrincipal,
   type AuthenticationFactor,
+  HSPrincipal,
   type HSPrincipalInit,
   type HSPrincipalRole,
 } from '@justtellme/auth-token';

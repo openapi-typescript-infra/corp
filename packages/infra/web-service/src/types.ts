@@ -1,17 +1,17 @@
-import type createClient from 'openapi-fetch';
+import type { paths as IdentityInternal } from '@justtellme/api/identity-internal';
+import type {
+  HSAuthRequestLocals,
+  HSAuthService,
+  HSAuthServiceLocals,
+} from '@justtellme/service-with-auth';
 import type {
   RequestLike,
   RequestWithApp,
   ServiceRouter,
   ServiceTypes,
 } from '@openapi-typescript-infra/service';
-import type { paths as IdentityInternal } from '@justtellme/api/identity-internal';
 import type { NextFunction, Request, Response } from 'express';
-import type {
-  HSAuthRequestLocals,
-  HSAuthService,
-  HSAuthServiceLocals,
-} from '@justtellme/service-with-auth';
+import type createClient from 'openapi-fetch';
 
 import type { HSWebConfigurationSchema } from './config.ts';
 
@@ -38,8 +38,8 @@ export interface HSWebServiceLocals<
 export type HSWebRequestLocals = HSAuthRequestLocals;
 
 export type HSWebService<
-  ServiceLocals extends HSAuthServiceLocals<HSWebConfigurationSchema> =
-    HSWebServiceLocals<HSWebConfigurationSchema>,
+  ServiceLocals extends
+    HSAuthServiceLocals<HSWebConfigurationSchema> = HSWebServiceLocals<HSWebConfigurationSchema>,
   RequestLocals extends HSWebRequestLocals = HSWebRequestLocals,
 > = HSAuthService<ServiceLocals, RequestLocals>;
 
@@ -47,14 +47,14 @@ export type HSWebService<
  * Convenience types for the basic request and response
  */
 export type HSWebServiceRequest<
-  ServiceLocals extends HSAuthServiceLocals<HSWebConfigurationSchema> =
-    HSWebServiceLocals<HSWebConfigurationSchema>,
+  ServiceLocals extends
+    HSAuthServiceLocals<HSWebConfigurationSchema> = HSWebServiceLocals<HSWebConfigurationSchema>,
 > = RequestWithApp<ServiceLocals>;
 
 export type HSWebServiceResponse<
   ResBody = object,
-  ServiceLocals extends HSAuthServiceLocals<HSWebConfigurationSchema> =
-    HSWebServiceLocals<HSWebConfigurationSchema>,
+  ServiceLocals extends
+    HSAuthServiceLocals<HSWebConfigurationSchema> = HSWebServiceLocals<HSWebConfigurationSchema>,
 > = Response<ResBody, ServiceLocals>;
 export type HSWebServiceRouter<
   SLocals extends HSWebServiceLocals = HSWebServiceLocals,
@@ -70,8 +70,8 @@ export type HSWebServiceRouter<
  * logger.
  */
 export type HSWebRequestLike<
-  SLocals extends HSAuthServiceLocals<HSWebConfigurationSchema> =
-    HSWebServiceLocals<HSWebConfigurationSchema>,
+  SLocals extends
+    HSAuthServiceLocals<HSWebConfigurationSchema> = HSWebServiceLocals<HSWebConfigurationSchema>,
   RLocals extends HSWebRequestLocals = HSWebRequestLocals,
 > = RequestLike<SLocals, RLocals>;
 

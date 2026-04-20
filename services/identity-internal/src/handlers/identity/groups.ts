@@ -1,12 +1,12 @@
 import { parseISO } from 'date-fns';
 
 import {
-  createGroup,
   addMemberToGroup,
-  removeGroupMember,
-  updateGroupDisplayName,
+  createGroup,
   escapeGroupName,
+  removeGroupMember,
   unescapeGroupName,
+  updateGroupDisplayName,
 } from '#src/lib/db/groups.ts';
 import { getIndividualByUuid, resolveIdentifier } from '#src/lib/db/individual.ts';
 import type { IndividualId, IndividualUuid } from '#src/lib/db/types.ts';

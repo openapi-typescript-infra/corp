@@ -1,7 +1,6 @@
-import { createHash } from 'crypto';
-
-import { states as USStates } from 'states-us';
 import { ServiceError } from '@openapi-typescript-infra/service';
+import { createHash } from 'crypto';
+import { states as USStates } from 'states-us';
 
 import type { components as Api } from '#src/generated/service/index.ts';
 import type { IdentityInternal } from '#src/types/index.ts';

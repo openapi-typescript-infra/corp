@@ -1,5 +1,5 @@
-import { describe, test } from 'vitest';
 import { getReusableApp, request } from '@openapi-typescript-infra/service-tester';
+import { describe, test } from 'vitest';
 
 describe('Basic test', () => {
   test('make an encryption key', async () => {

@@ -15,7 +15,7 @@
   "packageManager": "yarn@3.6.3",
   "scripts": {
     "build": "tsgo -p tsconfig.build.json",
-    "lint": "eslint .",
+    "lint": "biome check .",
     "postinstall": "cpconfig",
     "test": "vitest"
   },
@@ -27,14 +27,13 @@
     "cpconfig": "@justtellme/cpconfig"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.10",
     "@justtellme/cpconfig": "workspace:^",
     "@justtellme/service": "workspace:^",
     "@openapi-typescript-infra/service-tester": "^7.1.2",
     "@types/node": "^25.5.2",
     "@types/pg": "^8.20.0",
     "cpconfig": "^1.5.0",
-    "eslint": "^10.2.0",
-    "prettier": "^3.8.1",
     "typescript": "^6.0.2",
     "vitest": "^4.1.2"
   },

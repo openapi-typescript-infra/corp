@@ -82,7 +82,7 @@ container:
 	  -f ../../docker/service.Dockerfile
 
 check:
-	yarn prettier -c src --write && yarn lint --fix
+	yarn biome check --write src
 
 typecheck: check
 	make ts
@@ -110,7 +110,7 @@ ifndef BUNDLE_OUTPUT
 endif
 	yarn dlx openapi-typescript-express $(API_SPEC) \
 		--output ./src/generated/service/index.ts
-	yarn prettier ./src/generated/service/index.ts --write
+	yarn biome format --write ./src/generated/service/index.ts
 ifdef GENERATED_DIR
 		rm -rf $(BUNDLE_OUTPUT)
 endif

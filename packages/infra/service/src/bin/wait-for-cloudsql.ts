@@ -1,8 +1,7 @@
-/* eslint-disable no-console */
-import net from 'net';
-import { spawn } from 'child_process';
+import { spawn } from 'node:child_process';
+import net from 'node:net';
 
-const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5432;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5432;
 const RETRY_INTERVAL = 2500;
 const INITIAL_WAIT = 5000;
 const POST_WAIT = 2500;

@@ -1,9 +1,8 @@
-import { toExternalID, ExternalIDType } from '@justtellme/external-id';
+import { ExternalIDType, toExternalID } from '@justtellme/external-id';
 import type { Selectable } from 'kysely';
-
-import type { LedgerTransfer } from '#src/lib/ledger.ts';
-import type { components } from '#src/generated/service/index.ts';
 import type { Transactions } from '#src/generated/database.ts';
+import type { components } from '#src/generated/service/index.ts';
+import type { LedgerTransfer } from '#src/lib/ledger.ts';
 
 export function toTransactionResponse(
   tx: Selectable<Transactions>,

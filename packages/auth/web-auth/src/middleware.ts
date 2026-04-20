@@ -1,28 +1,23 @@
-import type { Request, Response, NextFunction } from 'express';
+import type { HSConfigurationSchema, HSServiceLocals, HSServiceRequest } from '@justtellme/service';
 import {
-  ServiceError,
-  type ServiceExpress,
   isDev,
   isTest,
+  ServiceError,
+  type ServiceExpress,
 } from '@openapi-typescript-infra/service';
-import type {
-  HSConfigurationSchema,
-  HSServiceLocals,
-  HSServiceRequest,
-} from '@justtellme/service';
-
-import type {
-  AuthDatasources,
-  HSSessionConfiguration,
-  HSServiceWithSessionLocals,
-  HSAuthConfiguration,
-} from './types.ts';
-import { createSessionMiddleware } from './session/index.ts';
-import { getRequestDocument } from './authorization/requestDocument.ts';
-import { getVerificationCache } from './authorization/verificationCache.ts';
+import type { NextFunction, Request, Response } from 'express';
 import { HSPrincipal } from './authentication/index.ts';
 import type { AuthApp } from './authentication/stytch.ts';
 import { getStytchTokenDetail } from './authentication/stytch.ts';
+import { getRequestDocument } from './authorization/requestDocument.ts';
+import { getVerificationCache } from './authorization/verificationCache.ts';
+import { createSessionMiddleware } from './session/index.ts';
+import type {
+  AuthDatasources,
+  HSAuthConfiguration,
+  HSServiceWithSessionLocals,
+  HSSessionConfiguration,
+} from './types.ts';
 
 export type TraditionalMiddleware = (req: Request, res: Response, next: NextFunction) => void;
 

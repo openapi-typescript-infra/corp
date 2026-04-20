@@ -1,10 +1,10 @@
-import type { ServiceExpress } from '@openapi-typescript-infra/service';
+import { fromExternalID } from '@justtellme/external-id';
 import type { HSConfigurationSchema, HSServiceLocals } from '@justtellme/service';
+import type { ServiceExpress } from '@openapi-typescript-infra/service';
 import { decode } from 'jsonwebtoken';
 import type { Session, User } from 'stytch';
-import { fromExternalID } from '@justtellme/external-id';
 
-import type { HSAuthConfiguration, AuthDatasources } from '../types.ts';
+import type { AuthDatasources, HSAuthConfiguration } from '../types.ts';
 
 import { HSPrincipal, type HSPrincipalRole } from './HSPrincipal.ts';
 

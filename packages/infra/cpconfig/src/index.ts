@@ -1,6 +1,6 @@
 import fs from 'node:fs';
-import path from 'node:path';
 import { createRequire } from 'node:module';
+import path from 'node:path';
 
 function hasPackage(name: string) {
   try {
@@ -20,14 +20,60 @@ const __dirname = path.dirname(new URL(import.meta.url).pathname);
 const YAML_SENTINEL = '# Managed by cpconfig';
 const JSON_SENTINEL = '"Managed by cpconfig"';
 const JS_SENTINEL = '// Managed by cpconfig';
+const TSCONFIG_TYPES_PLACEHOLDER = '    "types": ["{{types}}"],\n';
+
+const BIOME_INCLUDES = [
+  '**',
+  '!!**/node_modules',
+  '!!**/.yarn',
+  '!!**/.turbo',
+  '!!**/.next',
+  '!!**/.expo',
+  '!!**/dist',
+  '!!**/build',
+  '!!**/coverage',
+  '!!**/storybook-static',
+  '!**/.github',
+  '!**/.vscode',
+  '!**/private',
+  '!**/public',
+  '!**/config',
+  '!**/eslint.config.*',
+  '!**/.prettierrc*',
+  '!**/next-env.d.ts',
+  '!**/*.generated.ts',
+  '!**/src/generated',
+  '!**/migrations/**/*.js',
+  '!**/vitest.config.ts',
+  '!**/tailwind.config.ts',
+  '!**/tsup.config.ts',
+  '!**/sentry.*.config.*',
+];
 
 function replacePlaceholder(ph: string, text: string, value: string) {
   return text.replace(new RegExp(`{{${ph}}}`), value);
 }
 
+function toBiomeIgnore(pattern: string) {
+  const trimmed = pattern.trim();
+  if (trimmed.startsWith('!')) {
+    return trimmed;
+  }
+  return `!${trimmed}`;
+}
+
 export function config(pkgJson: Record<string, unknown>) {
   const deps = (pkgJson.dependencies || {}) as Record<string, string>;
-  const config = (pkgJson.config as { eslintignore?: string[]; skip?: string[] }) || {};
+  const devDeps = (pkgJson.devDependencies || {}) as Record<string, string>;
+  const config =
+    (pkgJson.config as { biomeignore?: string[]; eslintignore?: string[]; skip?: string[] }) || {};
+  const biomeIncludes = [
+    ...BIOME_INCLUDES,
+    ...(config.biomeignore || config.eslintignore || []).map(toBiomeIgnore),
+  ];
+  const biomeIncludesJson = JSON.stringify(biomeIncludes, null, 2).replace(/\n/g, '\n    ');
+  const nodeTypesCompilerOption =
+    deps['@types/node'] || devDeps['@types/node'] ? '    "types": ["node"],\n' : '';
   const shouldWriteGitHook = (() => {
     try {
       return fs.statSync(path.resolve(process.cwd(), '.git')).isDirectory();
@@ -41,16 +87,18 @@ export function config(pkgJson: Record<string, unknown>) {
       contents: fs.readFileSync(path.resolve(__dirname, '../templates/.commitlintrc.yaml'), 'utf8'),
       sentinel: YAML_SENTINEL,
     },
-    'eslint.config.mts': {
+    'biome.jsonc': {
       contents: replacePlaceholder(
-        'ignores',
-        fs.readFileSync(path.resolve(__dirname, '../templates/eslint.config.mts.template'), 'utf8'),
-        JSON.stringify(config?.eslintignore || []),
+        'includes',
+        fs.readFileSync(path.resolve(__dirname, '../templates/biome.jsonc.template'), 'utf8'),
+        biomeIncludesJson,
       ),
       sentinel: JS_SENTINEL,
     },
     'tsconfig.json': {
-      contents: fs.readFileSync(path.resolve(__dirname, '../templates/tsconfig.json'), 'utf8'),
+      contents: fs
+        .readFileSync(path.resolve(__dirname, '../templates/tsconfig.json'), 'utf8')
+        .replace(TSCONFIG_TYPES_PLACEHOLDER, nodeTypesCompilerOption),
       sentinel: JSON_SENTINEL,
     },
     'tsconfig.build.json': {
@@ -59,10 +107,6 @@ export function config(pkgJson: Record<string, unknown>) {
         'utf8',
       ),
       sentinel: JSON_SENTINEL,
-    },
-    '.prettierrc.yaml': {
-      contents: fs.readFileSync(path.resolve(__dirname, '../templates/.prettierrc.yaml'), 'utf8'),
-      sentinel: YAML_SENTINEL,
     },
     'vitest.config.ts': {
       contents: fs.readFileSync(

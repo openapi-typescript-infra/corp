@@ -1,8 +1,8 @@
-import type { IdentityInternalApi } from '#src/types/index.ts';
-import { toBiologicalSex, toBirthdate, toIndividualIdMap } from '#src/lib/db/individual.ts';
-import { resolveAncillaryData } from '#src/lib/db/resolvers.ts';
-import { toDatabaseIdentifierDetail, type CanonicalIdentifier } from '#src/lib/db/namespaces.ts';
 import type { components } from '#src/generated/service/index.ts';
+import { toBiologicalSex, toBirthdate, toIndividualIdMap } from '#src/lib/db/individual.ts';
+import { type CanonicalIdentifier, toDatabaseIdentifierDetail } from '#src/lib/db/namespaces.ts';
+import { resolveAncillaryData } from '#src/lib/db/resolvers.ts';
+import type { IdentityInternalApi } from '#src/types/index.ts';
 
 function toMatchKey(namespace: string, identifier: string) {
   return `${namespace}:${identifier}`;

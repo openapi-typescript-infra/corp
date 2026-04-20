@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build": "tsgo -p tsconfig.build.json",
-    "lint": "eslint .",
+    "lint": "biome check .",
     "postinstall": "cpconfig",
     "test": "vitest",
     "typecheck": "tsgo --noEmit -p tsconfig.json"
@@ -39,6 +39,7 @@
     "cpconfig": "@justtellme/cpconfig"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.10",
     "@justtellme/service": "workspace:^",
     "@openapi-typescript-infra/service": "^6.13.1",
     "@openapi-typescript-infra/service-tester": "^7.1.2",
@@ -46,10 +47,8 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.5.2",
     "@typescript/native-preview": "^7.0.0-dev.20260404.1",
-    "eslint": "^10.2.0",
     "nock": "^14.0.11",
     "node-mocks-http": "^1.17.2",
-    "prettier": "^3.8.1",
     "typescript": "^6.0.2",
     "vitest": "^4.1.2"
   },

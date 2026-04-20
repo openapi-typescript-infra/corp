@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { type StytchClientOptions, StytchProvider } from '@stytch/nextjs';
+import * as React from 'react';
 
 import { getEnvVar, isProd } from '../env.ts';
 
@@ -24,7 +24,10 @@ export function HSStytchProvider({
     options: StytchClientOptions,
   ): Parameters<typeof StytchProvider>[0]['stytch'] | undefined;
 }>) {
-  const client = React.useMemo(() => createClient(getEnvVar('STYTCH_TOKEN'), stytchOptions), []);
+  const client = React.useMemo(
+    () => createClient(getEnvVar('STYTCH_TOKEN'), stytchOptions),
+    [createClient],
+  );
 
   return client ? <StytchProvider stytch={client}>{children}</StytchProvider> : children;
 }

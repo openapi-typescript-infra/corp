@@ -1,10 +1,8 @@
 import type { Selectable } from 'kysely';
-
-import { canonicalizeName, parseName } from './individual-name.ts';
-
 import type { IndividualIdentifiers } from '#src/generated/database.ts';
 import type { components } from '#src/generated/service/index.ts';
 import type { IdentityInternal } from '#src/types/index.ts';
+import { canonicalizeName, parseName } from './individual-name.ts';
 
 interface NamespaceDetail {
   id: number;

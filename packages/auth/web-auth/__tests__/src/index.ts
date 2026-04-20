@@ -1,22 +1,19 @@
-import type {
-  HSConfigurationSchema,
-  HSService,
-  HSServiceLocals,
-} from '@justtellme/service';
 import type { paths as IdentityInternal } from '@justtellme/api/identity-internal';
+import type { HSConfigurationSchema, HSService, HSServiceLocals } from '@justtellme/service';
 import { getDatasourceConfiguration, useHSService } from '@justtellme/service';
 import createClient from 'openapi-fetch';
 import type { createClient as createRedisClient } from 'redis';
-
+import type { AuthDatasources, HSAuthConfiguration, HSSessionConfiguration } from '#src/types.ts';
 import type { TraditionalMiddleware } from '../../src/middleware.ts';
 import { getMiddleware } from '../../src/middleware.ts';
-
-import type { AuthDatasources, HSAuthConfiguration, HSSessionConfiguration } from '#src/types.ts';
 
 export type TestConfig = HSConfigurationSchema & HSSessionConfiguration & HSAuthConfiguration;
 export type TestServiceLocals = HSServiceLocals<TestConfig> &
   AuthDatasources & {
-    withAuthorization: (rule: string, additionalParameters?: Record<string, unknown>) => TraditionalMiddleware;
+    withAuthorization: (
+      rule: string,
+      additionalParameters?: Record<string, unknown>,
+    ) => TraditionalMiddleware;
     redis: ReturnType<typeof createRedisClient>;
   };
 export type TestService = HSService<TestServiceLocals>;
@@ -56,7 +53,9 @@ export function service(): TestService {
         withAuthorization: session.withAuthorization,
         redis: session.redis,
         datasources: {
-          identityInternal: createClient<IdentityInternal>(getDatasourceConfiguration(app, 'identityInternal')),
+          identityInternal: createClient<IdentityInternal>(
+            getDatasourceConfiguration(app, 'identityInternal'),
+          ),
         },
       });
     },

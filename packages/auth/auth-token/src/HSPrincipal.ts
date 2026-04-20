@@ -1,6 +1,6 @@
+import { parseUnknownExternalID } from '@justtellme/external-id';
 import type { JwtPayload } from 'jsonwebtoken';
 import jsonwebtoken from 'jsonwebtoken';
-import { parseUnknownExternalID } from '@justtellme/external-id';
 
 const { decode, sign } = jsonwebtoken;
 

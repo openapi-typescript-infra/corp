@@ -1,2 +1,2 @@
-export * from './app.ts';
 export * from './analytics.ts';
+export * from './app.ts';

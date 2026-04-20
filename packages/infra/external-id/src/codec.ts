@@ -1,5 +1,5 @@
-import { shortener } from './short-uuid.ts';
 import type { ExternalIDType } from './registry.ts';
+import { shortener } from './short-uuid.ts';
 
 export function toExternalID<IDType extends ExternalIDType>(
   type: IDType,

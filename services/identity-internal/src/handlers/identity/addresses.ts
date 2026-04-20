@@ -1,8 +1,7 @@
 import { sql } from 'kysely';
-
-import type { IdentityInternalApi } from '#src/types/service.ts';
-import { getAddressWithKey } from '#src/lib/normalize.ts';
 import { geocodeAddressById } from '#src/lib/geocode.ts';
+import { getAddressWithKey } from '#src/lib/normalize.ts';
+import type { IdentityInternalApi } from '#src/types/service.ts';
 
 export const GET: IdentityInternalApi['getAddresses'] = async (req, res) => {
   const result = await req.app.locals.db

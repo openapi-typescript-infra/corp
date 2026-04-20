@@ -1,3 +1,4 @@
+// biome-ignore-all lint/security/noDangerouslySetInnerHtml: serializes trusted server-side environment into the hydration bootstrap.
 import { getNodeEnv } from '@openapi-typescript-infra/service';
 
 export interface HSClientSideVariables {
