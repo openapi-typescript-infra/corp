@@ -1,18 +1,18 @@
 import { app$ } from '@justtellme/state';
 import { FullPageLoader } from '@justtellme/ui-kit';
-import { HSPostHogProvider, HSStytchProvider } from '@justtellme/web-service/isomorphic';
+import { HSStytchProvider } from '@justtellme/web-service/isomorphic';
 import { useValue } from '@legendapp/state/react';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
+import Head from 'next/head.js';
+import { useRouter } from 'next/router.js';
 import { withUrqlClient } from 'next-urql';
 
 import '@justtellme/ui-kit/styles.css';
 
-import { PostHogPageviewTracker } from '#src/components/PostHogPageviewTracker.tsx';
-import { StytchStateBridge } from '#src/components/StytchStateBridge.tsx';
-import { getSingletonStytchHeadlessClient } from '#src/lib/stytch.ts';
-import { getUrqlClientOptions } from '#src/lib/urql.ts';
-import type { HSAppProps } from '#src/types/NextPage.ts';
+import { LazyPostHog } from '#src/components/LazyPostHog.js';
+import { StytchStateBridge } from '#src/components/StytchStateBridge.js';
+import { getSingletonStytchHeadlessClient } from '#src/lib/stytch.js';
+import { getUrqlClientOptions } from '#src/lib/urql.js';
+import type { HSAppProps } from '#src/types/NextPage.js';
 
 const HSAppComponent = ({ Component, pageProps }: HSAppProps) => {
   const router = useRouter();
@@ -30,8 +30,7 @@ const HSAppComponent = ({ Component, pageProps }: HSAppProps) => {
   }
 
   return (
-    <HSPostHogProvider>
-      <PostHogPageviewTracker />
+    <LazyPostHog>
       <HSStytchProvider clientType="CONSUMER" createClient={getSingletonStytchHeadlessClient}>
         <StytchStateBridge />
         <Head>
@@ -40,7 +39,7 @@ const HSAppComponent = ({ Component, pageProps }: HSAppProps) => {
         <AppLoadingOverlay />
         <Component {...pageProps} />
       </HSStytchProvider>
-    </HSPostHogProvider>
+    </LazyPostHog>
   );
 };
 

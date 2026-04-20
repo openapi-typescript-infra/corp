@@ -8,7 +8,8 @@ import {
   type StytchLoginConfig,
   useStytch,
 } from '@stytch/nextjs';
-import { useRouter } from 'next/router';
+import type { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router.js';
 import { useEffect, useMemo } from 'react';
 
 function useLoginConfig(): StytchLoginConfig {
@@ -30,6 +31,8 @@ function useLoginConfig(): StytchLoginConfig {
     };
   }, [router.asPath]);
 }
+
+export const getServerSideProps: GetServerSideProps = async () => ({ props: {} });
 
 export default function IndexPage() {
   const init = useValue(app$.auth.initialized);

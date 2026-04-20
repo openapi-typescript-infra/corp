@@ -4,6 +4,7 @@ import { createConsumerWebDatasources } from './types/datasources.ts';
 import type { ConsumerWeb, ConsumerWebLocals } from './types/index.ts';
 
 export function service(): ConsumerWeb['Service'] {
+  // biome-ignore lint/correctness/useHookAtTopLevel: not a React hook
   const base = useHSWebService<ConsumerWebLocals>();
   return {
     ...base,

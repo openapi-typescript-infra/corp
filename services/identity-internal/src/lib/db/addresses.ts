@@ -128,7 +128,7 @@ export async function getAddressesForIndividuals(
 export async function getAddressId(
   app: IdentityInternal['App'],
   address: components['schemas']['ScopedAddress'],
-): Promise<number> {
+): Promise<string> {
   const normalized = getAddressWithKey(app, address);
 
   const hasLocation =
@@ -187,7 +187,7 @@ export async function saveAddresses(
     ),
   );
 
-  const validAddresses: { address_type: string; instance_name?: string; id: number }[] = [];
+  const validAddresses: { address_type: string; instance_name?: string; id: string }[] = [];
   addresses.forEach((address, ix) => {
     if (addressIds[ix]) {
       validAddresses.push({

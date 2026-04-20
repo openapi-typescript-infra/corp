@@ -1,4 +1,7 @@
 # Custom
+private/
+.next/
+/next.config.js
 .env*.local
 src/generated
 .transpiled

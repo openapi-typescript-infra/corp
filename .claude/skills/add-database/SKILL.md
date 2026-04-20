@@ -70,7 +70,7 @@ The shared Makefile (`@justtellme/service/Makefile`) provides:
 {
   "scripts": {
     "ci-setup": "make db-ci",
-    "db:create": "yarn dlx run-pg-sql postgres ./migrations/setup/db_setup.sql",
+    "db:create": "yarn dlx run-pg-sql -q postgres ./migrations/setup/db_setup.sql",
     "migration:apply": "db-migrate --config migrations/db-migrate.json up",
     "migration:undo": "db-migrate --config migrations/db-migrate.json down",
     "migration:create": "db-migrate --config migrations/db-migrate.json create"

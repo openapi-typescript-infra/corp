@@ -6,8 +6,8 @@
     "noEmitOnError": false,
     "outDir": "dist/",
     "incremental": false,
-    "rootDir": "./src",
     "rewriteRelativeImportExtensions": true,
+    "types": ["node"],
     "paths": {
       "#src/*": ["./src/*"]
     }

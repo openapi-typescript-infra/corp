@@ -1,18 +1,11 @@
-import { identifyUser, resetAnalytics, setAnalyticsClient, setStytch } from '@justtellme/state';
+import { identifyUser, resetAnalytics, setStytch } from '@justtellme/state';
 import { useStytchSession, useStytchUser } from '@stytch/nextjs';
-import { usePostHog } from 'posthog-js/react';
 import { useEffect } from 'react';
 
 /** Syncs Stytch auth state into app$. Render inside HSStytchProvider. */
 export function StytchStateBridge() {
   const { user, isInitialized } = useStytchUser();
   const { session } = useStytchSession();
-  const posthog = usePostHog();
-
-  // Inject the PostHog client into the shared analytics layer
-  useEffect(() => {
-    setAnalyticsClient(posthog);
-  }, [posthog]);
 
   useEffect(() => {
     if (isInitialized) {
@@ -34,7 +27,7 @@ export function StytchStateBridge() {
     } else {
       resetAnalytics();
     }
-  }, [user, isInitialized, posthog]);
+  }, [user, isInitialized]);
 
   return null;
 }

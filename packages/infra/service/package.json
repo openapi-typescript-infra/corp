@@ -42,9 +42,9 @@
     "@biomejs/biome": "^2.4.10",
     "@openapi-typescript-infra/service-tester": "^7.1.2",
     "@types/node": "^25.5.2",
-    "@typescript/native-preview": "^7.0.0-dev.20260404.1",
+    "@typescript/native-preview": "^7.0.0-dev.20260418.1",
     "run-pg-sql": "^1.2.0",
-    "typescript": "^6.0.2",
+    "typescript": "^6.0.3",
     "vitest": "^4.1.2"
   },
   "dependencies": {

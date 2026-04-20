@@ -9,7 +9,7 @@ _HS_SERVICE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 _TSC_ALIAS := $(shell node --experimental-import-meta-resolve -e "import {createRequire} from 'module'; const r = createRequire(import.meta.url); console.log(r.resolve('tsc-alias/dist/bin/index.js'))")
 
 # Filter out rules we redefine below: service generation and ts build
-include $(shell sed -e '/^src\/generated\/service\/index\.ts:/,/^$$/{d;}' -e '/^\$$(ts_build_stamp):/,/^$$/{d;}' $(SERVICE_MAKEFILE) > /tmp/_filtered_service_makefile && echo /tmp/_filtered_service_makefile)
+include $(shell _tmp=$$(mktemp) && sed -e '/^src\/generated\/service\/index\.ts:/,/^$$/{d;}' -e '/^\$$(ts_build_stamp):/,/^$$/{d;}' $(SERVICE_MAKEFILE) > $$_tmp && echo $$_tmp)
 
 # Override ts build to handle #src/ subpath imports with .ts extensions:
 # 1. Type-check via tsconfig.json (no rewriteRelativeImportExtensions => no TS2877)
@@ -110,7 +110,6 @@ ifndef BUNDLE_OUTPUT
 endif
 	yarn dlx openapi-typescript-express $(API_SPEC) \
 		--output ./src/generated/service/index.ts
-	yarn biome format --write ./src/generated/service/index.ts
 ifdef GENERATED_DIR
 		rm -rf $(BUNDLE_OUTPUT)
 endif

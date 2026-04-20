@@ -1,11 +1,14 @@
 import { useStytch, useStytchSession } from '@stytch/nextjs';
-import { useRouter } from 'next/router';
+import type { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router.js';
 import { useEffect } from 'react';
 
 /**
  * Stytch redirect callback page. Handles the token exchange after OAuth
  * or magic link flows, then redirects to the return_url (or /).
  */
+export const getServerSideProps: GetServerSideProps = async () => ({ props: {} });
+
 export default function AuthenticatePage() {
   const router = useRouter();
   const stytch = useStytch();

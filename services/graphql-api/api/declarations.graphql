@@ -3,8 +3,8 @@ The complexity directive indicates the cost of fetching
 a particular field. The value is a positive integer,
 where higher values indicate higher cost.
 """
-directive @complexity(value: Int) on FIELD_DEFINITION
+directive @complexity("The cost value for this field" value: Int) on FIELD_DEFINITION
 """
 asinput makes it easier to define input types from regular types.
 """
-directive @asinput(omit: [String]) on OBJECT
+directive @asinput("Fields to omit from the generated input type" omit: [String]) on OBJECT

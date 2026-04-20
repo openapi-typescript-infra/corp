@@ -3,7 +3,14 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build", "generate"],
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": ["dist/**", ".next/**", "private/**"],
+      "passThroughEnv": ["PGPORT", "PGHOST", "PGUSER", "PGPASSWORD", "PGDATABASE"]
+    },
+    "clean": {
+      "cache": false
+    },
+    "cpconfig": {
+      "cache": false
     },
     "generate": {
       "outputs": ["src/generated/**"]

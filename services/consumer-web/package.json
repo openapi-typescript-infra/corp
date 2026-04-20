@@ -18,6 +18,7 @@
     "start": "NODE_OPTIONS='--import tsx/esm' start-service",
     "repl": "NODE_OPTIONS='--import tsx/esm' start-service --repl",
     "lint": "biome check .",
+    "build:next": "next build",
     "check-bundles": "node src/scripts/check-bundle-size.ts",
     "postinstall": "cpconfig"
   },
@@ -43,7 +44,7 @@
     "@biomejs/biome": "^2.4.10",
     "@openapi-typescript-infra/service-tester": "^7.1.2",
     "cpconfig": "^1.5.0",
-    "typescript": "^6.0.2",
+    "typescript": "^6.0.3",
     "vitest": "^4.1.2"
   },
   "dependencies": {
@@ -54,9 +55,10 @@
     "@justtellme/web-service": "workspace:^",
     "@legendapp/state": "^3.0.0-beta.46",
     "@openapi-typescript-infra/service": "^6.13.1",
+    "next": "^16.2.4",
     "@stytch/nextjs": "^22.0.5",
     "next-urql": "^5.0.2",
-    "posthog-js": "^1.364.7",
+    "posthog-js": "^1.369.3",
     "urql": "^5.0.1"
   }
 }

@@ -2,6 +2,7 @@
   "//": "Managed by cpconfig",
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "incremental": false
   }
 }

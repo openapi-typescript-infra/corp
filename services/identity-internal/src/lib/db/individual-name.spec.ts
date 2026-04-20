@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { canonicalizeName, encodeName, parseName } from './individual-name';
+import { canonicalizeName, encodeName, parseName } from './individual-name.ts';
 
 describe('NameEncoder', () => {
   test('canonicalizeName without middleName', () => {

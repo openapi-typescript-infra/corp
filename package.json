@@ -15,7 +15,7 @@
     "api": "turbo run build --filter=@justtellme/api",
     "build": "turbo run build",
     "clean": "turbo run clean",
-    "cpconfig": "yarn workspaces foreach -pt run cpconfig",
+    "cpconfig": "turbo run cpconfig",
     "ios": "yarn workspace @just-tell-me/mobile-app run ios",
     "android": "yarn workspace mobile-app run android",
     "lint": "turbo run lint",
@@ -27,11 +27,11 @@
     "format": "turbo run lint -- --write"
   },
   "dependencies": {
-    "@typescript/native-preview": "^7.0.0-dev.20260404.1",
+    "@typescript/native-preview": "^7.0.0-dev.20260418.1",
     "cpconfig": "^1.5.0",
     "expo-dev-client": "~55.0.22",
     "run-pg-sql": "^1.2.0",
-    "typescript": "^6.0.2",
+    "typescript": "^6.0.3",
     "vitest": "^4.1.2"
   },
   "devDependencies": {

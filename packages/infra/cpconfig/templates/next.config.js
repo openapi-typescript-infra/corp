@@ -38,13 +38,68 @@ function safePackageLoad() {
 
 const pkgConfig = safePackageLoad();
 
+function workspaceExportAliases() {
+  const aliases = {};
+  const transpile = [];
+  const allDeps = {
+    ...(pkgConfig.dependencies || {}),
+    ...(pkgConfig.devDependencies || {}),
+  };
+  for (const [dep, version] of Object.entries(allDeps)) {
+    if (typeof version !== 'string' || !version.startsWith('workspace:')) {
+      continue;
+    }
+    let depPkgJson;
+    try {
+      const requireFn = typeof require !== 'undefined' ? require : createRequire(import.meta.url);
+      const depPkgPath = requireFn.resolve(`${dep}/package.json`, {
+        paths: [process.cwd()],
+      });
+      depPkgJson = JSON.parse(fs.readFileSync(depPkgPath, 'utf8'));
+    } catch {
+      continue;
+    }
+    const exports = depPkgJson.exports;
+    if (!exports || typeof exports !== 'object') {
+      continue;
+    }
+    for (const [exportPath, exportValue] of Object.entries(exports)) {
+      if (!exportValue || typeof exportValue !== 'object') {
+        continue;
+      }
+      const prod = exportValue.production;
+      const dev = exportValue.default;
+      if (prod && dev && prod !== dev) {
+        const fullExport = exportPath === '.' ? dep : `${dep}/${exportPath.replace(/^\.\//, '')}`;
+        aliases[fullExport] = path.resolve(
+          path.dirname(
+            (() => {
+              const requireFn =
+                typeof require !== 'undefined' ? require : createRequire(import.meta.url);
+              return requireFn.resolve(`${dep}/package.json`, {
+                paths: [process.cwd()],
+              });
+            })(),
+          ),
+          dev,
+        );
+        if (!transpile.includes(dep)) {
+          transpile.push(dep);
+        }
+      }
+    }
+  }
+  return { aliases, transpile };
+}
+
 function nextConfig() {
+  const { aliases: wsAliases, transpile } = workspaceExportAliases();
   return import('next-intl/plugin')
     .then((plugin) => getPlugin(plugin)())
     .catch(() => (config) => config)
     .then((withNextIntl) => {
       return withNextIntl({
-        transpilePackages: ['@justtellme/web-service/src/client'],
+        transpilePackages: transpile,
         // Test builds overwrite build files, so get them out of the way
         distDir: process.env.NODE_ENV === 'test' ? undefined : 'private',
         generateBuildId() {
@@ -56,7 +111,7 @@ function nextConfig() {
           tsconfigPath: './tsconfig.build.json',
         },
         turbopack: {
-          resolveAlias: { '#src': './src' },
+          resolveAlias: { '#src': './src', ...wsAliases },
           resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
         },
       });

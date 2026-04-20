@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import type { AppProps } from 'next/app';
+import type { AppProps } from 'next/app.js';
 
 export type NextPageProps<P = object, IP = P> = NextPage<P, IP>;
 

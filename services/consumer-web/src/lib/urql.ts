@@ -1,11 +1,11 @@
 import { getEnvVar } from '@justtellme/web-service/isomorphic';
-import snakeCase from 'lodash-es/snakeCase';
+import snakeCase from 'lodash-es/snakeCase.js';
 import type { GetServerSidePropsContext, NextPageContext } from 'next';
 import { initUrqlClient } from 'next-urql';
 import type { Client, ClientOptions, CombinedError, SSRExchange } from 'urql';
 import { cacheExchange, fetchExchange, ssrExchange } from 'urql';
 
-import type { ConsumerWebClientSideVariables, SerializedCombinedError } from '#src/types/index.ts';
+import type { ConsumerWebClientSideVariables, SerializedCombinedError } from '#src/types/index.js';
 
 /**
  * Extracts the necessary headers from the request.

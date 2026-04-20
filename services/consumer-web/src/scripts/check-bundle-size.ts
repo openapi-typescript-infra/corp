@@ -19,6 +19,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import zlib from 'node:zlib';
 
 const DIST_DIR = 'private';
 const DEFAULT_BUDGETS: Record<string, string> = {
@@ -36,6 +37,11 @@ interface ChunkInfo {
 interface PageEntry {
   route: string;
   size: number;
+}
+
+function gzipSize(filePath: string): number {
+  const buf = fs.readFileSync(filePath);
+  return zlib.gzipSync(buf).length;
 }
 
 function parseSize(str: string): number {
@@ -89,10 +95,9 @@ function collectChunkSizes(): ChunkInfo[] {
       if (entry.isDirectory()) {
         walk(full, label || entry.name);
       } else if (entry.name.endsWith('.js')) {
-        const stat = fs.statSync(full);
         chunks.push({
           file: path.relative(DIST_DIR, full),
-          size: stat.size,
+          size: gzipSize(full),
           label: label || 'other',
         });
       }
@@ -122,7 +127,7 @@ function collectPageSizes(): Record<string, number> | null {
       }
       const full = path.join(DIST_DIR, file);
       if (fs.existsSync(full)) {
-        total += fs.statSync(full).size;
+        total += gzipSize(full);
       }
     }
     pages[route] = total;
@@ -178,7 +183,7 @@ function run() {
   }
 
   // Pretty output
-  console.log('\nBundle Size Report\n');
+  console.log('\nBundle Size Report (gzipped)\n');
   console.log(`  Total JS:    ${formatSize(totalSize).padStart(12)}  (budget: ${budgets.total})`);
   console.log(`  Shared JS:   ${formatSize(sharedSize).padStart(12)}  (budget: ${budgets.shared})`);
 

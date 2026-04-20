@@ -4,7 +4,7 @@ all: graphql ts
 
 graphql-lint: graphql
 	@echo "Linting GraphQL files..."
-	@yarn biome check src/generated/schema.graphql
+	@yarn eslint .
 
 export SERVICE_NAME ?= graphql-api
 export APOLLO_CONTEXT ?= "../types/context.ts\#GraphQLApiContext"
