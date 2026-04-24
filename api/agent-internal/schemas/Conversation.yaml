@@ -1,19 +1,17 @@
 type: object
+description: A conversation executing a workflow
 required:
   - conversation_id
-  - status
 properties:
   conversation_id:
     type: string
+    description: The ID of the conversation
   status:
     type: string
     enum:
-      - active
-      - archived
-      - deleted
-  created_at:
+      - running
+      - completed
+      - failed
+  error:
     type: string
-    format: date-time
-  updated_at:
-    type: string
-    format: date-time
+    description: The error message if the conversation failed

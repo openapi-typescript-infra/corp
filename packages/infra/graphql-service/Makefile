@@ -8,7 +8,7 @@ include $(SERVICE_MAKEFILE)
 SCHEMA := $(shell find api -type f -name '*.graphql')
 GENERATED_GRAPHQL_FILE ?= ./src/generated/schema.graphql
 GENERATED_TYPES_FILE ?= ./src/generated/graphql.ts
-APOLLO_CONTEXT ?= "@justtellme/graphql-service\#HSGraphQLContext"
+APOLLO_CONTEXT ?= "@justtellme/graphql-service\#JTMGraphQLContext"
 
 graphql: $(GENERATED_GRAPHQL_FILE) $(GENERATED_TYPES_FILE)
 

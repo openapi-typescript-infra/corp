@@ -1,12 +1,12 @@
 import path from 'node:path';
 import type { Service } from '@openapi-typescript-infra/service';
 import { insertConfigurationBefore, useService } from '@openapi-typescript-infra/service';
-import type { HSConfigurationSchema } from './config.ts';
+import type { JTMConfigurationSchema } from './config.ts';
 import { addShortstopHandlers, getGcpProjectId } from './shortstops/index.ts';
-import type { AnyHSServiceLocals, HSRequestLocals, HSServiceLocals } from './types.ts';
+import type { AnyJTMServiceLocals, HSRequestLocals, JTMServiceLocals } from './types.ts';
 
-export function useHSService<
-  SLocals extends AnyHSServiceLocals = HSServiceLocals<HSConfigurationSchema>,
+export function useJTMService<
+  SLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
   RLocals extends HSRequestLocals = HSRequestLocals,
 >(baseService?: Service<SLocals, RLocals>): Service<SLocals, RLocals> {
   const base = useService(baseService);
@@ -58,7 +58,7 @@ export function useHSService<
     async onListening(app, args) {
       await base?.onListening?.(app, args);
       const { port, protocol } = args;
-      const config = app.locals.config as HSConfigurationSchema;
+      const config = app.locals.config as JTMConfigurationSchema;
       const registry = config.registry?.registryUrl;
       if (registry && config.registry.useRegistry) {
         const response = await fetch(registry, {

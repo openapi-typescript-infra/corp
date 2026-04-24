@@ -1,5 +1,5 @@
 import { AuthTypes, Connector, IpAddressTypes } from '@google-cloud/cloud-sql-connector';
-import type { AnyHSServiceLocals, HSExpress, HSServiceLocals } from '@justtellme/service';
+import type { AnyJTMServiceLocals, HSExpress, JTMServiceLocals } from '@justtellme/service';
 import { getNodeEnv } from '@openapi-typescript-infra/service';
 import pg from 'pg';
 
@@ -24,7 +24,7 @@ interface CloudSqlInterface {
   shutdown(): Promise<void>;
 }
 
-async function getRoPool<SLocals extends AnyHSServiceLocals = HSServiceLocals>(
+async function getRoPool<SLocals extends AnyJTMServiceLocals = JTMServiceLocals>(
   app: HSExpress<SLocals>,
   config: HSCloudSqlConfiguration,
   pool: pg.Pool,
@@ -56,7 +56,7 @@ async function getRoPool<SLocals extends AnyHSServiceLocals = HSServiceLocals>(
  * If you only have a single database, you can usually get away with just passing the app.
  * We will fetch a config called "db," which is the default
  */
-export async function getPgPool<SLocals extends AnyHSServiceLocals = HSServiceLocals>(
+export async function getPgPool<SLocals extends AnyJTMServiceLocals = JTMServiceLocals>(
   app: HSExpress<SLocals>,
   config?: HSCloudSqlConfiguration,
 ): Promise<CloudSqlInterface> {

@@ -2,7 +2,27 @@
   "temporal": {
     "address": "temporal.default.svc.cluster.local:7233"
   },
+  "defaultTemporal": {
+    "address": "temporal.default.svc.cluster.local:7233",
+    "taskQueue": "agent-internal"
+  },
   "db": {
     "default": "agent_internal"
-  }
+  },
+  "redis": {},
+  "models": {
+    "claude-sonnet": {
+      "model": "claude-sonnet-4-6",
+      "temperature": 0.2
+    },
+    "claude-haiku": {
+      "model": "claude-haiku-4-5-20251001",
+      "temperature": 0.2
+    },
+    "gpt-4o": {
+      "model": "gpt-4o",
+      "temperature": 0.2
+    }
+  },
+  "defaultModel": "claude-sonnet"
 }

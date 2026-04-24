@@ -27,3 +27,7 @@ paths:
     $ref: paths/addresses.address_id.yaml
   /identity/postal_codes/{country}/{postal_code}:
     $ref: paths/addresses.postal_codes.country.postal_code.yaml
+components:
+  schemas:
+    AddressFields:
+      $ref: schemas/AddressFields.yaml

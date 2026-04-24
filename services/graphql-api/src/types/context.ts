@@ -1,10 +1,10 @@
-import type { HSGraphQLContext } from '@justtellme/graphql-service';
-import { HttpHSGraphQLContext, WsHSGraphQLContext } from '@justtellme/graphql-service';
+import type { JTMGraphQLContext } from '@justtellme/graphql-service';
+import { HttpJTMGraphQLContext, WsJTMGraphQLContext } from '@justtellme/graphql-service';
 import type { Context } from 'graphql-ws';
 import { dataloaders } from '#src/lib/dataloaders/index.ts';
 import type { GraphqlApi, GraphqlApiLocals, GraphqlApiRequestLocals } from './service.ts';
 
-export interface GraphQLApiContext extends HSGraphQLContext<GraphqlApiLocals> {
+export interface GraphQLApiContext extends JTMGraphQLContext<GraphqlApiLocals> {
   loaders: ReturnType<typeof dataloaders>;
   addCost(cost: number): void;
 
@@ -16,7 +16,7 @@ export interface GraphQLApiContext extends HSGraphQLContext<GraphqlApiLocals> {
   };
 }
 
-export class GraphQLHttpApiContext extends HttpHSGraphQLContext<
+export class GraphQLHttpApiContext extends HttpJTMGraphQLContext<
   GraphqlApiLocals,
   GraphqlApiRequestLocals
 > {
@@ -34,7 +34,7 @@ export class GraphQLHttpApiContext extends HttpHSGraphQLContext<
   }
 }
 
-export class GraphQLApiWsContext extends WsHSGraphQLContext<GraphqlApiLocals> {
+export class GraphQLApiWsContext extends WsJTMGraphQLContext<GraphqlApiLocals> {
   loaders: ReturnType<typeof dataloaders>;
 
   constructor(app: GraphqlApi['App'], context: Context) {

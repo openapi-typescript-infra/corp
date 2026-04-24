@@ -1,9 +1,9 @@
-import type { HSServiceRouter } from '@justtellme/service';
+import type { JTMServiceRouter } from '@justtellme/service';
 import type { ServiceExpress, ServiceHandler } from '@openapi-typescript-infra/service';
 
 import type { TestServiceLocals } from '../index.ts';
 
-export function route(router: HSServiceRouter, app: ServiceExpress<TestServiceLocals>) {
+export function route(router: JTMServiceRouter, app: ServiceExpress<TestServiceLocals>) {
   const helloJson: ServiceHandler = (req, res) => {
     res.json({ message: 'Hello, world!' });
   };

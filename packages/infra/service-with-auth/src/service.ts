@@ -1,5 +1,5 @@
-import { useHSService } from '@justtellme/service';
-import type { HSPrincipal } from '@justtellme/web-auth';
+import { useJTMService } from '@justtellme/service';
+import type { JTMPrincipal } from '@justtellme/auth-token';
 import { getMiddleware, getPrincipal } from '@justtellme/web-auth';
 import type { Service } from '@openapi-typescript-infra/service';
 import { insertConfigurationBefore } from '@openapi-typescript-infra/service';
@@ -16,12 +16,12 @@ function stytchClient(config: HSAuthConfigurationSchema['auth']['stytch']) {
   });
 }
 
-export function useHSServiceWithAuth<
+export function useJTMServiceWithAuth<
   SLocals extends
     HSAuthServiceLocals<HSAuthConfigurationSchema> = HSAuthServiceLocals<HSAuthConfigurationSchema>,
   RLocals extends HSAuthRequestLocals = HSAuthRequestLocals,
 >(baseService?: Service<SLocals, RLocals>): Service<SLocals, RLocals> {
-  const base = useHSService(baseService);
+  const base = useJTMService(baseService);
   let session: Awaited<ReturnType<typeof getMiddleware>> | undefined;
 
   return {
@@ -101,7 +101,7 @@ export function useHSServiceWithAuth<
       const msg = base?.getLogFields?.(req, values);
       if (!values.u && 'user' in req) {
         // Just pluck an existing value if we have it, don't spend the time decoding tokens
-        const user = req.user as HSPrincipal | undefined;
+        const user = req.user as JTMPrincipal | undefined;
         if (user?.userUuid) {
           values.u = user.userUuid;
         }

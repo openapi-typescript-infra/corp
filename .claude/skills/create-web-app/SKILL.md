@@ -165,7 +165,7 @@ export function service(): <PascalName>['Service'] {
 }
 ```
 
-Key difference: uses `useHSWebService` (from `@justtellme/web-service`), NOT `useHSService`. This sets up Next.js, Stytch auth, sessions, and all the web middleware automatically.
+Key difference: uses `useHSWebService` (from `@justtellme/web-service`), NOT `useJTMService`. This sets up Next.js, Stytch auth, sessions, and all the web middleware automatically.
 
 ## src/types/
 
@@ -205,7 +205,7 @@ export interface <PascalName>ConfigSchema extends HSWebConfigurationSchema {
 }
 ```
 
-Note: extends `HSWebConfigurationSchema` (from web-service), not `HSConfigurationSchema`.
+Note: extends `HSWebConfigurationSchema` (from web-service), not `JTMConfigurationSchema`.
 
 ### datasources.ts
 

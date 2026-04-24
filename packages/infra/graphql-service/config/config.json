@@ -1,5 +1,5 @@
 {
-  "$schema": "tsschema://src/types#HSGraphQLConfigurationSchema",
+  "$schema": "tsschema://src/types#JTMGraphQLConfigurationSchema",
   "session": {
     "enabled": true
   },

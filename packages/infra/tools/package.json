@@ -1,0 +1,58 @@
+{
+  "name": "@justtellme/tools",
+  "version": "0.0.0",
+  "description": "Centralized tool definitions with codegen and AI SDK bindings",
+  "exports": {
+    ".": {
+      "production": "./dist/index.js",
+      "default": "./src/index.ts"
+    }
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "type": "module",
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "scripts": {
+    "build": "tsgo -p tsconfig.build.json",
+    "generate": "tsx ./src/codegen/generate-input-output-schemas.ts && tsx ./src/codegen/generate-agent-schemas.ts",
+    "lint": "biome check .",
+    "postinstall": "cpconfig",
+    "test": "vitest",
+    "typecheck": "tsgo --noEmit -p tsconfig.json"
+  },
+  "files": [
+    "dist",
+    "api",
+    "README.md"
+  ],
+  "config": {
+    "cpconfig": "@justtellme/cpconfig"
+  },
+  "author": "Just Tell Me Developers <developers@justtellme.com>",
+  "keywords": [
+    "typescript",
+    "justtellme",
+    "tools",
+    "ai"
+  ],
+  "devDependencies": {
+    "@asteasolutions/zod-to-openapi": "^7.3.4",
+    "@biomejs/biome": "^2.4.10",
+    "@justtellme/cpconfig": "workspace:^",
+    "@types/node": "^25.6.0",
+    "@typescript/native-preview": "^7.0.0-dev.20260418.1",
+    "cpconfig": "^1.5.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.2",
+    "yaml": "^2.7.1"
+  },
+  "dependencies": {
+    "@toon-format/toon": "^2.1.0",
+    "ai": "^6.0.168",
+    "fast-xml-parser": "^5.7.1",
+    "zod": "^4.3.6"
+  }
+}

@@ -16,7 +16,7 @@ Ask the user for:
 
 ## Architecture Context
 
-- **Internal services** (most common): use `@justtellme/service` (`useHSService`). They sit behind Envoy and receive pre-authenticated requests via `x-auth-token` headers. No Stytch, no sessions.
+- **Internal services** (most common): use `@justtellme/service` (`useJTMService`). They sit behind Envoy and receive pre-authenticated requests via `x-auth-token` headers. No Stytch, no sessions.
 - **Auth gateway services** (rare, like `authn-authz-internal`): use `@justtellme/service` BUT also depend on `@justtellme/web-auth` and `stytch` directly. They validate Stytch tokens and issue `x-auth-token` headers for downstream services. Config extends `HSAuthConfiguration` and `HSSessionConfiguration`.
 
 ## Directory Structure
@@ -150,13 +150,13 @@ coverage
 ## src/index.ts (Internal Service)
 
 ```typescript
-import { useHSService } from '@justtellme/service';
+import { useJTMService } from '@justtellme/service';
 import ApiSpec from '@justtellme/api/specs/<name>' with { type: 'json' };
 
 import type { <PascalName>, <PascalName>Locals } from './types/index.ts';
 
 export function service(): <PascalName>['Service'] {
-  const base = useHSService<<PascalName>Locals>();
+  const base = useJTMService<<PascalName>Locals>();
   return {
     ...base,
     async start(app) {
@@ -184,7 +184,7 @@ export function service(): <PascalName>['Service'] {
 
 ### Auth Gateway Variant
 
-For an auth gateway service, the pattern is the same (`useHSService`) but you additionally:
+For an auth gateway service, the pattern is the same (`useJTMService`) but you additionally:
 - Initialize the Stytch client in `start()`
 - Add `stytch` to `app.locals`
 - Extend config with `HSAuthConfiguration` and `HSSessionConfiguration`
@@ -208,13 +208,13 @@ Object.assign(app.locals, {
 
 ```typescript
 import type { ServiceTypes } from '@openapi-typescript-infra/service';
-import type { HSRequestLocals, HSServiceLocals } from '@justtellme/service';
+import type { HSRequestLocals, JTMServiceLocals } from '@justtellme/service';
 
 import type { operationHandlers } from '../generated/service/index.ts';
 
 import type { <PascalName>ConfigSchema } from './config.ts';
 
-export interface <PascalName>Locals extends HSServiceLocals<<PascalName>ConfigSchema> {
+export interface <PascalName>Locals extends JTMServiceLocals<<PascalName>ConfigSchema> {
   // Add service-wide resources here
 }
 
@@ -228,9 +228,9 @@ export type <PascalName>Api = operationHandlers<<PascalName>Locals, <PascalName>
 ### config.ts (Internal)
 
 ```typescript
-import type { HSConfigurationSchema } from '@justtellme/service';
+import type { JTMConfigurationSchema } from '@justtellme/service';
 
-export interface <PascalName>ConfigSchema extends HSConfigurationSchema {
+export interface <PascalName>ConfigSchema extends JTMConfigurationSchema {
   // Add service-specific config here
 }
 ```
@@ -238,11 +238,11 @@ export interface <PascalName>ConfigSchema extends HSConfigurationSchema {
 ### config.ts (Auth Gateway)
 
 ```typescript
-import type { HSConfigurationSchema } from '@justtellme/service';
+import type { JTMConfigurationSchema } from '@justtellme/service';
 import type { HSAuthConfiguration, HSSessionConfiguration } from '@justtellme/web-auth';
 
 export interface <PascalName>ConfigSchema
-  extends HSConfigurationSchema, HSAuthConfiguration, HSSessionConfiguration {
+  extends JTMConfigurationSchema, HSAuthConfiguration, HSSessionConfiguration {
   // Add service-specific config here
 }
 ```
@@ -274,7 +274,7 @@ Then add to service.ts locals:
 ```typescript
 import type { create<PascalName>Datasources } from './datasources.ts';
 
-export interface <PascalName>Locals extends HSServiceLocals<<PascalName>ConfigSchema> {
+export interface <PascalName>Locals extends JTMServiceLocals<<PascalName>ConfigSchema> {
   datasources: ReturnType<typeof create<PascalName>Datasources>;
 }
 ```

@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { useHSServiceWithAuth } from '@justtellme/service-with-auth';
+import { useJTMServiceWithAuth } from '@justtellme/service-with-auth';
 import type { Service } from '@openapi-typescript-infra/service';
 import { getNodeEnv, insertConfigurationBefore, isDev } from '@openapi-typescript-infra/service';
 import next from 'next';
@@ -14,7 +14,7 @@ export function useHSWebService<
     HSWebServiceLocals<HSWebConfigurationSchema> = HSWebServiceLocals<HSWebConfigurationSchema>,
   RLocals extends HSWebRequestLocals = HSWebRequestLocals,
 >(baseService?: Service<SLocals, RLocals>): Service<SLocals, RLocals> {
-  const base = useHSServiceWithAuth(baseService);
+  const base = useJTMServiceWithAuth(baseService);
   let rootDirectory: string;
   let csrfConfig: HSWebConfigurationSchema['csrf'];
 

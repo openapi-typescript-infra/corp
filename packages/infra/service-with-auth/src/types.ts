@@ -1,4 +1,4 @@
-import type { HSRequestLocals, HSService, HSServiceLocals } from '@justtellme/service';
+import type { HSRequestLocals, JTMService, JTMServiceLocals } from '@justtellme/service';
 import type { AuthDatasources, getMiddleware } from '@justtellme/web-auth';
 import type { RequestLike, RequestWithApp, ServiceRouter } from '@openapi-typescript-infra/service';
 import type { NextFunction, Request, Response } from 'express';
@@ -9,7 +9,7 @@ type SessionMiddlewareInfo = Awaited<ReturnType<typeof getMiddleware>>;
 
 export interface HSAuthServiceLocals<
   Config extends HSAuthConfigurationSchema = HSAuthConfigurationSchema,
-> extends HSServiceLocals<Config>,
+> extends JTMServiceLocals<Config>,
     AuthDatasources {
   /**
    * A middleware function that will add session to the request
@@ -51,22 +51,22 @@ export interface HSAuthRequestLocals extends HSRequestLocals {
 
 export type HSAuthService<
   ServiceLocals extends
-    HSServiceLocals<HSAuthConfigurationSchema> = HSAuthServiceLocals<HSAuthConfigurationSchema>,
+    JTMServiceLocals<HSAuthConfigurationSchema> = HSAuthServiceLocals<HSAuthConfigurationSchema>,
   RequestLocals extends HSAuthRequestLocals = HSAuthRequestLocals,
-> = HSService<ServiceLocals, RequestLocals>;
+> = JTMService<ServiceLocals, RequestLocals>;
 
 /**
  * Convenience types for the basic request and response
  */
 export type HSAuthServiceRequest<
   ServiceLocals extends
-    HSServiceLocals<HSAuthConfigurationSchema> = HSAuthServiceLocals<HSAuthConfigurationSchema>,
+    JTMServiceLocals<HSAuthConfigurationSchema> = HSAuthServiceLocals<HSAuthConfigurationSchema>,
 > = RequestWithApp<ServiceLocals>;
 
 export type HSAuthServiceResponse<
   ResBody = object,
   ServiceLocals extends
-    HSServiceLocals<HSAuthConfigurationSchema> = HSAuthServiceLocals<HSAuthConfigurationSchema>,
+    JTMServiceLocals<HSAuthConfigurationSchema> = HSAuthServiceLocals<HSAuthConfigurationSchema>,
 > = Response<ResBody, ServiceLocals>;
 export type HSAuthServiceRouter<
   SLocals extends HSAuthServiceLocals = HSAuthServiceLocals,
@@ -83,6 +83,6 @@ export type HSAuthServiceRouter<
  */
 export type HSAuthRequestLike<
   SLocals extends
-    HSServiceLocals<HSAuthConfigurationSchema> = HSAuthServiceLocals<HSAuthConfigurationSchema>,
+    JTMServiceLocals<HSAuthConfigurationSchema> = HSAuthServiceLocals<HSAuthConfigurationSchema>,
   RLocals extends HSAuthRequestLocals = HSAuthRequestLocals,
 > = RequestLike<SLocals, RLocals>;

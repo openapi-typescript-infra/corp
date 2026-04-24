@@ -5,8 +5,7 @@ required:
 properties:
   name:
     type: string
+    description: The calling client name
   version:
     type: string
-  agent_id:
-    type: string
-    description: An identifier for the agent that will be used for the conversation. Must be unique within the client.
+    description: The calling client version in semver format

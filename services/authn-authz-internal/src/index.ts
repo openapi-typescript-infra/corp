@@ -1,12 +1,12 @@
 import ApiSpec from '@justtellme/api/specs/authn-authz-internal' with { type: 'json' };
-import { useHSService } from '@justtellme/service';
+import { useJTMService } from '@justtellme/service';
 import { Client } from 'stytch';
 import { Metrics } from './lib/metrics.ts';
 import { createAuthnAuthzInternalDatasources } from './types/datasources.ts';
 import type { AuthnAuthzInternal, AuthnAuthzInternalLocals } from './types/index.ts';
 
 export function service(): AuthnAuthzInternal['Service'] {
-  const base = useHSService<AuthnAuthzInternalLocals>();
+  const base = useJTMService<AuthnAuthzInternalLocals>();
   return {
     ...base,
     async start(app) {

@@ -1,5 +1,5 @@
-import { useHSServiceWithAuth } from '../../../src/index.ts';
+import { useJTMServiceWithAuth } from '../../../src/index.ts';
 
 export function service() {
-  return useHSServiceWithAuth();
+  return useJTMServiceWithAuth();
 }

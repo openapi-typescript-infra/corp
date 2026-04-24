@@ -2,7 +2,7 @@ import { identifyUser, resetAnalytics, setStytch } from '@justtellme/state';
 import { useStytchSession, useStytchUser } from '@stytch/nextjs';
 import { useEffect } from 'react';
 
-/** Syncs Stytch auth state into app$. Render inside HSStytchProvider. */
+/** Syncs Stytch auth state into app$. Render inside JTMStytchProvider. */
 export function StytchStateBridge() {
   const { user, isInitialized } = useStytchUser();
   const { session } = useStytchSession();

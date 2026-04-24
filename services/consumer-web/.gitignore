@@ -68,4 +68,5 @@ Thumbs.db
 /tsconfig.json
 /tsconfig.build.json
 /vitest.config.ts
+/next.config.js
 /tsconfig.tsup.json

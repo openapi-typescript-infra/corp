@@ -9,7 +9,7 @@ _HS_SERVICE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 _TSC_ALIAS := $(shell node --experimental-import-meta-resolve -e "import {createRequire} from 'module'; const r = createRequire(import.meta.url); console.log(r.resolve('tsc-alias/dist/bin/index.js'))")
 
 # Filter out rules we redefine below: service generation and ts build
-include $(shell _tmp=$$(mktemp) && sed -e '/^src\/generated\/service\/index\.ts:/,/^$$/{d;}' -e '/^\$$(ts_build_stamp):/,/^$$/{d;}' $(SERVICE_MAKEFILE) > $$_tmp && echo $$_tmp)
+include $(shell _tmp=$$(mktemp) && sed -e '/^src\/generated\/service\/index\.ts:/,/^$$/{d;}' -e '/^\$$(ts_build_stamp):/,/^$$/{d;}' -e '/^src\/generated\/database\.ts:/,/^$$/{d;}' $(SERVICE_MAKEFILE) > $$_tmp && echo $$_tmp)
 
 # Override ts build to handle #src/ subpath imports with .ts extensions:
 # 1. Type-check via tsconfig.json (no rewriteRelativeImportExtensions => no TS2877)
@@ -86,6 +86,32 @@ check:
 
 typecheck: check
 	make ts
+
+# Ensure the service database exists before generating types.
+# On first run: starts postgres, creates the DB/user, and applies migrations.
+# On subsequent runs: SELECT 1 succeeds and this is a no-op.
+.PHONY: ensure-service-db
+ensure-service-db:
+ifdef DB_NAME
+	@yarn run-pg-sql $(DB_NAME) -q -e 'SELECT 1' 2>/dev/null || \
+		($(MAKE) -C $$(git rev-parse --show-toplevel) ensure-dev-db && $(MAKE) db-ci)
+endif
+
+# Override upstream database.ts rule to ensure DB exists first.
+# The order-only prerequisite (|) means ensure-service-db won't trigger
+# a rebuild by itself — only migration file changes do that.
+src/generated/database.ts: $(wildcard migrations/* migrations/**/*) | ensure-service-db
+ifdef DB_NAME
+	echo "Generating database types"
+	yarn migration:apply
+	envfile=$$(mktemp) && \
+	echo "DATABASE_URL=postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(DB_NAME)" > $$envfile && \
+	yarn kysely-codegen \
+		--env-file $$envfile \
+		--dialect postgres \
+		--default-schema public \
+		--out-file src/generated/database.ts
+endif
 
 apicheck:
 	BUNDLE_OUTPUT=$$(mktemp -d); \

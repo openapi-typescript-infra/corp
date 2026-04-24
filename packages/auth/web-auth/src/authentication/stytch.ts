@@ -1,15 +1,14 @@
 import { fromExternalID } from '@justtellme/external-id';
-import type { HSConfigurationSchema, HSServiceLocals } from '@justtellme/service';
+import { JTMPrincipal, type JTMPrincipalRole } from '@justtellme/auth-token';
+import type { JTMConfigurationSchema, JTMServiceLocals } from '@justtellme/service';
 import type { ServiceExpress } from '@openapi-typescript-infra/service';
 import { decode } from 'jsonwebtoken';
 import type { Session, User } from 'stytch';
 
 import type { AuthDatasources, HSAuthConfiguration } from '../types.ts';
 
-import { HSPrincipal, type HSPrincipalRole } from './HSPrincipal.ts';
-
 export type AuthApp = ServiceExpress<
-  HSServiceLocals<HSConfigurationSchema & HSAuthConfiguration> & AuthDatasources
+  JTMServiceLocals<JTMConfigurationSchema & HSAuthConfiguration> & AuthDatasources
 >;
 
 export function toIat(date: Date | string | number | undefined): number | undefined {
@@ -26,20 +25,20 @@ export function toIat(date: Date | string | number | undefined): number | undefi
 export interface StytchSessionDetail {
   // The JWT if it has been automatically refreshed from Stytch
   updated_session_jwt: string;
-  // The HSPrincipal this token represents, if any
-  principal?: HSPrincipal;
+  // The JTMPrincipal this token represents, if any
+  principal?: JTMPrincipal;
   session?: Session;
   user?: User;
 }
 
 /**
- * Create a HSPrincipal from a Stytch session JWT. This is primarily
+ * Create a JTMPrincipal from a Stytch session JWT. This is primarily
  * intended for development use cases where you want to validate a token
  * directly from mobile app/browser without ambassador in between to do it for
  * you.
  *
  * However, this is ALSO used by authn-authz itself to centralize the logic
- * of validating a Stytch token and transforming it into a HSPrincipal
+ * of validating a Stytch token and transforming it into a JTMPrincipal
  * and then x-auth-token header. So do not mess with it without understanding
  * the downstream implications.
  */
@@ -59,7 +58,7 @@ export async function getStytchTokenDetail(
     }
     const partnerDetail: StytchSessionDetail = {
       updated_session_jwt: jwt,
-      principal: new HSPrincipal({
+      principal: new JTMPrincipal({
         iat: payload.iat,
         aud: ['partner'],
         sub: detail.custom_claims.partner,
@@ -102,7 +101,7 @@ export async function getStytchTokenDetail(
   };
 
   // Ok, if we made it here, we have a valid token, now we just need
-  // to transform it to a HSPrincipal
+  // to transform it to a JTMPrincipal
   let externalId: string | undefined = session.custom_claims?.id;
   if (!externalId) {
     // We didn't run this yet, the token was valid locally. But to make use of it
@@ -120,7 +119,7 @@ export async function getStytchTokenDetail(
     return undefined;
   }
   const uuid = fromExternalID(externalId);
-  sessionDetail.principal = new HSPrincipal({
+  sessionDetail.principal = new JTMPrincipal({
     sub: uuid,
     aud: ['user'],
     iat: toIat(session.started_at),

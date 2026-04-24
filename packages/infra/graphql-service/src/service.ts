@@ -1,7 +1,7 @@
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@as-integrations/express5';
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import { useHSServiceWithAuth } from '@justtellme/service-with-auth';
+import { useJTMServiceWithAuth } from '@justtellme/service-with-auth';
 import type { Service } from '@openapi-typescript-infra/service';
 import {
   insertConfigurationBefore,
@@ -17,25 +17,25 @@ import { useServer } from 'graphql-ws/use/ws';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { WebSocketServer } from 'ws';
-import type { HSGraphQLContext } from './Context.ts';
-import { HttpHSGraphQLContext, WsHSGraphQLContext } from './Context.ts';
-import type { HSGraphQLConfigurationSchema } from './config.ts';
+import type { JTMGraphQLContext } from './Context.ts';
+import { HttpJTMGraphQLContext, WsJTMGraphQLContext } from './Context.ts';
+import type { JTMGraphQLConfigurationSchema } from './config.ts';
 import { loadResolvers } from './graphql-loader.ts';
 import { hsApolloPlugin } from './plugin.ts';
 import type {
-  HSGraphQLRequestLocals,
-  HSGraphQLService,
-  HSGraphQLServiceLocals,
-  HSGraphQLServiceRequest,
-  HSGraphQLServiceResponse,
+  JTMGraphQLRequestLocals,
+  JTMGraphQLService,
+  JTMGraphQLServiceLocals,
+  JTMGraphQLServiceRequest,
+  JTMGraphQLServiceResponse,
 } from './types.ts';
 
-export function useHSGraphQLService<
+export function useJTMGraphQLService<
   SLocals extends
-    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
-  RLocals extends HSGraphQLRequestLocals = HSGraphQLRequestLocals,
->(baseService?: Service<SLocals, RLocals>): HSGraphQLService<SLocals, RLocals> {
-  const base = useHSServiceWithAuth(baseService);
+    JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema> = JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema>,
+  RLocals extends JTMGraphQLRequestLocals = JTMGraphQLRequestLocals,
+>(baseService?: Service<SLocals, RLocals>): JTMGraphQLService<SLocals, RLocals> {
+  const base = useJTMServiceWithAuth(baseService);
   let rootDirectory: string;
   let codepath: string;
   let wsCleanup: ReturnType<typeof useServer> | undefined;
@@ -44,7 +44,7 @@ export function useHSGraphQLService<
   let complexityGauge: Gauge;
 
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  const service: HSGraphQLService<SLocals, RLocals> = {
+  const service: JTMGraphQLService<SLocals, RLocals> = {
     ...base,
     configure(startOptions, options) {
       const baseConfig = base?.configure?.(startOptions, options);
@@ -91,7 +91,7 @@ export function useHSGraphQLService<
 
       const { graphql } = app.locals.config;
       schema = makeExecutableSchema({ typeDefs, resolvers });
-      const apollo = new ApolloServer<HSGraphQLContext<SLocals>>({
+      const apollo = new ApolloServer<JTMGraphQLContext<SLocals>>({
         schema,
         plugins: [hsApolloPlugin(app, schema)],
         introspection: graphql.introspection,
@@ -138,12 +138,12 @@ export function useHSGraphQLService<
       }
     },
     async getWsContext(app, context) {
-      return new WsHSGraphQLContext<SLocals>(app, context);
+      return new WsJTMGraphQLContext<SLocals>(app, context);
     },
     async getContext({ req, res }) {
-      return new HttpHSGraphQLContext<SLocals, RLocals>(
-        req as HSGraphQLServiceRequest<SLocals>,
-        res as HSGraphQLServiceResponse<unknown, RLocals>,
+      return new HttpJTMGraphQLContext<SLocals, RLocals>(
+        req as JTMGraphQLServiceRequest<SLocals>,
+        res as JTMGraphQLServiceResponse<unknown, RLocals>,
       );
     },
     async stop(app) {
@@ -152,9 +152,9 @@ export function useHSGraphQLService<
       }
       await base.stop?.(app);
     },
-    getLogFields(req: HSGraphQLServiceRequest<SLocals>, values) {
+    getLogFields(req: JTMGraphQLServiceRequest<SLocals>, values) {
       base?.getLogFields?.(req, values);
-      const res = req.res as HSGraphQLServiceResponse<unknown, RLocals> | undefined;
+      const res = req.res as JTMGraphQLServiceResponse<unknown, RLocals> | undefined;
       if (!res?.locals) {
         return;
       }

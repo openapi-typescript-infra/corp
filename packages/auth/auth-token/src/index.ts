@@ -1,1 +1,1 @@
-export * from './HSPrincipal.ts';
+export * from './JTMPrincipal.ts';

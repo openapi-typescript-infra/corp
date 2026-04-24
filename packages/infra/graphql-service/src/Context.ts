@@ -1,22 +1,23 @@
 import type { BaseContext } from '@apollo/server';
-import { getPrincipal, type HSPrincipal } from '@justtellme/web-auth';
+import { getPrincipal } from '@justtellme/web-auth';
+import type { JTMPrincipal } from '@justtellme/auth-token';
 import type { ServiceExpress } from '@openapi-typescript-infra/service';
 import type { GraphQLErrorExtensions } from 'graphql';
 import { GraphQLError } from 'graphql';
 import type { Context } from 'graphql-ws';
 import type { IncomingHttpHeaders } from 'http';
 import { wrapAsCaseInsensitiveMap } from './caseInsensitiveMap.ts';
-import type { HSGraphQLConfigurationSchema } from './config.ts';
+import type { JTMGraphQLConfigurationSchema } from './config.ts';
 import type {
-  HSGraphQLRequestLocals,
-  HSGraphQLServiceLocals,
-  HSGraphQLServiceRequest,
-  HSGraphQLServiceResponse,
+  JTMGraphQLRequestLocals,
+  JTMGraphQLServiceLocals,
+  JTMGraphQLServiceRequest,
+  JTMGraphQLServiceResponse,
 } from './types.ts';
 
-export interface HSGraphQLContext<
+export interface JTMGraphQLContext<
   SLocals extends
-    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
+    JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema> = JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema>,
 > extends BaseContext {
   locals: SLocals;
   app: ServiceExpress<SLocals>;
@@ -31,14 +32,14 @@ export interface HSGraphQLContext<
   xAuthTokenHeader(): Promise<string | undefined>;
 
   headers: IncomingHttpHeaders;
-  user?: HSPrincipal;
+  user?: JTMPrincipal;
   cookies?: Record<string, string>;
 }
 
 abstract class BaseContextClass<
   SLocals extends
-    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
-> implements HSGraphQLContext<SLocals>
+    JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema> = JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema>,
+> implements JTMGraphQLContext<SLocals>
 {
   app: ServiceExpress<SLocals>;
 
@@ -86,17 +87,17 @@ abstract class BaseContextClass<
   }
 
   abstract get headers(): IncomingHttpHeaders;
-  abstract get user(): HSPrincipal | undefined;
-  abstract set user(user: HSPrincipal | undefined);
+  abstract get user(): JTMPrincipal | undefined;
+  abstract set user(user: JTMPrincipal | undefined);
   abstract get cookies(): Record<string, string>;
 }
 
-export class WsHSGraphQLContext<
+export class WsJTMGraphQLContext<
   SLocals extends
-    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
+    JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema> = JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema>,
 > extends BaseContextClass<SLocals> {
   wsContext: Context;
-  user: HSPrincipal | undefined;
+  user: JTMPrincipal | undefined;
   headers: IncomingHttpHeaders;
 
   constructor(app: ServiceExpress<SLocals>, wsContext: Context) {
@@ -112,17 +113,17 @@ export class WsHSGraphQLContext<
   }
 }
 
-export class HttpHSGraphQLContext<
+export class HttpJTMGraphQLContext<
   SLocals extends
-    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
-  RLocals extends HSGraphQLRequestLocals = HSGraphQLRequestLocals,
+    JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema> = JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema>,
+  RLocals extends JTMGraphQLRequestLocals = JTMGraphQLRequestLocals,
 > extends BaseContextClass<SLocals> {
-  req: HSGraphQLServiceRequest<SLocals>;
-  res: HSGraphQLServiceResponse<SLocals, RLocals>;
+  req: JTMGraphQLServiceRequest<SLocals>;
+  res: JTMGraphQLServiceResponse<SLocals, RLocals>;
 
   constructor(
-    req: HSGraphQLServiceRequest<SLocals>,
-    res: HSGraphQLServiceResponse<SLocals, RLocals>,
+    req: JTMGraphQLServiceRequest<SLocals>,
+    res: JTMGraphQLServiceResponse<SLocals, RLocals>,
   ) {
     super(req.app);
     this.req = req;
@@ -133,11 +134,11 @@ export class HttpHSGraphQLContext<
     return this.req.headers;
   }
 
-  get user(): HSPrincipal | undefined {
+  get user(): JTMPrincipal | undefined {
     return this.req.user;
   }
 
-  set user(user: HSPrincipal | undefined) {
+  set user(user: JTMPrincipal | undefined) {
     this.req.user = user;
   }
 

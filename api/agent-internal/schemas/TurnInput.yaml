@@ -1,16 +1,12 @@
 type: object
 properties:
-  message:
-    $ref: TurnMessageContent.yaml
-  tool_results:
+  messages:
+    type: array
+    description: Zero or more messages in the turn
+    items:
+      $ref: ../schemas/TurnMessage.yaml
+  tool_responses:
+    description: Responses to tool calls from a previous turn
     type: array
     items:
-      $ref: ToolResponse.yaml
-  model:
-    type: string
-    description: Override the model for this turn
-  extra_tools:
-    type: array
-    items:
-      type: string
-    description: Additional tools to make available for this turn
+      $ref: ../../../packages/infra/tools/api/generated/AgentToolResponse.yaml

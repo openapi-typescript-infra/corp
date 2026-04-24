@@ -1,6 +1,6 @@
 import ApiSpec from '@justtellme/api/specs/payment-internal' with { type: 'json' };
 import { getPgPool } from '@justtellme/cloud-sql';
-import { useHSService } from '@justtellme/service';
+import { useJTMService } from '@justtellme/service';
 import { Kysely, PostgresDialect } from 'kysely';
 import { createClient } from 'redis';
 
@@ -9,7 +9,7 @@ import { createPaymentInternalDatasources } from './types/datasources.ts';
 import type { PaymentInternal, PaymentInternalLocals } from './types/index.ts';
 
 export function service(): PaymentInternal['Service'] {
-  const base = useHSService<PaymentInternalLocals>();
+  const base = useJTMService<PaymentInternalLocals>();
   let dbShutdown: () => Promise<void>;
 
   return {

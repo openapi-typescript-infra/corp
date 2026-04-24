@@ -6,9 +6,9 @@ import type { DocumentNode, GraphQLSchema, OperationDefinitionNode } from 'graph
 import { GraphQLError, separateOperations } from 'graphql';
 import { directiveEstimator, getComplexity, simpleEstimator } from 'graphql-query-complexity';
 
-import type { HttpHSGraphQLContext } from './Context.ts';
-import type { HSGraphQLConfigurationSchema } from './config.ts';
-import type { HSGraphQLRequestLocals, HSGraphQLServiceLocals } from './types.ts';
+import type { HttpJTMGraphQLContext } from './Context.ts';
+import type { JTMGraphQLConfigurationSchema } from './config.ts';
+import type { JTMGraphQLRequestLocals, JTMGraphQLServiceLocals } from './types.ts';
 
 function getOperationName(document: DocumentNode) {
   const operationDef = document.definitions.find(
@@ -20,11 +20,11 @@ function getOperationName(document: DocumentNode) {
 
 export function hsApolloPlugin<
   SLocals extends
-    HSGraphQLServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
-  RLocals extends HSGraphQLRequestLocals = HSGraphQLRequestLocals,
+    JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema> = JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema>,
+  RLocals extends JTMGraphQLRequestLocals = JTMGraphQLRequestLocals,
 >(app: ServiceExpress<SLocals>, schema: GraphQLSchema) {
   const maximumComplexity = app.locals.config.graphql.maximumComplexity;
-  const plugin: GraphQLRequestListener<HttpHSGraphQLContext<SLocals, RLocals>> = {
+  const plugin: GraphQLRequestListener<HttpJTMGraphQLContext<SLocals, RLocals>> = {
     async didResolveOperation({ contextValue, request, document }) {
       const name = getOperationName(document);
       if (name) {

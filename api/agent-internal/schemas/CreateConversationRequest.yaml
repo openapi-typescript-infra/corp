@@ -1,14 +1,25 @@
 type: object
 required:
   - client
+  - type
 properties:
   client:
     $ref: ClientInfo.yaml
-  system_prompt:
+  type:
     type: string
+    description: The conversation type, used to select the conversation definition
+  options:
+    type: object
+    description: Type-specific options for the conversation
+    additionalProperties: true
+  context:
+    type: string
+    description: Optional context URL to resolve before rendering the initial prompt
   model:
     type: string
+    description: Override the default model for this conversation
   starting_tools:
     type: array
     items:
       type: string
+    description: Additional tools to make available from the start

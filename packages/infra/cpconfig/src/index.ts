@@ -42,6 +42,7 @@ const BIOME_INCLUDES = [
   '!**/.prettierrc*',
   '!**/next-env.d.ts',
   '!**/*.generated.ts',
+  '!**/src/generated',
 
   '!**/migrations/**/*.js',
   '!**/vitest.config.ts',

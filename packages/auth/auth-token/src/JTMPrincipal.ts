@@ -24,15 +24,15 @@ export interface AuthenticationFactor {
   iat?: number;
 }
 
-export type HSPrincipalRole = 'user' | 'partner' | 'service';
+export type JTMPrincipalRole = 'user' | 'partner' | 'service';
 
 const JWT_VERSION = 1;
 
 // These field names and types are based on the names inside the JWT which are meant to be compact.
-// Property names and types of HSPrincipal are meant to be more developer friendly.
-export interface HSPrincipalInit {
+// Property names and types of JTMPrincipal are meant to be more developer friendly.
+export interface JTMPrincipalInit {
   sub: string;
-  aud: HSPrincipalRole[];
+  aud: JTMPrincipalRole[];
   iat?: number;
   scope?: string;
   g?: string[];
@@ -55,7 +55,7 @@ function getIdArray(ids?: unknown) {
 // Based on the x-auth-token header, this authenticated "principal" (usually an individual but not always)
 // this object is used for authentication and common authorization use cases (sometimes other API calls
 // are required to truly verify authorization).
-export class HSPrincipal {
+export class JTMPrincipal {
   private readonly sub: string;
   private readonly iat: number | undefined;
 
@@ -66,7 +66,7 @@ export class HSPrincipal {
   /**
    * The type of user this principal represents
    */
-  readonly role: HSPrincipalRole;
+  readonly role: JTMPrincipalRole;
   /**
    * The capabilities of this user, cached in the token for performance. For
    * high value operations, it may make sense to check the data store otherwise
@@ -94,7 +94,7 @@ export class HSPrincipal {
    */
   readonly username: string | undefined;
 
-  constructor(jwtOrComponents: string | HSPrincipalInit) {
+  constructor(jwtOrComponents: string | JTMPrincipalInit) {
     if (typeof jwtOrComponents === 'string') {
       const payload = decode(jwtOrComponents, { json: true });
       if (!payload) {
@@ -107,7 +107,7 @@ export class HSPrincipal {
         throw new Error('JWT does not contain a subject');
       }
       this.sub = payload.sub;
-      this.role = payload.aud[0] as HSPrincipalRole;
+      this.role = payload.aud[0] as JTMPrincipalRole;
       this.iat = payload.iat;
       if (Array.isArray(payload.scope)) {
         this.scopes = payload.scope;
@@ -206,7 +206,7 @@ export class HSPrincipal {
   }
 
   static serviceToken(callingServiceName: string) {
-    return new HSPrincipal({
+    return new JTMPrincipal({
       sub: callingServiceName,
       aud: ['service'],
       iat: Math.floor(Date.now() / 1000),
@@ -214,7 +214,7 @@ export class HSPrincipal {
   }
 
   static consumerToken(consumerUuid: string) {
-    return new HSPrincipal({
+    return new JTMPrincipal({
       sub: consumerUuid,
       aud: ['user'],
       iat: Math.floor(Date.now() / 1000),

@@ -1,0 +1,4 @@
+description: Customer support agent system prompt
+messages:
+  - role: system
+    content: !include main.hbs

@@ -1,7 +1,7 @@
 type: object
+description: A conversation with all stored turns and messages
 required:
   - conversation_id
-  - status
   - turns
 properties:
   conversation_id:
@@ -9,24 +9,23 @@ properties:
   status:
     type: string
     enum:
-      - active
-      - archived
-      - deleted
+      - running
+      - completed
+      - failed
+  error:
+    type: string
+  system_prompt:
+    type: string
   created_at:
     type: string
     format: date-time
   updated_at:
     type: string
     format: date-time
-  system_prompt:
-    type: string
-  model:
-    type: string
+  extra_data:
+    type: object
+    additionalProperties: true
   turns:
     type: array
     items:
-      $ref: Turn.yaml
-  starting_tools:
-    type: array
-    items:
-      type: string
+      $ref: ../schemas/Turn.yaml

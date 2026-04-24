@@ -1,5 +1,5 @@
 {
-  "$schema": "tsschema://src/config.ts#HSConfigurationSchema",
+  "$schema": "tsschema://src/config.ts#JTMConfigurationSchema",
   "session": {
     "secret": "env:SESSION_SECRET",
     "cookieName": "hssession",

@@ -3,9 +3,9 @@ import path from 'path';
 import { beforeAll, describe, expect, test } from 'vitest';
 import { getReusableApp, request } from '@openapi-typescript-infra/service-tester';
 import type { paths } from '@justtellme/api/identity-internal';
-import { HSPrincipal } from '@justtellme/web-auth';
+import { JTMPrincipal } from '@justtellme/web-auth';
 
-import { createDatasourceClients, useHSService } from '../src/index.ts';
+import { createDatasourceClients, useJTMService } from '../src/index.ts';
 
 const Datasources = ['identityInternal'] as const;
 interface DatasourcePaths { identityInternal: paths; }
@@ -17,7 +17,7 @@ describe('basic service', () => {
 
   test('should respond to simple request', async () => {
     const app = await getReusableApp({
-      service: useHSService,
+      service: useJTMService,
       rootDirectory: path.join(new URL('.', import.meta.url).pathname, 'just-tell-me-internal'),
       codepath: 'src',
       name: 'just-tell-me-internal',
@@ -29,7 +29,7 @@ describe('basic service', () => {
 
   test('should setup proper user agent and token', async () => {
     const app = await getReusableApp({
-      service: useHSService,
+      service: useJTMService,
       rootDirectory: path.join(new URL('.', import.meta.url).pathname, 'just-tell-me-internal'),
       codepath: 'src',
       name: 'just-tell-me-internal',
@@ -51,7 +51,7 @@ describe('basic service', () => {
         expect(request.keepalive).toBe(false);
         expect(request.headers.get('x-auth-token')).toBeDefined();
         const principal = request.headers.get('x-auth-token');
-        expect(new HSPrincipal(principal || '').clientId).toBe('just-tell-me-internal');
+        expect(new JTMPrincipal(principal || '').clientId).toBe('just-tell-me-internal');
         return request;
       },
       onResponse({ response }) {

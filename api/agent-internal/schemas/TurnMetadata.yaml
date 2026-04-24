@@ -1,35 +1,38 @@
 type: object
+description: Server-side metadata about a turn's execution
 properties:
+  status:
+    type: string
+    enum:
+      - pending
+      - streaming
+      - input-required
+      - complete
+      - failed
   model:
     type: string
-    description: The model used for this turn
-  provider:
+  error:
     type: string
-    description: The provider used for this turn
-  input_tokens:
-    type: integer
-    description: The number of tokens in the input
-  output_tokens:
-    type: integer
-    description: The number of tokens in the output
-  cache_read_tokens:
-    type: integer
-    description: The number of tokens read from the cache
-  cache_write_tokens:
-    type: integer
-    description: The number of tokens written to the cache
-  reasoning_tokens:
-    type: integer
-    description: The number of tokens used for reasoning
-  first_token_ms:
-    type: integer
-    description: The time in milliseconds to generate the first token
-  total_ms:
-    type: integer
-    description: The total time in milliseconds to generate the turn
-  cost_micros:
-    type: integer
-    description: The estimated cost of the turn in microdollars
   finish_reason:
     type: string
-    description: The reason the turn finished
+  raw_finish_reason:
+    type: string
+  input_tokens:
+    type: number
+  output_tokens:
+    type: number
+  total_latency_ms:
+    type: number
+  started_at:
+    type: string
+    format: date-time
+  completed_at:
+    type: string
+    format: date-time
+  extra_data:
+    type: object
+    additionalProperties: true
+  stored_messages:
+    type: array
+    items:
+      $ref: ../schemas/ConversationStoredMessage.yaml

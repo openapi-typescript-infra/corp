@@ -1,0 +1,21 @@
+type: object
+description: Paginated list of conversation summaries
+required:
+  - conversations
+  - total
+  - limit
+  - offset
+properties:
+  conversations:
+    type: array
+    items:
+      $ref: ../schemas/ConversationSummary.yaml
+  total:
+    type: integer
+    description: Total number of matching conversations
+  limit:
+    type: integer
+    description: Maximum number of conversations returned
+  offset:
+    type: integer
+    description: Number of conversations skipped

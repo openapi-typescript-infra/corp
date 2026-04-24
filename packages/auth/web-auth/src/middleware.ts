@@ -1,4 +1,5 @@
-import type { HSConfigurationSchema, HSServiceLocals, HSServiceRequest } from '@justtellme/service';
+import type { JTMConfigurationSchema, JTMServiceLocals, JTMServiceRequest } from '@justtellme/service';
+import { JTMPrincipal } from '@justtellme/auth-token';
 import {
   isDev,
   isTest,
@@ -6,7 +7,6 @@ import {
   type ServiceExpress,
 } from '@openapi-typescript-infra/service';
 import type { NextFunction, Request, Response } from 'express';
-import { HSPrincipal } from './authentication/index.ts';
 import type { AuthApp } from './authentication/stytch.ts';
 import { getStytchTokenDetail } from './authentication/stytch.ts';
 import { getRequestDocument } from './authorization/requestDocument.ts';
@@ -15,7 +15,7 @@ import { createSessionMiddleware } from './session/index.ts';
 import type {
   AuthDatasources,
   HSAuthConfiguration,
-  HSServiceWithSessionLocals,
+  JTMServiceWithSessionLocals,
   HSSessionConfiguration,
 } from './types.ts';
 
@@ -32,7 +32,7 @@ interface SessionMiddlewareOptions<RequestDocumentFactory extends typeof getRequ
 
 interface RequestLike {
   app: Request['app'];
-  user?: Request['user'] | HSPrincipal;
+  user?: Request['user'] | JTMPrincipal;
   headers: Request['headers'];
   cookies?: Request['cookies'];
 }
@@ -49,14 +49,14 @@ function setDone(req: RequestLike, middleware: 'session' | 'auth') {
 }
 
 export async function getPrincipal(req: RequestLike) {
-  if (req.user instanceof HSPrincipal || (isDone(req, 'auth') && !req.user)) {
+  if (req.user instanceof JTMPrincipal || (isDone(req, 'auth') && !req.user)) {
     return req.user;
   }
-  const config = req.app.locals.config as HSConfigurationSchema &
+  const config = req.app.locals.config as JTMConfigurationSchema &
     HSSessionConfiguration &
     HSAuthConfiguration;
   if (config.auth?.authToken === 'decode' && req.headers['x-auth-token']) {
-    return new HSPrincipal(req.headers['x-auth-token'].toString());
+    return new JTMPrincipal(req.headers['x-auth-token'].toString());
   }
   if (isDev() || isTest()) {
     if (req.headers.authorization) {
@@ -76,7 +76,7 @@ export async function getPrincipal(req: RequestLike) {
 }
 
 export async function getMiddleware<RequestDocumentFactory extends typeof getRequestDocument>(
-  app: ServiceExpress<HSServiceLocals & AuthDatasources>,
+  app: ServiceExpress<JTMServiceLocals & AuthDatasources>,
   config: HSSessionConfiguration & HSAuthConfiguration,
   options: SessionMiddlewareOptions<RequestDocumentFactory> = {},
 ) {
@@ -150,7 +150,7 @@ export async function getMiddleware<RequestDocumentFactory extends typeof getReq
       // Don't cache this one because it's in the closure
       const verifier = cache.compile(rule);
       return (
-        req: HSServiceRequest<HSServiceWithSessionLocals>,
+        req: JTMServiceRequest<JTMServiceWithSessionLocals>,
         res: Response,
         next: NextFunction,
       ) => {
@@ -179,7 +179,7 @@ export async function getMiddleware<RequestDocumentFactory extends typeof getReq
       if (!scopes?.length) {
         return true;
       }
-      const sReq = req as HSServiceRequest<HSServiceWithSessionLocals>;
+      const sReq = req as JTMServiceRequest<JTMServiceWithSessionLocals>;
       return ensureExecuted(req, req.res as Response, 'auth')
         .then(() => requestDocumentFactory(sReq))
         .then((doc) => {

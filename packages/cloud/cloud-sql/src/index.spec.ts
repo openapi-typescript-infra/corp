@@ -1,5 +1,5 @@
-import type { HSConfigurationSchema, HSServiceLocals } from '@justtellme/service';
-import { useHSService } from '@justtellme/service';
+import type { JTMConfigurationSchema, JTMServiceLocals } from '@justtellme/service';
+import { useJTMService } from '@justtellme/service';
 import { getReusableApp } from '@openapi-typescript-infra/service-tester';
 import path from 'path';
 import { describe, expect, test } from 'vitest';
@@ -14,7 +14,7 @@ describe('Module exports', () => {
 
   test('should configure a db', async () => {
     const app = await getReusableApp({
-      service: useHSService<HSServiceLocals<HSConfigurationSchema>>,
+      service: useJTMService<JTMServiceLocals<JTMConfigurationSchema>>,
       rootDirectory: path.resolve(new URL('../__tests__', import.meta.url).pathname),
     });
     let pool = await getPgPool(app, {

@@ -13,7 +13,8 @@
       "cache": false
     },
     "generate": {
-      "outputs": ["src/generated/**"]
+      "outputs": ["src/generated/**"],
+      "passThroughEnv": ["PGPORT", "PGHOST", "PGUSER", "PGPASSWORD", "PGDATABASE"]
     },
     "test": {
       "dependsOn": ["^build"],

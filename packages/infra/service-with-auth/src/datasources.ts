@@ -1,5 +1,5 @@
 import type { paths as IdentityInternal } from '@justtellme/api/identity-internal';
-import type { DatasourcesType, HSConfigurationSchema, HSServiceLocals } from '@justtellme/service';
+import type { DatasourcesType, JTMConfigurationSchema, JTMServiceLocals } from '@justtellme/service';
 import { createDatasourceClients } from '@justtellme/service';
 import type { ServiceExpress } from '@openapi-typescript-infra/service';
 
@@ -11,7 +11,7 @@ interface DatasourcePaths {
 }
 
 export function createAuthDatasources(
-  app: ServiceExpress<HSServiceLocals<HSConfigurationSchema>>,
+  app: ServiceExpress<JTMServiceLocals<JTMConfigurationSchema>>,
 ): DatasourcesType<Datasources, DatasourcePaths> {
   return createDatasourceClients(app, Datasources);
 }

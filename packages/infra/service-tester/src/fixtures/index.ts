@@ -1,16 +1,16 @@
-import type { HSConfigurationSchema, HSServiceLocals } from '@justtellme/service';
+import type { JTMConfigurationSchema, JTMServiceLocals } from '@justtellme/service';
 import type { ServiceUnderTest } from '@openapi-typescript-infra/service-tester';
 import { getReusableApp } from '@openapi-typescript-infra/service-tester';
 import openapiCreateClient from 'openapi-fetch';
 import type { TestAPI } from 'vitest';
 import { expect, test } from 'vitest';
 
-type AnyHSServiceLocals = HSServiceLocals<HSConfigurationSchema>;
+type AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>;
 
 export type PathSpec = object;
 
 export interface ServiceUnderTestFixtures<
-  SLocals extends AnyHSServiceLocals = HSServiceLocals<HSConfigurationSchema>,
+  SLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
   Paths extends PathSpec = PathSpec,
 > {
   app: ServiceUnderTest<SLocals>;
@@ -24,12 +24,12 @@ type FixtureType = Record<string, any>;
 type Fixtures<F extends FixtureType> = Parameters<typeof test.extend<F>>[0];
 type Use<T> = (value: T) => Promise<void>;
 
-function getApp<SLocals extends AnyHSServiceLocals = HSServiceLocals<HSConfigurationSchema>>() {
+function getApp<SLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>>() {
   return getReusableApp<SLocals>();
 }
 
 export function createClient<
-  SLocals extends AnyHSServiceLocals = HSServiceLocals<HSConfigurationSchema>,
+  SLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
   Paths extends PathSpec = PathSpec,
 >(app: ServiceUnderTest<SLocals>) {
   return openapiCreateClient<Paths>({
@@ -38,18 +38,18 @@ export function createClient<
 }
 
 function extendServiceTest<
-  SLocals extends AnyHSServiceLocals = HSServiceLocals<HSConfigurationSchema>,
+  SLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
   Paths extends PathSpec = PathSpec,
 >(fixtures?: Fixtures<Record<string, never>>): TestAPI<ServiceUnderTestFixtures<SLocals, Paths>>;
 function extendServiceTest<
-  SLocals extends AnyHSServiceLocals = HSServiceLocals<HSConfigurationSchema>,
+  SLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
   Paths extends PathSpec = PathSpec,
   AdditionalFixtures extends FixtureType = FixtureType,
 >(
   fixtures: Fixtures<AdditionalFixtures>,
 ): TestAPI<ServiceUnderTestFixtures<SLocals, Paths> & AdditionalFixtures>;
 function extendServiceTest<
-  SLocals extends AnyHSServiceLocals = HSServiceLocals<HSConfigurationSchema>,
+  SLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
   Paths extends PathSpec = PathSpec,
   AdditionalFixtures extends FixtureType = FixtureType,
 >(

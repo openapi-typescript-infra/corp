@@ -15,7 +15,7 @@ export const stytchOptions = {
   },
 };
 
-export function HSStytchProvider({
+export function JTMStytchProvider({
   children,
   createClient,
 }: React.PropsWithChildren<{

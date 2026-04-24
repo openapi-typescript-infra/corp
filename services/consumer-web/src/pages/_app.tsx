@@ -1,6 +1,6 @@
 import { app$ } from '@justtellme/state';
 import { FullPageLoader } from '@justtellme/ui-kit';
-import { HSStytchProvider } from '@justtellme/web-service/isomorphic';
+import { JTMStytchProvider } from '@justtellme/web-service/isomorphic';
 import { useValue } from '@legendapp/state/react';
 import Head from 'next/head.js';
 import { useRouter } from 'next/router.js';
@@ -31,14 +31,14 @@ const HSAppComponent = ({ Component, pageProps }: HSAppProps) => {
 
   return (
     <LazyPostHog>
-      <HSStytchProvider clientType="CONSUMER" createClient={getSingletonStytchHeadlessClient}>
+      <JTMStytchProvider createClient={getSingletonStytchHeadlessClient}>
         <StytchStateBridge />
         <Head>
           <title>Just Tell Me</title>
         </Head>
         <AppLoadingOverlay />
         <Component {...pageProps} />
-      </HSStytchProvider>
+      </JTMStytchProvider>
     </LazyPostHog>
   );
 };

@@ -8,7 +8,7 @@ info:
 servers:
   - url: http://agent-internal.default.svc.cluster.local
 paths:
+  /conversations:
+    $ref: ./paths/conversations.yaml
   /conversations/{conversation_id}:
     $ref: ./paths/conversations.conversation_id.yaml
-  /conversations/{conversation_id}/turns/{turn_id}:
-    $ref: ./paths/conversations.conversation_id.turns.turn_id.yaml

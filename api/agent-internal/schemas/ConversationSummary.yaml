@@ -1,0 +1,32 @@
+type: object
+description: Conversation header details without turns or messages
+required:
+  - conversation_id
+properties:
+  conversation_id:
+    type: string
+  agent_id:
+    type: string
+  status:
+    type: string
+    enum:
+      - running
+      - completed
+      - failed
+  error:
+    type: string
+  model:
+    type: string
+  client:
+    type: string
+  client_version:
+    type: string
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time
+  extra_data:
+    type: object
+    additionalProperties: true

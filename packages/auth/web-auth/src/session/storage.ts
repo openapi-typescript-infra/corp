@@ -1,4 +1,4 @@
-import type { HSServiceLocals } from '@justtellme/service';
+import type { JTMServiceLocals } from '@justtellme/service';
 import type { ServiceExpress } from '@openapi-typescript-infra/service';
 import { RedisStore } from 'connect-redis';
 import type session from 'express-session';
@@ -8,7 +8,7 @@ import { createClient } from 'redis';
 import { CONSUMER_APP_SESSION_TIMEOUT_MS } from './constants.ts';
 
 export async function getSessionStorage(
-  app: ServiceExpress<HSServiceLocals>,
+  app: ServiceExpress<JTMServiceLocals>,
   options: RedisClientOptions,
 ): Promise<{
   redis: ReturnType<typeof createClient>;

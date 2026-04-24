@@ -1,13 +1,13 @@
-import type { HSServiceRequest } from '@justtellme/service';
-import type { HSPrincipal } from '../authentication/index.ts';
-import type { HSServiceWithSessionLocals } from '../types.ts';
+import type { JTMServiceRequest } from '@justtellme/service';
+import type { JTMPrincipal } from '@justtellme/auth-token';
+import type { JTMServiceWithSessionLocals } from '../types.ts';
 
 export interface EndUserData<
-  SLocals extends HSServiceWithSessionLocals = HSServiceWithSessionLocals,
+  SLocals extends JTMServiceWithSessionLocals = JTMServiceWithSessionLocals,
 > {
   type: 'user';
   uuid: string;
-  req: HSServiceRequest<SLocals>;
+  req: JTMServiceRequest<SLocals>;
   // Make it easier to ask about patient access repeatedly.
   // Maps Patient UUID to boolean
   $cachedPatientAccess?: Map<string, boolean>;
@@ -19,23 +19,23 @@ export interface EndUserData<
  * company-wide properties for standard rules.
  */
 export function getRequestDocument<
-  SLocals extends HSServiceWithSessionLocals = HSServiceWithSessionLocals,
->(req: HSServiceRequest<SLocals>, additionalParameters: Record<string, unknown> = {}) {
-  interface ReqWithOpenApi extends HSServiceRequest<SLocals> {
+  SLocals extends JTMServiceWithSessionLocals = JTMServiceWithSessionLocals,
+>(req: JTMServiceRequest<SLocals>, additionalParameters: Record<string, unknown> = {}) {
+  interface ReqWithOpenApi extends JTMServiceRequest<SLocals> {
     openapi?: {
       pathParams?: Record<string, string>;
     };
   }
 
   // Let functions access the req object but do NOT let rules access it
-  function addReqObject<T>(readableValues: T): T & { req: HSServiceRequest<SLocals> } {
+  function addReqObject<T>(readableValues: T): T & { req: JTMServiceRequest<SLocals> } {
     Object.defineProperty(readableValues, 'req', {
       value: req,
       enumerable: false,
       configurable: true,
       writable: false,
     });
-    return readableValues as T & { req: HSServiceRequest<SLocals> };
+    return readableValues as T & { req: JTMServiceRequest<SLocals> };
   }
 
   let consumer: EndUserData | undefined;
@@ -66,7 +66,7 @@ export function getRequestDocument<
       return req.user?.scopes || [];
     },
 
-    role(): HSPrincipal['role'] | undefined {
+    role(): JTMPrincipal['role'] | undefined {
       return req.user?.role;
     },
 

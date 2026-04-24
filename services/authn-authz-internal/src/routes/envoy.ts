@@ -1,4 +1,4 @@
-import type { HSServiceRouter } from '@justtellme/service';
+import type { JTMServiceRouter } from '@justtellme/service';
 
 import { authenticate } from '#src/lib/authenticator.ts';
 import type {
@@ -8,7 +8,7 @@ import type {
 } from '#src/types/service.ts';
 
 export function route(
-  router: HSServiceRouter<AuthnAuthzInternalLocals, AuthnAuthzInternalRequestLocals>,
+  router: JTMServiceRouter<AuthnAuthzInternalLocals, AuthnAuthzInternalRequestLocals>,
   app: AuthnAuthzInternal['App'],
 ) {
   router.use(async (req, res, next) => {

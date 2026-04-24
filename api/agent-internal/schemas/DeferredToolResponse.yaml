@@ -1,0 +1,19 @@
+type: object
+description: Returned when a tool's processClientResult triggers another round of client interaction before the response is accepted.
+required:
+  - conversation_id
+  - status
+  - tool_calls
+properties:
+  conversation_id:
+    type: string
+    description: The ID of the conversation
+  status:
+    type: string
+    enum:
+      - input-required
+  tool_calls:
+    description: Tool calls requiring further client action, with updated response payloads
+    type: array
+    items:
+      $ref: ../../../packages/infra/tools/api/generated/AgentToolCall.yaml

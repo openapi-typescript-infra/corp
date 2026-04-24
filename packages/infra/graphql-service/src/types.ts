@@ -14,11 +14,11 @@ import type {
 import type { NextFunction, Request, Response } from 'express';
 import type { ExecutionArgs } from 'graphql';
 import type { Context, SubscribeMessage } from 'graphql-ws';
-import type { HSGraphQLContext } from './Context.ts';
-import type { HSGraphQLConfigurationSchema } from './config.ts';
+import type { JTMGraphQLContext } from './Context.ts';
+import type { JTMGraphQLConfigurationSchema } from './config.ts';
 
-export interface HSGraphQLServiceLocals<
-  Config extends HSGraphQLConfigurationSchema = HSGraphQLConfigurationSchema,
+export interface JTMGraphQLServiceLocals<
+  Config extends JTMGraphQLConfigurationSchema = JTMGraphQLConfigurationSchema,
 > extends HSAuthServiceLocals<Config> {
   /**
    * A middleware function that will add session to the request
@@ -31,7 +31,7 @@ export interface HSGraphQLServiceLocals<
   withAuthAndSession(req: Request, res: Response, next: NextFunction): void;
 }
 
-export interface HSGraphQLRequestLocals extends HSAuthRequestLocals {
+export interface JTMGraphQLRequestLocals extends HSAuthRequestLocals {
   query: string;
   /**
    * An estimate of the query complexity based on analysis of the query and annotations on the schema.
@@ -44,36 +44,36 @@ export interface HSGraphQLRequestLocals extends HSAuthRequestLocals {
   cost: number;
 }
 
-export interface HSGraphQLService<
+export interface JTMGraphQLService<
   ServiceLocals extends
-    HSAuthServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
-  RequestLocals extends HSGraphQLRequestLocals = HSGraphQLRequestLocals,
+    HSAuthServiceLocals<JTMGraphQLConfigurationSchema> = JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema>,
+  RequestLocals extends JTMGraphQLRequestLocals = JTMGraphQLRequestLocals,
 > extends HSAuthService<ServiceLocals, RequestLocals> {
-  getContext: ContextFunction<[ExpressContextFunctionArgument], HSGraphQLContext<ServiceLocals>>;
+  getContext: ContextFunction<[ExpressContextFunctionArgument], JTMGraphQLContext<ServiceLocals>>;
   getWsContext: (
     app: ServiceExpress<ServiceLocals>,
     context: Context,
     message: SubscribeMessage,
     args: ExecutionArgs,
-  ) => Promise<HSGraphQLContext<ServiceLocals>> | HSGraphQLContext<ServiceLocals>;
+  ) => Promise<JTMGraphQLContext<ServiceLocals>> | JTMGraphQLContext<ServiceLocals>;
 }
 
 /**
  * Convenience types for the basic request and response
  */
-export type HSGraphQLServiceRequest<
+export type JTMGraphQLServiceRequest<
   ServiceLocals extends
-    HSAuthServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
+    HSAuthServiceLocals<JTMGraphQLConfigurationSchema> = JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema>,
 > = RequestWithApp<ServiceLocals>;
 
-export type HSGraphQLServiceResponse<
+export type JTMGraphQLServiceResponse<
   ResBody = object,
-  RequestLocals extends HSGraphQLRequestLocals = HSGraphQLRequestLocals,
+  RequestLocals extends JTMGraphQLRequestLocals = JTMGraphQLRequestLocals,
 > = Response<ResBody, RequestLocals>;
 
-export type HSGraphQLServiceRouter<
-  SLocals extends HSGraphQLServiceLocals = HSGraphQLServiceLocals,
-  RLocals extends HSGraphQLRequestLocals = HSGraphQLRequestLocals,
+export type JTMGraphQLServiceRouter<
+  SLocals extends JTMGraphQLServiceLocals = JTMGraphQLServiceLocals,
+  RLocals extends JTMGraphQLRequestLocals = JTMGraphQLRequestLocals,
 > = ServiceRouter<SLocals, RLocals>;
 
 /**
@@ -84,8 +84,8 @@ export type HSGraphQLServiceRouter<
  * like query strings or body or similar. Most often, you want the
  * logger.
  */
-export type HSGraphQLRequestLike<
+export type JTMGraphQLRequestLike<
   SLocals extends
-    HSAuthServiceLocals<HSGraphQLConfigurationSchema> = HSGraphQLServiceLocals<HSGraphQLConfigurationSchema>,
-  RLocals extends HSGraphQLRequestLocals = HSGraphQLRequestLocals,
+    HSAuthServiceLocals<JTMGraphQLConfigurationSchema> = JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema>,
+  RLocals extends JTMGraphQLRequestLocals = JTMGraphQLRequestLocals,
 > = RequestLike<SLocals, RLocals>;

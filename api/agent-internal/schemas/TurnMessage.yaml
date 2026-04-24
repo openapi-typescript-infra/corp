@@ -5,12 +5,9 @@ required:
 properties:
   role:
     type: string
-    enum:
-      - assistant
-      - tool
+    enum: [user, assistant, system]
   content:
-    $ref: TurnMessageContent.yaml
-  tool_calls:
-    type: array
-    items:
-      $ref: ToolCall.yaml
+    $ref: ./TurnMessageContent.yaml
+  sequence:
+    type: integer
+    description: Position in the overall turn content order, shared with tool_calls. Clients can merge messages and tool_calls then sort by sequence to reconstruct the original interleaving.

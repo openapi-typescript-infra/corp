@@ -1,21 +1,21 @@
 type: object
+description: A single turn of conversation with both input and output fields
 required:
   - turn_id
-  - status
 properties:
   turn_id:
     type: string
-  status:
-    type: string
-    enum:
-      - pending
-      - streaming
-      - complete
-      - error
-      - tool_call
+    description: The unique identifier for the turn
   messages:
     type: array
+    description: Zero or more messages in the turn
     items:
-      $ref: TurnMessage.yaml
+      $ref: ../schemas/TurnMessage.yaml
+  tool_calls:
+    description: Tool calls made by the assistant, with responses when answered
+    type: array
+    items:
+      $ref: ../../../packages/infra/tools/api/generated/AgentToolCall.yaml
   metadata:
-    $ref: TurnMetadata.yaml
+    description: Server-side execution metadata, included when requested
+    $ref: ../schemas/TurnMetadata.yaml

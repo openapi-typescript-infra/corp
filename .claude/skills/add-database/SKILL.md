@@ -222,7 +222,7 @@ async stop(app) {
 ### Declare the shutdown variable:
 ```typescript
 export function service(): MyService['Service'] {
-  const base = useHSService<MyServiceLocals>();
+  const base = useJTMService<MyServiceLocals>();
   let dbShutdown: () => Promise<void>;
   // ...
 }

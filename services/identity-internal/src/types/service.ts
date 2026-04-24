@@ -1,5 +1,5 @@
 import type { TableCache } from '@justtellme/cloud-sql';
-import type { HSRequestLocals, HSServiceLocals } from '@justtellme/service';
+import type { HSRequestLocals, JTMServiceLocals } from '@justtellme/service';
 import type { ServiceTypes } from '@openapi-typescript-infra/service';
 import type { Kysely, Selectable } from 'kysely';
 import type { RedisClientType } from 'redis';
@@ -14,7 +14,7 @@ import type { operationHandlers } from '../generated/service/index.ts';
 
 import type { IdentityInternalConfigSchema } from './config.ts';
 
-export interface IdentityInternalLocals extends HSServiceLocals<IdentityInternalConfigSchema> {
+export interface IdentityInternalLocals extends JTMServiceLocals<IdentityInternalConfigSchema> {
   db: Kysely<DB>;
   redis?: RedisClientType;
 

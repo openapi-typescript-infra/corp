@@ -1,5 +1,5 @@
 {
-  "$schema": "tsschema://src/config#HSConfigurationSchema",
+  "$schema": "tsschema://src/config#JTMConfigurationSchema",
   "DEFAULT_TEMPORAL_CLUSTER": "production.XXXX.tmprl.cloud:7233",
   "defaultTemporal": {
     "namespace": "production.XXXX"

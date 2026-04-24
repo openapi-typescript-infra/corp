@@ -1,20 +1,19 @@
 {
-  "dev": {
+  "defaultEnv": "development",
+  "development": {
     "driver": "pg",
-    "user": "agent-internal",
-    "password": "agent-internal-pw",
-    "host": { "ENV": "PGHOST" },
-    "port": { "ENV": "PGPORT" },
-    "database": "agent_internal",
-    "schema": "public"
+    "user": "dbowner",
+    "password": "onlyindev",
+    "host": "localhost",
+    "database": "agent",
+    "port": { "ENV": "PGPORT" }
   },
-  "ci": {
+  "production": {
     "driver": "pg",
-    "user": "agent-internal",
-    "password": "agent-internal-pw",
-    "host": { "ENV": "PGHOST" },
-    "port": { "ENV": "PGPORT" },
-    "database": "agent_internal",
-    "schema": "public"
-  }
+    "user": "agent-owner",
+    "password": { "ENV": "PGPASSWORD" },
+    "host": "localhost",
+    "database": "agent"
+  },
+  "sql-file": true
 }

@@ -3,53 +3,26 @@ parameters:
 get:
   operationId: getConversation
   parameters:
+    - name: turn_id
+      in: query
+      required: false
+      description: If provided, limit the response to only this turn
+      schema:
+        type: string
     - name: metadata
       in: query
       required: false
-      description: If true, include server-side execution metadata on turns
+      description: If true, include server-side execution metadata on each turn
       schema:
         type: boolean
   responses:
     '200':
-      description: Success
+      description: Conversation retrieved successfully
       content:
         application/json:
           schema:
             $ref: ../schemas/ConversationDetails.yaml
-    '404':
-      description: Not Found
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
 post:
-  operationId: addTurn
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: ../schemas/TurnInput.yaml
-  responses:
-    '200':
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: ../schemas/Turn.yaml
-    '404':
-      description: Not Found
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-put:
   operationId: createConversation
   requestBody:
     required: true
@@ -59,32 +32,60 @@ put:
           $ref: ../schemas/CreateConversationRequest.yaml
   responses:
     '200':
-      description: Success
+      description: Command executed successfully
       content:
         application/json:
           schema:
-            $ref: ../schemas/ConversationDetails.yaml
-    '400':
-      description: Bad Request
+            oneOf:
+              - $ref: ../schemas/Conversation.yaml
+              - $ref: ../schemas/Turn.yaml
+    '202':
+      description: Streaming response
       content:
-        application/json:
+        text/event-stream:
           schema:
-            type: object
-            properties:
-              error:
-                type: string
-delete:
-  operationId: deleteConversation
+            type: string
+put:
+  operationId: conversationTurn
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - turn
+            - client
+          properties:
+            response:
+              type: string
+              description: Controls whether to wait for the agent response, stream it, or return immediately
+              enum:
+                - none
+                - stream
+                - complete
+            client:
+              $ref: ../schemas/ClientInfo.yaml
+            turn:
+              $ref: ../schemas/TurnInput.yaml
   responses:
     '200':
-      description: Success
+      description: Turn executed successfully
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              success:
-                type: boolean
+            $ref: ../schemas/Turn.yaml
+    '202':
+      description: Streaming response
+      content:
+        text/event-stream:
+          schema:
+            type: string
+    '206':
+      description: Tool response triggered another round of client interaction
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/DeferredToolResponse.yaml
 patch:
   operationId: updateConversation
   requestBody:
@@ -92,23 +93,16 @@ patch:
     content:
       application/json:
         schema:
-          $ref: ../schemas/ConversationOptions.yaml
+          type: object
+          properties:
+            system_prompt:
+              type: string
+            model:
+              type: string
   responses:
     '200':
-      description: Success
+      description: Conversation updated successfully
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-    '404':
-      description: Not Found
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
+            $ref: ../schemas/Conversation.yaml

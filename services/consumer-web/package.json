@@ -55,8 +55,8 @@
     "@justtellme/web-service": "workspace:^",
     "@legendapp/state": "^3.0.0-beta.46",
     "@openapi-typescript-infra/service": "^6.13.1",
-    "next": "^16.2.4",
     "@stytch/nextjs": "^22.0.5",
+    "next": "^16.2.4",
     "next-urql": "^5.0.2",
     "posthog-js": "^1.369.3",
     "urql": "^5.0.1"

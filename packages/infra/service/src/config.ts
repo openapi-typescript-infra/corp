@@ -1,6 +1,6 @@
 import type { ConfigurationSchema } from '@openapi-typescript-infra/service';
 
-export interface HSConfigurationSchema extends ConfigurationSchema {
+export interface JTMConfigurationSchema extends ConfigurationSchema {
   apiHost: string;
   registry: {
     // A service we will POST to with our name and port to let it know where we are

@@ -1,0 +1,44 @@
+get:
+  operationId: listConversations
+  parameters:
+    - name: limit
+      in: query
+      required: false
+      description: Maximum number of conversations to return (default 50, max 200)
+      schema:
+        type: integer
+        default: 50
+        minimum: 1
+        maximum: 200
+    - name: offset
+      in: query
+      required: false
+      description: Number of conversations to skip for pagination
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+    - name: status
+      in: query
+      required: false
+      description: Filter by conversation status
+      schema:
+        type: string
+        enum:
+          - active
+          - completed
+          - cancelled
+          - failed
+    - name: agent_id
+      in: query
+      required: false
+      description: Filter by agent ID
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Paginated list of conversations
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/ConversationList.yaml

@@ -1,4 +1,4 @@
-import type { HSRequestLocals, HSServiceLocals } from '@justtellme/service';
+import type { HSRequestLocals, JTMServiceLocals } from '@justtellme/service';
 import type { ServiceTypes } from '@openapi-typescript-infra/service';
 import type { Kysely } from 'kysely';
 import type { RedisClientType } from 'redis';
@@ -8,7 +8,7 @@ import type { operationHandlers } from '../generated/service/index.ts';
 import type { PaymentInternalConfigSchema } from './config.ts';
 import type { createPaymentInternalDatasources } from './datasources.ts';
 
-export interface PaymentInternalLocals extends HSServiceLocals<PaymentInternalConfigSchema> {
+export interface PaymentInternalLocals extends JTMServiceLocals<PaymentInternalConfigSchema> {
   datasources: ReturnType<typeof createPaymentInternalDatasources>;
   db: Kysely<DB>;
   redis?: RedisClientType;

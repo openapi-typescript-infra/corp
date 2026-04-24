@@ -9,9 +9,9 @@ import type {
 } from '@openapi-typescript-infra/service';
 import type { Response } from 'express';
 
-import type { HSConfigurationSchema } from './config.ts';
+import type { JTMConfigurationSchema } from './config.ts';
 
-export interface HSServiceLocals<Config extends HSConfigurationSchema = HSConfigurationSchema>
+export interface JTMServiceLocals<Config extends JTMConfigurationSchema = JTMConfigurationSchema>
   extends ServiceLocals<Config> {
   gcpProjectId: string;
 }
@@ -19,7 +19,7 @@ export interface HSServiceLocals<Config extends HSConfigurationSchema = HSConfig
 // This allows our type constraints to be loose but to extract
 // config type when necessary
 // biome-ignore lint/suspicious/noExplicitAny: This intentionally accepts any service config type.
-export type AnyHSServiceLocals = HSServiceLocals<any>;
+export type AnyJTMServiceLocals = JTMServiceLocals<any>;
 
 /**
  * These per-request values hang off of the Response object
@@ -30,24 +30,24 @@ export type AnyHSServiceLocals = HSServiceLocals<any>;
 export type HSRequestLocals = RequestLocals;
 
 export type HSExpress<
-  ServiceLocals extends AnyHSServiceLocals = HSServiceLocals<HSConfigurationSchema>,
+  ServiceLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
 > = ServiceExpress<ServiceLocals>;
 
-export type HSService<
-  ServiceLocals extends AnyHSServiceLocals = HSServiceLocals<HSConfigurationSchema>,
+export type JTMService<
+  ServiceLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
   RequestLocals extends HSRequestLocals = HSRequestLocals,
 > = Service<ServiceLocals, RequestLocals>;
 
 /**
  * Convenience types for the basic request and response
  */
-export type HSServiceRequest<
-  SLocals extends AnyHSServiceLocals = HSServiceLocals<HSConfigurationSchema>,
+export type JTMServiceRequest<
+  SLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
 > = RequestWithApp<SLocals>;
 
-export type HSServiceResponse<ResBody = object> = Response<ResBody, HSRequestLocals>;
-export type HSServiceRouter<
-  SLocals extends AnyHSServiceLocals = HSServiceLocals<HSConfigurationSchema>,
+export type JTMServiceResponse<ResBody = object> = Response<ResBody, HSRequestLocals>;
+export type JTMServiceRouter<
+  SLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
   RLocals extends HSRequestLocals = HSRequestLocals,
 > = ServiceRouter<SLocals, RLocals>;
 
@@ -60,6 +60,6 @@ export type HSServiceRouter<
  * logger.
  */
 export type HSRequestLike<
-  SLocals extends AnyHSServiceLocals = HSServiceLocals<HSConfigurationSchema>,
+  SLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
   RLocals extends HSRequestLocals = HSRequestLocals,
 > = RequestLike<SLocals, RLocals>;

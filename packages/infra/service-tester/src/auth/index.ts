@@ -1,6 +1,6 @@
 import type { HSExpress } from '@justtellme/service';
-import type { HSPrincipalInit } from '@justtellme/web-auth';
-import { HSPrincipal } from '@justtellme/web-auth';
+import type { JTMPrincipalInit } from '@justtellme/auth-token';
+import { JTMPrincipal } from '@justtellme/auth-token';
 
 export async function getTokenForPrincipal(
   app: HSExpress,
@@ -10,11 +10,11 @@ export async function getTokenForPrincipal(
     role = 'user',
   }: {
     uuid: string;
-    role: HSPrincipal['role'];
-    options?: Omit<HSPrincipalInit, 'sub' | 'aud'>;
+    role: JTMPrincipal['role'];
+    options?: Omit<JTMPrincipalInit, 'sub' | 'aud'>;
   },
 ) {
-  const user = new HSPrincipal({
+  const user = new JTMPrincipal({
     ...options,
     sub: uuid,
     aud: [role],

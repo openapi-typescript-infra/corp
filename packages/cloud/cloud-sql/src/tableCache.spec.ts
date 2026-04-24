@@ -1,5 +1,5 @@
-import type { HSConfigurationSchema, HSServiceLocals } from '@justtellme/service';
-import { useHSService } from '@justtellme/service';
+import type { JTMConfigurationSchema, JTMServiceLocals } from '@justtellme/service';
+import { useJTMService } from '@justtellme/service';
 import { getReusableApp } from '@openapi-typescript-infra/service-tester';
 import path from 'path';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
@@ -7,11 +7,11 @@ import { getPgPool } from './pool.ts';
 import { createTableCache } from './tableCache.ts';
 
 describe('Table caching', () => {
-  let db: Awaited<ReturnType<typeof getPgPool<HSServiceLocals<HSConfigurationSchema>>>>;
+  let db: Awaited<ReturnType<typeof getPgPool<JTMServiceLocals<JTMConfigurationSchema>>>>;
 
   beforeEach(async () => {
     const app = await getReusableApp({
-      service: useHSService<HSServiceLocals<HSConfigurationSchema>>,
+      service: useJTMService<JTMServiceLocals<JTMConfigurationSchema>>,
       rootDirectory: path.resolve(new URL('../__tests__', import.meta.url).pathname),
     });
     db = await getPgPool(app, {

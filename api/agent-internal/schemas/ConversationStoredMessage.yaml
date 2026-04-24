@@ -9,16 +9,13 @@ properties:
       - user
       - assistant
       - system
-      - tool
-  content:
-    oneOf:
-      - type: string
-      - type: array
-        items:
-          $ref: TurnMessageContentPart.yaml
-  tool_calls:
-    type: array
-    items:
-      $ref: ToolCall.yaml
+      - tool-result
+  content: {}
   tool_call_id:
     type: string
+  extra_data:
+    type: object
+    additionalProperties: true
+  created_at:
+    type: string
+    format: date-time

@@ -1,0 +1,16 @@
+openapi: 3.0.1
+info:
+  title: Tool definitions suitable for use by LLMs
+  description: |
+    Operations to be performed typically on behalf of a user by a large language
+    model or an agent. This spec is meant to be "re-exported" by higher level
+    services to define the contract needed for particular tools, especially those
+    that have a user-facing UI.
+components:
+  # The components map is generated at build time by
+  # src/codegen/generate-input-output-schemas.ts. It lists every tool's
+  # XInput / XOutput schema (derived from the Zod definitions) plus the
+  # top-level meta-schemas. Adding or removing a tool in src/ is enough —
+  # no edit here required.
+  schemas:
+    $ref: ./generated/components.yaml

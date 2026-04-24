@@ -1,9 +1,9 @@
-import { HSPrincipal } from '@justtellme/web-auth';
+import { JTMPrincipal } from '@justtellme/auth-token';
 import type { ServiceExpress } from '@openapi-typescript-infra/service';
 import { fetchToCurl } from 'fetch-to-curl-ts';
 import createClient, { type Middleware } from 'openapi-fetch';
-import type { DatasourceSpec, HSConfigurationSchema } from './config.ts';
-import type { AnyHSServiceLocals, HSServiceLocals } from './types.ts';
+import type { DatasourceSpec, JTMConfigurationSchema } from './config.ts';
+import type { AnyJTMServiceLocals, JTMServiceLocals } from './types.ts';
 
 type ClientOptions = Exclude<Parameters<typeof createClient>[0], undefined>;
 
@@ -25,7 +25,7 @@ export type DatasourcesType<
 };
 
 export function getDatasourceConfiguration<
-  SLocals extends AnyHSServiceLocals = HSServiceLocals<HSConfigurationSchema>,
+  SLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
 >(
   app: ServiceExpress<SLocals>,
   serviceName: string,
@@ -37,7 +37,7 @@ export function getDatasourceConfiguration<
   config: ClientOptions;
   userAgent: string;
 } {
-  const serviceToken = HSPrincipal.serviceToken(app.locals.name);
+  const serviceToken = JTMPrincipal.serviceToken(app.locals.name);
   // To avoid "fetch failed" errors that are useless, prepend the target service name in the error message
   async function customFetch(...args: Parameters<typeof fetch>): ReturnType<typeof fetch> {
     return fetch(...args).catch((error) => {
@@ -128,7 +128,7 @@ export function getDatasourceConfiguration<
 export function createDatasourceClients<
   Names extends string,
   Datasources extends Record<Names, ClientPaths>,
-  SLocals extends AnyHSServiceLocals = HSServiceLocals<HSConfigurationSchema>,
+  SLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
 >(
   app: ServiceExpress<SLocals>,
   datasources: readonly Names[],
