@@ -22,6 +22,9 @@ pnpm-debug.log*
 *.local
 next-env.d.ts
 
+# Generated code
+**/src/generated/
+
 # Node/TypeScript
 node_modules/
 dist/
