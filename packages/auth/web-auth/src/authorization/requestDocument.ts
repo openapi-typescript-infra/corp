@@ -1,5 +1,5 @@
 import type { JTMServiceRequest } from '@justtellme/service';
-import type { JTMPrincipal } from '@justtellme/auth-token';
+import type { AuthPrincipal } from '@justtellme/auth-token';
 import type { JTMServiceWithSessionLocals } from '../types.ts';
 
 export interface EndUserData<
@@ -66,7 +66,7 @@ export function getRequestDocument<
       return req.user?.scopes || [];
     },
 
-    role(): JTMPrincipal['role'] | undefined {
+    role(): AuthPrincipal['role'] | undefined {
       return req.user?.role;
     },
 

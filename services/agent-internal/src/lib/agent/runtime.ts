@@ -1,4 +1,4 @@
-import { JTMPrincipal } from '@justtellme/auth-token';
+import { AuthPrincipal } from '@justtellme/auth-token';
 import type {
   AsyncTaskInfo,
   AsyncTaskRequest,
@@ -314,7 +314,7 @@ export async function runStoredTurn(
       },
     };
 
-    const principal = input.identityToken ? new JTMPrincipal(input.identityToken) : undefined;
+    const principal = input.identityToken ? new AuthPrincipal(input.identityToken) : undefined;
 
     const toolUseSession = createAgentToolUseSession(app, asyncTaskProvider, principal, {
       role: toolSession.role,

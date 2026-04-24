@@ -3,7 +3,7 @@ import path from 'path';
 import { beforeAll, describe, expect, test } from 'vitest';
 import { getReusableApp, request } from '@openapi-typescript-infra/service-tester';
 import type { paths } from '@justtellme/api/identity-internal';
-import { JTMPrincipal } from '@justtellme/web-auth';
+import { AuthPrincipal } from '@justtellme/web-auth';
 
 import { createDatasourceClients, useJTMService } from '../src/index.ts';
 
@@ -51,7 +51,7 @@ describe('basic service', () => {
         expect(request.keepalive).toBe(false);
         expect(request.headers.get('x-auth-token')).toBeDefined();
         const principal = request.headers.get('x-auth-token');
-        expect(new JTMPrincipal(principal || '').clientId).toBe('just-tell-me-internal');
+        expect(new AuthPrincipal(principal || '').clientId).toBe('just-tell-me-internal');
         return request;
       },
       onResponse({ response }) {

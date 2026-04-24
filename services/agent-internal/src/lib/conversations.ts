@@ -1,4 +1,4 @@
-import { JTMPrincipal } from '@justtellme/auth-token';
+import { AuthPrincipal } from '@justtellme/auth-token';
 import type { ToolUseSession } from '@justtellme/tools';
 import { getRegistry, processToolClientResult } from '@justtellme/tools';
 import { ServiceError } from '@openapi-typescript-infra/service';
@@ -112,7 +112,7 @@ async function createToolSessionForConversation(
     },
   };
   const toolSession = definition?.toolSession ?? { role: 'user' as const };
-  const principal = options?.identityToken ? new JTMPrincipal(options.identityToken) : undefined;
+  const principal = options?.identityToken ? new AuthPrincipal(options.identityToken) : undefined;
   return createAgentToolUseSession(app, asyncTaskProvider, principal, {
     role: toolSession.role,
   });

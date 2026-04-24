@@ -24,15 +24,15 @@ export interface AuthenticationFactor {
   iat?: number;
 }
 
-export type JTMPrincipalRole = 'user' | 'partner' | 'service';
+export type AuthPrincipalRole = 'user' | 'partner' | 'service';
 
 const JWT_VERSION = 1;
 
 // These field names and types are based on the names inside the JWT which are meant to be compact.
-// Property names and types of JTMPrincipal are meant to be more developer friendly.
-export interface JTMPrincipalInit {
+// Property names and types of AuthPrincipal are meant to be more developer friendly.
+export interface AuthPrincipalInit {
   sub: string;
-  aud: JTMPrincipalRole[];
+  aud: AuthPrincipalRole[];
   iat?: number;
   scope?: string;
   g?: string[];
@@ -55,7 +55,7 @@ function getIdArray(ids?: unknown) {
 // Based on the x-auth-token header, this authenticated "principal" (usually an individual but not always)
 // this object is used for authentication and common authorization use cases (sometimes other API calls
 // are required to truly verify authorization).
-export class JTMPrincipal {
+export class AuthPrincipal {
   private readonly sub: string;
   private readonly iat: number | undefined;
 
@@ -66,7 +66,7 @@ export class JTMPrincipal {
   /**
    * The type of user this principal represents
    */
-  readonly role: JTMPrincipalRole;
+  readonly role: AuthPrincipalRole;
   /**
    * The capabilities of this user, cached in the token for performance. For
    * high value operations, it may make sense to check the data store otherwise
@@ -94,7 +94,7 @@ export class JTMPrincipal {
    */
   readonly username: string | undefined;
 
-  constructor(jwtOrComponents: string | JTMPrincipalInit) {
+  constructor(jwtOrComponents: string | AuthPrincipalInit) {
     if (typeof jwtOrComponents === 'string') {
       const payload = decode(jwtOrComponents, { json: true });
       if (!payload) {
@@ -107,7 +107,7 @@ export class JTMPrincipal {
         throw new Error('JWT does not contain a subject');
       }
       this.sub = payload.sub;
-      this.role = payload.aud[0] as JTMPrincipalRole;
+      this.role = payload.aud[0] as AuthPrincipalRole;
       this.iat = payload.iat;
       if (Array.isArray(payload.scope)) {
         this.scopes = payload.scope;
@@ -206,7 +206,7 @@ export class JTMPrincipal {
   }
 
   static serviceToken(callingServiceName: string) {
-    return new JTMPrincipal({
+    return new AuthPrincipal({
       sub: callingServiceName,
       aud: ['service'],
       iat: Math.floor(Date.now() / 1000),
@@ -214,7 +214,7 @@ export class JTMPrincipal {
   }
 
   static consumerToken(consumerUuid: string) {
-    return new JTMPrincipal({
+    return new AuthPrincipal({
       sub: consumerUuid,
       aud: ['user'],
       iat: Math.floor(Date.now() / 1000),

@@ -1,1 +1,1 @@
-export * from './JTMPrincipal.ts';
+export * from './AuthPrincipal.ts';

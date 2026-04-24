@@ -1,4 +1,4 @@
-import type { JTMPrincipal } from '@justtellme/auth-token';
+import type { AuthPrincipal } from '@justtellme/auth-token';
 import type {
   AsyncTaskInfo,
   AsyncTaskProvider,
@@ -12,7 +12,7 @@ export type ToolRegistry = Record<string, Tool>;
 
 export interface ToolSession {
   role: ToolUseSession['role'];
-  principal?: JTMPrincipal;
+  principal?: AuthPrincipal;
 }
 
 export const noopAsyncTaskProvider: AsyncTaskProvider = {

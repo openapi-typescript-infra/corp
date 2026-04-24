@@ -1,4 +1,4 @@
-import type { JTMPrincipal } from '@justtellme/auth-token';
+import type { AuthPrincipal } from '@justtellme/auth-token';
 import type { AsyncTaskProvider, ToolUseSession } from '@justtellme/tools';
 import { createToolUseSession } from '@justtellme/tools';
 
@@ -8,14 +8,14 @@ import type { AgentInternal } from '#src/types/index.js';
 declare module '@justtellme/tools' {
   interface ToolUseSession {
     app?: AgentInternal['App'];
-    principal?: JTMPrincipal;
+    principal?: AuthPrincipal;
   }
 }
 
 export function createAgentToolUseSession(
   app: AgentInternal['App'],
   asyncTaskProvider: AsyncTaskProvider,
-  principal: JTMPrincipal | undefined,
+  principal: AuthPrincipal | undefined,
   options: { role: string },
 ): ToolUseSession {
   const session = createToolUseSession({

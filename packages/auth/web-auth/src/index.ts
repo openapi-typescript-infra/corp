@@ -1,4 +1,4 @@
-import type { JTMPrincipal } from '@justtellme/auth-token';
+import type { AuthPrincipal } from '@justtellme/auth-token';
 
 export * from './authentication/index.ts';
 export * from './authorization/requestDocument.ts';
@@ -8,7 +8,7 @@ export * from './types.ts';
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
-    type User = JTMPrincipal;
+    type User = AuthPrincipal;
 
     interface Request {
       user?: User;

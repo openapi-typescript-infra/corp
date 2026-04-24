@@ -1,4 +1,4 @@
-import { JTMPrincipal } from '@justtellme/auth-token';
+import { AuthPrincipal } from '@justtellme/auth-token';
 import type { ServiceExpress } from '@openapi-typescript-infra/service';
 import { fetchToCurl } from 'fetch-to-curl-ts';
 import createClient, { type Middleware } from 'openapi-fetch';
@@ -37,7 +37,7 @@ export function getDatasourceConfiguration<
   config: ClientOptions;
   userAgent: string;
 } {
-  const serviceToken = JTMPrincipal.serviceToken(app.locals.name);
+  const serviceToken = AuthPrincipal.serviceToken(app.locals.name);
   // To avoid "fetch failed" errors that are useless, prepend the target service name in the error message
   async function customFetch(...args: Parameters<typeof fetch>): ReturnType<typeof fetch> {
     return fetch(...args).catch((error) => {

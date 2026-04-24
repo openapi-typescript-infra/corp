@@ -1,5 +1,5 @@
 import { useJTMService } from '@justtellme/service';
-import type { JTMPrincipal } from '@justtellme/auth-token';
+import type { AuthPrincipal } from '@justtellme/auth-token';
 import { getMiddleware, getPrincipal } from '@justtellme/web-auth';
 import type { Service } from '@openapi-typescript-infra/service';
 import { insertConfigurationBefore } from '@openapi-typescript-infra/service';
@@ -101,7 +101,7 @@ export function useJTMServiceWithAuth<
       const msg = base?.getLogFields?.(req, values);
       if (!values.u && 'user' in req) {
         // Just pluck an existing value if we have it, don't spend the time decoding tokens
-        const user = req.user as JTMPrincipal | undefined;
+        const user = req.user as AuthPrincipal | undefined;
         if (user?.userUuid) {
           values.u = user.userUuid;
         }

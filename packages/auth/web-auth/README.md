@@ -19,7 +19,7 @@ You can also create utility functions that provide cleaner rules:
 Which would rely on a function with the signature:
 
 ```typescript
-async function hasAccess(user: JTMPrincipal, otherId: string) {
+async function hasAccess(user: AuthPrincipal, otherId: string) {
   // Check stuff
   const result = await someBooleanFn(req);
   return result;

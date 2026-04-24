@@ -1,5 +1,5 @@
 import type { JTMConfigurationSchema, JTMServiceLocals, JTMServiceRequest } from '@justtellme/service';
-import { JTMPrincipal } from '@justtellme/auth-token';
+import { AuthPrincipal } from '@justtellme/auth-token';
 import {
   isDev,
   isTest,
@@ -32,7 +32,7 @@ interface SessionMiddlewareOptions<RequestDocumentFactory extends typeof getRequ
 
 interface RequestLike {
   app: Request['app'];
-  user?: Request['user'] | JTMPrincipal;
+  user?: Request['user'] | AuthPrincipal;
   headers: Request['headers'];
   cookies?: Request['cookies'];
 }
@@ -49,14 +49,14 @@ function setDone(req: RequestLike, middleware: 'session' | 'auth') {
 }
 
 export async function getPrincipal(req: RequestLike) {
-  if (req.user instanceof JTMPrincipal || (isDone(req, 'auth') && !req.user)) {
+  if (req.user instanceof AuthPrincipal || (isDone(req, 'auth') && !req.user)) {
     return req.user;
   }
   const config = req.app.locals.config as JTMConfigurationSchema &
     HSSessionConfiguration &
     HSAuthConfiguration;
   if (config.auth?.authToken === 'decode' && req.headers['x-auth-token']) {
-    return new JTMPrincipal(req.headers['x-auth-token'].toString());
+    return new AuthPrincipal(req.headers['x-auth-token'].toString());
   }
   if (isDev() || isTest()) {
     if (req.headers.authorization) {

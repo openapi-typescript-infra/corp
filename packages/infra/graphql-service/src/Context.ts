@@ -1,6 +1,6 @@
 import type { BaseContext } from '@apollo/server';
 import { getPrincipal } from '@justtellme/web-auth';
-import type { JTMPrincipal } from '@justtellme/auth-token';
+import type { AuthPrincipal } from '@justtellme/auth-token';
 import type { ServiceExpress } from '@openapi-typescript-infra/service';
 import type { GraphQLErrorExtensions } from 'graphql';
 import { GraphQLError } from 'graphql';
@@ -32,7 +32,7 @@ export interface JTMGraphQLContext<
   xAuthTokenHeader(): Promise<string | undefined>;
 
   headers: IncomingHttpHeaders;
-  user?: JTMPrincipal;
+  user?: AuthPrincipal;
   cookies?: Record<string, string>;
 }
 
@@ -87,8 +87,8 @@ abstract class BaseContextClass<
   }
 
   abstract get headers(): IncomingHttpHeaders;
-  abstract get user(): JTMPrincipal | undefined;
-  abstract set user(user: JTMPrincipal | undefined);
+  abstract get user(): AuthPrincipal | undefined;
+  abstract set user(user: AuthPrincipal | undefined);
   abstract get cookies(): Record<string, string>;
 }
 
@@ -97,7 +97,7 @@ export class WsJTMGraphQLContext<
     JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema> = JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema>,
 > extends BaseContextClass<SLocals> {
   wsContext: Context;
-  user: JTMPrincipal | undefined;
+  user: AuthPrincipal | undefined;
   headers: IncomingHttpHeaders;
 
   constructor(app: ServiceExpress<SLocals>, wsContext: Context) {
@@ -134,11 +134,11 @@ export class HttpJTMGraphQLContext<
     return this.req.headers;
   }
 
-  get user(): JTMPrincipal | undefined {
+  get user(): AuthPrincipal | undefined {
     return this.req.user;
   }
 
-  set user(user: JTMPrincipal | undefined) {
+  set user(user: AuthPrincipal | undefined) {
     this.req.user = user;
   }
 
