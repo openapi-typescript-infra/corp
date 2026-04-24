@@ -1,0 +1,32 @@
+type: object
+required:
+  - client
+  - individual_id
+  - input
+properties:
+  client:
+    $ref: ClientInfo.yaml
+  individual_id:
+    type: string
+    description: The individual ID of the customer
+  input:
+    type: string
+    description: The initial message from the customer
+  metadata:
+    type: object
+    description: Additional metadata to include in the conversation
+    additionalProperties: true
+  system_prompt_addendum:
+    type: string
+    description: Additional text to append to the customer support system prompt
+  conversation_id:
+    type: string
+    description: The conversation ID to use. If not provided, a new conversation will be created.
+  model:
+    type: string
+    description: The model to use for the conversation
+  starting_tools:
+    type: array
+    items:
+      type: string
+    description: The tools to start the conversation with

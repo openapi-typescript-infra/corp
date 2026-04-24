@@ -23,10 +23,10 @@ export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
     ClientInfo: {
+      /** @description The calling client name */
       name: string;
+      /** @description The calling client version in semver format */
       version: string;
-      /** @description An identifier for the agent that will be used for the conversation. Must be unique within the client. */
-      agent_id?: string;
     };
     CustomerSupportConversationRequest: {
       client: components["schemas"]["ClientInfo"];
@@ -75,64 +75,119 @@ export interface components {
     };
     TurnMessageContentPart: components["schemas"]["TurnTextPart"] | components["schemas"]["TurnImagePart"] | components["schemas"]["TurnFilePart"];
     TurnMessageContent: string | (components["schemas"]["TurnMessageContentPart"])[];
-    ToolCall: {
-      id: string;
-      /** @enum {string} */
-      type: "function";
-      function: {
-        name: string;
-        arguments: string;
-      };
-    };
     TurnMessage: {
       /** @enum {string} */
-      role: "assistant" | "tool";
+      role: "user" | "assistant" | "system";
       content: components["schemas"]["TurnMessageContent"];
-      tool_calls?: (components["schemas"]["ToolCall"])[];
+      /** @description Position in the overall turn content order, shared with tool_calls. Clients can merge messages and tool_calls then sort by sequence to reconstruct the original interleaving. */
+      sequence?: number;
     };
-    TurnMetadata: {
-      /** @description The model used for this turn */
-      model?: string;
-      /** @description The provider used for this turn */
-      provider?: string;
-      /** @description The number of tokens in the input */
-      input_tokens?: number;
-      /** @description The number of tokens in the output */
-      output_tokens?: number;
-      /** @description The number of tokens read from the cache */
-      cache_read_tokens?: number;
-      /** @description The number of tokens written to the cache */
-      cache_write_tokens?: number;
-      /** @description The number of tokens used for reasoning */
-      reasoning_tokens?: number;
-      /** @description The time in milliseconds to generate the first token */
-      first_token_ms?: number;
-      /** @description The total time in milliseconds to generate the turn */
-      total_ms?: number;
-      /** @description The estimated cost of the turn in microdollars */
-      cost_micros?: number;
-      /** @description The reason the turn finished */
-      finish_reason?: string;
+    MultipleChoiceQuestionInput: {
+      /** @description The question to ask */
+      question: string;
+      /** @description The available choices */
+      choices: (string)[];
+      /**
+       * @description If true, the user may select multiple choices; otherwise exactly one. 
+       * @default false
+       */
+      allow_multiple?: boolean;
     };
-    Turn: {
-      turn_id: string;
+    MultipleChoiceQuestionOutput: {
+      /** @description The choice(s) selected by the user */
+      selected: (string)[];
+    };
+    AgentToolCallMultipleChoiceQuestion: {
+      /** @description The unique identifier for the tool call */
+      id: string;
       /** @enum {string} */
-      status: "pending" | "streaming" | "complete" | "error" | "tool_call";
+      name: "multiple_choice_question";
+      input: components["schemas"]["MultipleChoiceQuestionInput"];
+      /** @description Position in the overall turn content order, shared with messages. Clients can merge messages and tool_calls then sort by sequence to reconstruct the original interleaving. */
+      sequence?: number;
+      output?: components["schemas"]["MultipleChoiceQuestionOutput"];
+    };
+    YesNoQuestionInput: {
+      /** @description The question to ask */
+      question: string;
+      /** @description Text spoken by the user if they answer yes (first-person, user voice) */
+      yes_utterance?: string;
+      /** @description Text spoken by the user if they answer no (first-person, user voice) */
+      no_utterance?: string;
+    };
+    YesNoQuestionOutput: {
+      /** @description Whether the user answered yes (true) or no (false) */
+      answer: boolean;
+    };
+    AgentToolCallYesNoQuestion: {
+      /** @description The unique identifier for the tool call */
+      id: string;
+      /** @enum {string} */
+      name: "yes_no_question";
+      input: components["schemas"]["YesNoQuestionInput"];
+      /** @description Position in the overall turn content order, shared with messages. Clients can merge messages and tool_calls then sort by sequence to reconstruct the original interleaving. */
+      sequence?: number;
+      output?: components["schemas"]["YesNoQuestionOutput"];
+    };
+    /** @description An agent tool call on the wire, discriminated on the tool name. */
+    AgentToolCall: components["schemas"]["AgentToolCallMultipleChoiceQuestion"] | components["schemas"]["AgentToolCallYesNoQuestion"];
+    ConversationStoredMessage: {
+      /** @enum {string} */
+      role: "user" | "assistant" | "system" | "tool-result";
+      content: unknown;
+      tool_call_id?: string;
+      extra_data?: {
+        [key: string]: unknown;
+      };
+      /** Format: date-time */
+      created_at?: string;
+    };
+    /** @description Server-side metadata about a turn's execution */
+    TurnMetadata: {
+      /** @enum {string} */
+      status?: "pending" | "streaming" | "input-required" | "complete" | "failed";
+      model?: string;
+      error?: string;
+      finish_reason?: string;
+      raw_finish_reason?: string;
+      input_tokens?: number;
+      output_tokens?: number;
+      total_latency_ms?: number;
+      /** Format: date-time */
+      started_at?: string;
+      /** Format: date-time */
+      completed_at?: string;
+      extra_data?: {
+        [key: string]: unknown;
+      };
+      stored_messages?: (components["schemas"]["ConversationStoredMessage"])[];
+    };
+    /** @description A single turn of conversation with both input and output fields */
+    Turn: {
+      /** @description The unique identifier for the turn */
+      turn_id: string;
+      /** @description Zero or more messages in the turn */
       messages?: (components["schemas"]["TurnMessage"])[];
+      /** @description Tool calls made by the assistant, with responses when answered */
+      tool_calls?: (components["schemas"]["AgentToolCall"])[];
+      /** @description Server-side execution metadata, included when requested */
       metadata?: components["schemas"]["TurnMetadata"];
     };
+    /** @description A conversation with all stored turns and messages */
     ConversationDetails: {
       conversation_id: string;
       /** @enum {string} */
-      status: "active" | "archived" | "deleted";
+      status?: "running" | "completed" | "failed";
+      error?: string;
+      system_prompt?: string;
       /** Format: date-time */
       created_at?: string;
       /** Format: date-time */
       updated_at?: string;
-      system_prompt?: string;
-      model?: string;
+      extra_data?: {
+        [key: string]: unknown;
+      };
       turns: (components["schemas"]["Turn"])[];
-      starting_tools?: (string)[];
     };
   };
   responses: never;
