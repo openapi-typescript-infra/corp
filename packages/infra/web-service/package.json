@@ -42,11 +42,11 @@
     "test": "vitest",
     "build": "yarn build:next",
     "typecheck": "tsgo --noEmit -p tsconfig.json",
-    "build:next": "cd __tests__/justtellme-web && next build",
+    "build:next": "cd __tests__/sample-web && next build",
     "clean": "yarn dlx rimraf ./build",
     "lint": "biome check src",
     "postinstall": "cpconfig",
-    "start": "yarn start-service --rootDirectory __tests__/justtellme-web --codepath src --packageDir __tests__/justtellme-web"
+    "start": "yarn start-service --rootDirectory __tests__/sample-web --codepath src --packageDir __tests__/sample-web"
   },
   "engines": {
     "node": ">24.0.0"

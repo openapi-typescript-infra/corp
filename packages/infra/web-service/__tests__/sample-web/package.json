@@ -1,5 +1,5 @@
 {
-  "name": "@justtellme/test-justtellme-web",
+  "name": "@justtellme/test-sample-web",
   "version": "1.0.0",
   "main": "src/index.ts",
   "type": "module"

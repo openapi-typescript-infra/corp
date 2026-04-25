@@ -8,12 +8,12 @@ import {
 } from '@openapi-typescript-infra/service-tester';
 import { expect, test, vi } from 'vitest';
 
-import { hsWeb } from './justtellme-web/src/index.ts';
+import { hsWeb } from './sample-web/src/index.ts';
 
 test('Webs should serv', async () => {
   const app = await getReusableApp({
     service: hsWeb,
-    rootDirectory: path.resolve(__dirname, 'justtellme-web'),
+    rootDirectory: path.resolve(__dirname, 'sample-web'),
     codepath: 'src',
     name: 'justtellme-web',
     version: '1.0.0',

@@ -1,6 +1,6 @@
 dist/
 node_modules/
-/__tests__/justtellme-web/private/**
+/__tests__/sample-web/private/**
 
 *.tsbuildinfo
 
@@ -11,7 +11,7 @@ node_modules/
 !.yarn/sdks
 !.yarn/versions
 
-!/__tests__/justtellme-web/tsconfig.json
+!/__tests__/sample-web/tsconfig.json
 .eslintrc
 vitest.config.cts
 .github/actionlint.yml
