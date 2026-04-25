@@ -2,7 +2,7 @@ import type { components as IdentityInternal } from '@justtellme/api/identity-in
 import { ServiceError } from '@openapi-typescript-infra/service';
 import DataLoader from 'dataloader';
 
-import type { GraphQLApiContext } from '#src/types/context.ts';
+import type { GraphQLApiContext } from '#src/types/context.js';
 
 export interface Dataloaders {
   basicIndividualInfoByIndividualUuid: DataLoader<

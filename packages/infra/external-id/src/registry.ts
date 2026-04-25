@@ -20,4 +20,5 @@ export const ExternalIDType = {
   // An agent conversation turn
   AgentConversationTurn: 'ait',
 } as const;
+
 export type ExternalIDType = (typeof ExternalIDType)[keyof typeof ExternalIDType];

@@ -27,7 +27,8 @@ External IDs are useful when the meaning of the identifier is not clear from its
 | Partners | External ID | Stripe, Photon, Plaid |
 | URLs | Either | Depends on particulars, because sometimes the type is very clear, but even then it's useful to have a more compact id and can have benefits to see the type clearly. |
 
-For constrained environments, see [expander.js](./src/expander.js) for a 0-dependency Javascript function to decode ExternalIDs.
+For constrained environments, use `@openapi-typescript-infra/external-id/expander` for a
+0-dependency Javascript function to decode ExternalIDs.
 
 Additionally, here is an implementation for PostgreSQL:
 

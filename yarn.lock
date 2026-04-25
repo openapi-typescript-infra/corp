@@ -4508,10 +4508,9 @@ __metadata:
   dependencies:
     "@biomejs/biome": ^2.4.10
     "@justtellme/cpconfig": "workspace:^"
-    "@types/any-base": ^1.1.3
+    "@openapi-typescript-infra/external-id": ^1.1.0
     "@types/node": ^25.5.2
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
-    any-base: ^1.1.0
     cpconfig: ^1.5.0
     typescript: ^6.0.3
     vitest: ^4.1.2
@@ -5287,6 +5286,15 @@ __metadata:
   version: 2.1.0
   resolution: "@open-draft/until@npm:2.1.0"
   checksum: 140ea3b16f4a3a6a729c1256050e20a93d408d7aa1e125648ce2665b3c526ed452510c6e4a6f4b15d95fb5e41203fb51510eb8fbc8812d5e5a91880293d66471
+  languageName: node
+  linkType: hard
+
+"@openapi-typescript-infra/external-id@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@openapi-typescript-infra/external-id@npm:1.1.0"
+  dependencies:
+    any-base: ^1.1.0
+  checksum: f8bc1f2690df44ea8f07924022ee050dbc99c429d1679d175fc45ba9161362f0106b631066d4301dd9c7c89da83288d69a813381cb1104f6ca000ebf68666a5f
   languageName: node
   linkType: hard
 
@@ -8715,13 +8723,6 @@ __metadata:
   dependencies:
     tslib: ^2.4.0
   checksum: b8b281ffa9cd01cb6d45a4dddca2e28fd0cb6ad67cf091ba4a73ac87c0d6bd6ce188c332c489e87c20b0750b0b6fe3b99e30e1cd2227ec16da692f51c778944e
-  languageName: node
-  linkType: hard
-
-"@types/any-base@npm:^1.1.3":
-  version: 1.1.3
-  resolution: "@types/any-base@npm:1.1.3"
-  checksum: 0ba318fc14008f218856039561fd0238666686b6bb78ab0f39e17ba98d895b9baedfbe80915cb07cd535a02aa470e8e5745be67e4c3a6b93587f2462933cda59
   languageName: node
   linkType: hard
 
