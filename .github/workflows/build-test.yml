@@ -50,34 +50,23 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: yarn
 
       - name: 📦 Install dependencies
         run: yarn install --immutable
 
-      - name: 🏗️ Build
+      - name: ♻️ Turbo remote cache (GitHub-backed)
+        uses: rharkor/caching-for-turbo@56219402aacc0d06b650d898c222996dbc1191ec # v2.3.14
+
+      - name: 🏗️ Build, typecheck, lint
         run: |
           yarn workspaces foreach -pt run ci-setup
-          yarn build
-
-      - name: 🚦 Typecheck
-        run: yarn typecheck
-
-      - name: 🧹 Biome
-        run: yarn lint
+          yarn turbo run build typecheck lint
 
       - name: 📦 Check bundle sizes
         env:
           APP_ENV: production
-        run: |
-          yarn workspace @justtellme/consumer-web build:next
-          yarn workspace @justtellme/consumer-web check-bundles
-
-      - name: 🔍 Detect affected services
-        id: affected
-        run: |
-          AFFECTED=$(npx turbo run build --filter='./services/*...[origin/main]' --dry-run=json | jq -r '.packages | map(select(startswith("@justtellme/"))) | join(",")')
-          echo "services=$AFFECTED" >> $GITHUB_OUTPUT
-          echo "Affected services: $AFFECTED"
+        run: yarn turbo run check-bundles --filter=@justtellme/consumer-web
 
       - name: 🧹 Cleanup CI Postgres
         if: always()

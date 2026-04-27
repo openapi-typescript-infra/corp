@@ -23,6 +23,15 @@
     "lint": {},
     "typecheck": {
       "dependsOn": ["^build"]
+    },
+    "build:next": {
+      "dependsOn": ["^build"],
+      "outputs": ["private/**", ".next/**", "__tests__/sample-web/private/**", "__tests__/sample-web/.next/**"],
+      "env": ["NODE_ENV", "APP_ENV"],
+      "passThroughEnv": ["GITHUB_SHA", "NO_SENTRY_UPLOAD", "SENTRY_AUTH_TOKEN"]
+    },
+    "check-bundles": {
+      "dependsOn": ["build:next"]
     }
   }
 }
