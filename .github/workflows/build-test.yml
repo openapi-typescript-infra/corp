@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   build-check-test:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     env:
       PGPORT: 25432
