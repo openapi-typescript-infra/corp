@@ -27,8 +27,7 @@ export async function getTranslatedAuthHeaders(app: GraphqlApi['App'], authHeade
     },
   }).then((res) => {
     return {
-      'x-sesame-user-uuid': res.headers['x-sesame-user-uuid'],
-      'x-sesame-token': res.headers['x-sesame-token'],
+      'x-auth-token': res.headers['x-auth-token'],
     };
   });
 }
