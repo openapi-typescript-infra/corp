@@ -3,6 +3,11 @@ import { dirname, relative, resolve } from 'node:path';
 
 const REPO_ROOT = resolve(import.meta.dirname, '..');
 
+// Paths every biome.jsonc in the repo excludes via `files.includes`. Hand
+// them to biome and it exits non-zero with "No files were processed", which
+// fails the hook. Filter them here so biome only sees files it'll act on.
+const ALWAYS_IGNORED_PATTERNS: RegExp[] = [/(^|\/)migrations\/.*\.js$/];
+
 function findBiomeRoot(absFile: string): string | null {
   let dir = dirname(absFile);
   while (dir.startsWith(REPO_ROOT)) {
@@ -19,6 +24,8 @@ export default {
   '*.{js,jsx,ts,tsx,mjs,cjs,json,jsonc,css,graphql,gql}': (files: string[]) => {
     const groups = new Map<string, string[]>();
     for (const f of files) {
+      const rel = relative(REPO_ROOT, f);
+      if (ALWAYS_IGNORED_PATTERNS.some((re) => re.test(rel))) continue;
       const root = findBiomeRoot(f);
       if (!root) continue;
       const list = groups.get(root) ?? [];
