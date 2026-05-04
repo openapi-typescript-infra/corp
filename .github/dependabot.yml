@@ -1,0 +1,30 @@
+version: 2
+
+updates:
+  # GitHub Actions: keeps SHA-pinned `uses:` lines current. Dependabot rewrites
+  # both the SHA and the `# vX.Y.Z` comment when bumping.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      actions-minor-and-patch:
+        update-types: ["minor", "patch"]
+
+  # NPM (yarn 3 workspaces): root yarn.lock + every workspace package.json.
+  # Workspace deps (`workspace:^`) are skipped automatically.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    groups:
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+    ignore:
+      # TypeScript native preview ships nightly builds — don't drown in PRs.
+      # Bump manually when ready.
+      - dependency-name: "@typescript/native-preview"

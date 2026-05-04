@@ -1,0 +1,87 @@
+{{- if .Values.cloudSqlProxy.enabled -}}
+{{- if not .Values.cloudSqlProxy.connectionName -}}
+{{- fail "cloudSqlProxy.connectionName is required (e.g. my-project:us-central1:my-db-instance)" -}}
+{{- end -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.cloudSqlProxy.serviceName }}
+  labels:
+    app: {{ .Values.cloudSqlProxy.serviceName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.cloudSqlProxy.serviceName }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.cloudSqlProxy.serviceName }}
+    spec:
+      serviceAccountName: {{ .Values.cloudSqlProxy.serviceAccountName }}
+      containers:
+        - name: cloud-sql-proxy
+          image: {{ .Values.cloudSqlProxy.image | quote }}
+          args:
+            - --structured-logs
+            - --address=0.0.0.0
+            - --private-ip
+            - --health-check
+            - --http-address=0.0.0.0
+            - --http-port=9090
+            - {{ printf "%s?port=%d" .Values.cloudSqlProxy.connectionName (int .Values.cloudSqlProxy.port) | quote }}
+          ports:
+            - name: postgres
+              containerPort: {{ .Values.cloudSqlProxy.port }}
+              protocol: TCP
+            - name: health
+              containerPort: 9090
+              protocol: TCP
+          startupProbe:
+            httpGet:
+              path: /startup
+              port: health
+            failureThreshold: 30
+            periodSeconds: 2
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: health
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: health
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.cloudSqlProxy.resources | nindent 12 }}
+          securityContext:
+            runAsUser: 65532
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.cloudSqlProxy.serviceName }}
+  labels:
+    app: {{ .Values.cloudSqlProxy.serviceName }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Values.cloudSqlProxy.serviceName }}
+  ports:
+    - name: postgres
+      port: {{ .Values.cloudSqlProxy.port }}
+      targetPort: postgres
+      protocol: TCP
+{{- end -}}

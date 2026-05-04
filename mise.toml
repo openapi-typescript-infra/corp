@@ -4,8 +4,14 @@ node = "24"
 [env]
 CLOUDSDK_CONFIG = "{{env.HOME}}/.config/gcloud-justtellme"
 GOOGLE_APPLICATION_CREDENTIALS = "{{env.HOME}}/.config/gcloud-justtellme/application_default_credentials.json"
-PGPORT = 15432
-STYTCH_TOKEN= "public-token-test-something"
+PGHOST = "localhost"
+PGPORT = 25432
+PGUSER = "postgres"
+PGPASSWORD = "postgres"
+STYTCH_TOKEN = "public-token-test-something"
 APP_ENV = "development"
 WHOAMI = "https://consumer.local.dev.justtellme.com"
 POSTHOG_KEY = "phc_something"
+TYPESENSE_API_KEY = "onlyindev"
+PUBSUB_EMULATOR_HOST = "localhost:28085"
+PUBSUB_PROJECT_ID = "justtellme-dev"

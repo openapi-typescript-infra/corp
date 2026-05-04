@@ -10,20 +10,23 @@ permissions:
   contents: read
   id-token: write
 
+env:
+  # Activates `mise.ci.toml` overrides on top of `mise.toml`. Single source of
+  # truth for tool versions and env vars; CI-specific values live in
+  # `mise.ci.toml`.
+  MISE_ENV: ci
+
 jobs:
   build-check-test:
     runs-on: ubuntu-latest
 
-    env:
-      PGPORT: 25432
-      PGUSER: postgres
-      PGPASSWORD: postgres
-      PGHOST: localhost
-
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
+
+      - name: 🧰 Setup mise (tools + env)
+        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
 
       - name: 🐘 Start CI Postgres
         run: |
@@ -31,7 +34,7 @@ jobs:
             -e POSTGRES_USER=postgres \
             -e POSTGRES_PASSWORD=postgres \
             -p 25432:5432 \
-            ghcr.io/openapi-typescript-infra/pg-postgis-plv8
+            ghcr.io/openapi-typescript-infra/pg-postgis-plv8:main
           # Wait for Postgres to be ready
           for i in $(seq 1 30); do
             if pg_isready -h localhost -p 25432 -U postgres 2>/dev/null; then
@@ -42,15 +45,19 @@ jobs:
           done
 
       - id: auth
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-actions/providers/github-oidc
           service_account: github-actions-ci@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
 
-      - uses: actions/setup-node@v4
+      - name: ♻️ Cache yarn fetch
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
-          node-version: 24
-          cache: yarn
+          path: |
+            .yarn/cache
+            .yarn/install-state.gz
+          key: yarn-${{ runner.os }}-${{ hashFiles('yarn.lock', '.yarnrc.yml') }}
+          restore-keys: yarn-${{ runner.os }}-
 
       - name: 📦 Install dependencies
         run: yarn install --immutable

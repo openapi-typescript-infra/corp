@@ -15,20 +15,22 @@
     "api": "turbo run build --filter=@justtellme/api",
     "build": "turbo run build",
     "clean": "turbo run clean",
-    "cpconfig": "turbo run cpconfig",
+    "cpconfig": "yarn workspaces foreach -Apv exec cpconfig",
+    "db:clean": "yarn workspaces foreach -Av --exclude just-tell-me run db:clean",
     "ios": "yarn workspace @just-tell-me/mobile-app run ios",
     "android": "yarn workspace mobile-app run android",
     "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
     "new": "./packages/infra/create/src/index.ts",
+    "prepare": "husky",
     "proxy": "sudo yarn dlx @openapi-typescript-infra/cluster-proxy --config proxy.json",
     "run-local": "yarn workspace @justtellme/run-local start",
     "test": "turbo run test",
-    "typecheck": "turbo run typecheck",
-    "format": "turbo run lint -- --write"
+    "typecheck": "turbo run typecheck"
   },
   "dependencies": {
     "@typescript/native-preview": "^7.0.0-dev.20260418.1",
-    "cpconfig": "^1.5.0",
+    "cpconfig": "^1.5.1",
     "expo-dev-client": "~55.0.22",
     "run-pg-sql": "^1.2.0",
     "typescript": "^6.0.3",
@@ -36,6 +38,9 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.10",
+    "@openapi-typescript-infra/cluster-proxy": "^1.8.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "nodemon": "^3.1.14",
     "tsc-alias": "^1.8.16",
     "turbo": "^2.9.3"

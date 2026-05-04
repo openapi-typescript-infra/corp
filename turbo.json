@@ -3,13 +3,10 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build", "generate"],
-      "outputs": ["dist/**", ".next/**", "private/**"],
+      "outputs": ["dist/**", ".next/**", "private/**", "src/generated/**"],
       "passThroughEnv": ["PGPORT", "PGHOST", "PGUSER", "PGPASSWORD", "PGDATABASE"]
     },
     "clean": {
-      "cache": false
-    },
-    "cpconfig": {
       "cache": false
     },
     "generate": {
@@ -21,17 +18,33 @@
       "passThroughEnv": ["PGPORT", "PGHOST", "PGUSER", "PGPASSWORD", "PGDATABASE"]
     },
     "lint": {},
+    "lint:fix": {
+      "cache": false
+    },
     "typecheck": {
       "dependsOn": ["^build"]
     },
     "build:next": {
       "dependsOn": ["^build"],
-      "outputs": ["private/**", ".next/**", "__tests__/sample-web/private/**", "__tests__/sample-web/.next/**"],
+      "outputs": ["private/**", ".next/**", "__tests__/sample-web/.next/**"],
       "env": ["NODE_ENV", "APP_ENV"],
       "passThroughEnv": ["GITHUB_SHA", "NO_SENTRY_UPLOAD", "SENTRY_AUTH_TOKEN"]
     },
     "check-bundles": {
       "dependsOn": ["build:next"]
+    },
+    "@justtellme/tools#generate": {
+      "outputs": ["api/**"]
+    },
+    "@justtellme/web-service#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["__tests__/sample-web/.next/**"]
+    },
+    "@justtellme/graphql-api#lint": {
+      "dependsOn": ["build"]
+    },
+    "@justtellme/graphql-api#lint:fix": {
+      "dependsOn": ["build"]
     }
   }
 }

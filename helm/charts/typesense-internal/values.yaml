@@ -1,0 +1,26 @@
+typesense:
+  # Resource name in the cluster — keeps the Service hostname predictable
+  # (typesense-internal.<namespace>.svc.cluster.local) for datasource configs.
+  fullnameOverride: typesense-internal
+
+  # Single node by default; override per-environment for HA.
+  replicas: 1
+
+  # Bootstrap API key — must be set per environment via values.<env>.yaml or
+  # an external secret. Do NOT commit a real key here.
+  apiKey: ""
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+
+  # Persistent storage for the Typesense data directory.
+  storage:
+    size: 10Gi
+
+  service:
+    type: ClusterIP
+    port: 8108

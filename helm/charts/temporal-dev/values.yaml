@@ -1,0 +1,115 @@
+# Dev-only Temporal cluster pointing at a Cloud SQL Postgres instance.
+# A single cloud-sql-auth-proxy Deployment fronts the instance for all Temporal
+# components. A node restart causes a brief connection blip, which is acceptable
+# for dev — Temporal reconnects without data loss because the data lives in PG.
+
+cloudSqlProxy:
+  enabled: true
+  # Cloud SQL instance connection name. REQUIRED; chart will fail without it.
+  # e.g. my-project:us-central1:my-db-instance
+  connectionName: ""
+  image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.14.2
+  port: 5432
+  # K8s ServiceAccount the proxy runs as. Must be bound (via Workload Identity)
+  # to a GCP SA with roles/cloudsql.client on the target project.
+  serviceAccountName: default
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 128Mi
+  serviceName: temporal-cloud-sql-proxy
+
+# K8s Secret holding the dbowner password. Seed once from your secrets store.
+database:
+  passwordSecret:
+    name: temporal-pg-password
+    key: password
+  # Postgres user that owns the temporal/temporal_visibility databases.
+  user: dbowner
+
+# Upstream temporalio/temporal chart overrides.
+temporal:
+  # Pin the in-cluster names to `temporal-*` regardless of release name so
+  # services can keep using `temporal-frontend.<namespace>.svc.cluster.local:7233`.
+  fullnameOverride: temporal
+
+  server:
+    replicaCount: 1
+    config:
+      logLevel: "info"
+      persistence:
+        defaultStore: default
+        visibilityStore: visibility
+        numHistoryShards: 512
+        datastores:
+          default:
+            sql:
+              pluginName: postgres12_pgx
+              databaseName: temporal
+              connectAddr: temporal-cloud-sql-proxy:5432
+              connectProtocol: tcp
+              user: dbowner
+              existingSecret: temporal-pg-password
+              secretKey: password
+              createDatabase: false
+              maxConns: 20
+              maxIdleConns: 10
+              maxConnLifetime: 1h
+          visibility:
+            sql:
+              pluginName: postgres12_pgx
+              databaseName: temporal_visibility
+              connectAddr: temporal-cloud-sql-proxy:5432
+              connectProtocol: tcp
+              user: dbowner
+              existingSecret: temporal-pg-password
+              secretKey: password
+              createDatabase: false
+              maxConns: 10
+              maxIdleConns: 5
+              maxConnLifetime: 1h
+      namespaces:
+        create: true
+        namespace:
+          - name: default
+            retention: 3d
+    metrics:
+      annotations:
+        enabled: false
+      serviceMonitor:
+        enabled: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 512Mi
+
+  admintools:
+    enabled: true
+    resources:
+      requests:
+        cpu: 25m
+        memory: 64Mi
+      limits:
+        memory: 128Mi
+
+  web:
+    enabled: true
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 256Mi
+
+  schema:
+    useHelmHooks: true
+
+  # Disable the 1.29-era shims; we run 1.31 server + 1.31 admintools.
+  shims:
+    dockerize: false
+    elasticsearchTool: false

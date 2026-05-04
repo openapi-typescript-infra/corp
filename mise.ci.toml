@@ -1,0 +1,9 @@
+# CI-only overrides for `mise.toml`. Loaded automatically when `MISE_ENV=ci`,
+# which the `build-test` workflow sets at the workflow level.
+#
+# Add an override here when a value in `mise.toml` is dev-environment-specific
+# and inappropriate for CI (e.g. a URL pointing at the dev environment, or a
+# real third-party key that shouldn't be exercised from CI).
+
+[env]
+APP_ENV = "test"

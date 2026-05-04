@@ -1,0 +1,53 @@
+{
+  "name": "@justtellme/end-to-end",
+  "version": "0.0.0",
+  "description": "End to end tests for web applications",
+  "type": "module",
+  "private": true,
+  "author": "Developers <developers@justtellme.com>",
+  "license": "UNLICENSED",
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "scripts": {
+    "lint": "biome check .",
+    "lint:fix": "biome check . --write",
+    "postinstall": "cpconfig",
+    "test": "playwright test --project chromium",
+    "test:all": "playwright test",
+    "ui": "playwright test --project chromium --ui",
+    "ui:local": "JTM_TEST_ENV=local playwright test --project chromium --ui",
+    "smoke": "playwright test --project chromium -g '@smoke'",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": [
+    "typescript",
+    "justtellme",
+    "playwright",
+    "e2e"
+  ],
+  "config": {
+    "cpconfig": "@justtellme/cpconfig",
+    "biomeignore": [
+      "playwright-report",
+      "playwright-videos",
+      "test-results",
+      "a11y-reports"
+    ]
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.10",
+    "@justtellme/cpconfig": "workspace:^",
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.5.2",
+    "@typescript/native-preview": "^7.0.0-dev.20260418.1",
+    "cpconfig": "^1.5.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.2"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^10.4.0",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.4.2"
+  }
+}

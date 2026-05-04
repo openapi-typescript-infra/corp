@@ -1,0 +1,15 @@
+apiVersion: v2
+name: typesense-internal
+description: Stock Typesense for internal search needs
+type: application
+
+# Chart version
+version: 0.1.0
+
+# CI/CD will overwrite this with the upstream Typesense image tag being deployed
+appVersion: "28.0"
+
+dependencies:
+  - name: typesense
+    version: 0.3.13
+    repository: https://typesense.github.io/typesense-helm-chart/
