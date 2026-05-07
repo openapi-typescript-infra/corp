@@ -1,0 +1,8 @@
+type: string
+enum:
+  - todo
+  - in-progress
+  - waiting
+  - blocked
+  - done
+  - skipped

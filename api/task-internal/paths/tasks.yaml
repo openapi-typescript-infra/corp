@@ -1,0 +1,127 @@
+get:
+  operationId: getTasks
+  summary: Get tasks by query parameters
+  parameters:
+    - name: task_uuid
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+      description: Filter to a single task UUID
+    - name: task_type
+      in: query
+      required: false
+      schema:
+        $ref: ../enums/TaskType.yaml
+      description: Filter by task type
+    - name: idempotency_id
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Filter by caller-supplied idempotency key. Use with task_type for unique lookup.
+    - name: status
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          $ref: ../enums/TaskStatus.yaml
+      style: form
+      explode: true
+      description: Filter by one or more tracking statuses
+    - name: subject_type
+      in: query
+      required: false
+      schema:
+        $ref: ../enums/EntityType.yaml
+      description: Filter by task context subject type
+    - name: subject_uuid
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+      description: Filter by task context subject UUID
+    - name: submitter_type
+      in: query
+      required: false
+      schema:
+        $ref: ../enums/EntityType.yaml
+      description: Filter by task context submitter type
+    - name: submitter_uuid
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+      description: Filter by task context submitter UUID
+    - name: due_before
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date-time
+      description: Filter to tracked tasks due at or before this timestamp
+    - name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+      description: 1-indexed result page
+    - name: page_size
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 50
+      description: Number of tasks per page
+  responses:
+    '200':
+      description: Matching tasks
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/TaskList.yaml
+    '400':
+      description: Invalid task query
+      content:
+        application/json:
+          schema:
+            $ref: ../../common/Error.yaml
+post:
+  operationId: createTask
+  summary: Create a task
+  description: |
+    Creates the thin task root row, plus optional context and tracking rows when
+    those objects are included in the request.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../schemas/CreateTaskRequest.yaml
+  responses:
+    '201':
+      description: Task created
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/Task.yaml
+    '409':
+      description: A task with this task_type and idempotency_id already exists
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/Task.yaml
+    '400':
+      description: Invalid task request
+      content:
+        application/json:
+          schema:
+            $ref: ../../common/Error.yaml

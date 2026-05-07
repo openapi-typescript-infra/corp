@@ -1,0 +1,19 @@
+type: object
+properties:
+  title:
+    type: string
+  summary:
+    type: string
+  submitter_type:
+    $ref: ../enums/EntityType.yaml
+  submitter_uuid:
+    type: string
+    format: uuid
+  subject_type:
+    $ref: ../enums/EntityType.yaml
+  subject_uuid:
+    type: string
+    format: uuid
+  extra_data:
+    type: object
+    additionalProperties: true

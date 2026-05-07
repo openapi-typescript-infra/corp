@@ -1,0 +1,7 @@
+type: string
+description: Type of actor or subject associated with a task. Generic categories so callers can correlate a task with whatever entity their domain cares about.
+enum:
+  - user
+  - agent
+  - service
+  - system

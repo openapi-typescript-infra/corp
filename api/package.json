@@ -8,7 +8,8 @@
   "exports": {
     "./specs/*": "./dist/specs/*.json",
     "./authn-authz-internal": "./dist/AuthnAuthzInternal.ts",
-    "./identity-internal": "./dist/IdentityInternal.ts"
+    "./identity-internal": "./dist/IdentityInternal.ts",
+    "./task-internal": "./dist/TaskInternal.ts"
   },
   "config": {
     "cpconfig": "@justtellme/cpconfig"

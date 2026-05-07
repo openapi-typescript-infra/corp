@@ -1,0 +1,6 @@
+base-service:
+  name: task-internal
+  team: platform
+
+  database:
+    gcpId: main

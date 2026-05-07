@@ -1,0 +1,24 @@
+type: object
+required:
+  - task_uuid
+  - task_type
+  - created_at
+  - updated_at
+properties:
+  task_uuid:
+    type: string
+    format: uuid
+  task_type:
+    $ref: ../enums/TaskType.yaml
+  idempotency_id:
+    type: string
+  context:
+    $ref: ./TaskContext.yaml
+  tracking:
+    $ref: ./TaskTracking.yaml
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time

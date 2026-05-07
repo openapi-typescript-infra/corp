@@ -1,0 +1,17 @@
+type: object
+required:
+  - task_type
+properties:
+  task_uuid:
+    type: string
+    format: uuid
+    description: Optional caller-supplied task UUID. If omitted, one is generated.
+  task_type:
+    $ref: ../enums/TaskType.yaml
+  idempotency_id:
+    type: string
+    description: Caller-supplied idempotency key scoped to the task type.
+  context:
+    $ref: ./CreateTaskContext.yaml
+  tracking:
+    $ref: ./CreateTaskTracking.yaml

@@ -1,0 +1,13 @@
+openapi: 3.0.1
+info:
+  title: task-internal
+  description: Internal task management service
+  version: 1.0.0
+servers:
+  - url: http://task-internal.jtm.svc.cluster.local
+    description: Within Kubernetes cluster only
+paths:
+  /tasks:
+    $ref: paths/tasks.yaml
+  /tasks/{task_uuid}:
+    $ref: paths/tasks.task_uuid.yaml

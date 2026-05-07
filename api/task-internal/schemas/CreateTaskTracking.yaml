@@ -1,0 +1,13 @@
+type: object
+properties:
+  status:
+    $ref: ../enums/TaskStatus.yaml
+  priority:
+    type: integer
+    format: int32
+  due_at:
+    type: string
+    format: date-time
+  closed_at:
+    type: string
+    format: date-time

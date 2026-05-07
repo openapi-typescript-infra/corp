@@ -1,0 +1,17 @@
+type: object
+required:
+  - tasks
+  - page
+  - page_size
+properties:
+  tasks:
+    type: array
+    items:
+      $ref: ./Task.yaml
+  page:
+    type: integer
+    minimum: 1
+  page_size:
+    type: integer
+    minimum: 1
+    maximum: 100

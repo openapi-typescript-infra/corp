@@ -1,0 +1,24 @@
+parameters:
+  - name: task_uuid
+    in: path
+    required: true
+    schema:
+      type: string
+      format: uuid
+    description: The task UUID
+get:
+  operationId: getTask
+  summary: Get a task by UUID
+  responses:
+    '200':
+      description: Task details
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/Task.yaml
+    '404':
+      description: Task not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../common/Error.yaml

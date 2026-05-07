@@ -1,0 +1,2 @@
+type: string
+description: Caller-defined task type. Values are validated against the task_types table; consumers seed their own types via migration.
