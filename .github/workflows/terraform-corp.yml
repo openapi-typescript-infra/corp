@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v4
 
       - name: Write credentials
         run: echo '${{ secrets.WORKSPACE_GOOGLE_SA_KEY }}' > terraform-service-account.json
@@ -43,7 +43,7 @@ jobs:
     timeout-minutes: 2
     steps:
       - uses: actions/checkout@v4
-      - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v4
       - name: Check formatting
         working-directory: terraform/corp
         run: terraform fmt -check -recursive .
