@@ -17,8 +17,7 @@
     "clean": "make clean",
     "start": "start-service",
     "repl": "start-service --repl",
-    "lint": "biome check . && eslint .",
-    "postinstall": "cpconfig"
+    "lint": "biome check . && eslint ."
   },
   "config": {
     "cpconfig": "@justtellme/cpconfig"
@@ -39,7 +38,6 @@
     "@graphql-eslint/eslint-plugin": "^4.4.0",
     "@openapi-typescript-infra/service-tester": "^7.1.2",
     "@typescript/native-preview": "^7.0.0-dev.20260418.1",
-    "cpconfig": "^1.5.0",
     "eslint": "9",
     "typescript": "^6.0.3",
     "vitest": "^4.1.2"

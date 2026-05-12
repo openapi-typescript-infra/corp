@@ -20,7 +20,6 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "lint": "biome check .",
-    "postinstall": "cpconfig",
     "test": "vitest"
   },
   "keywords": [
@@ -34,7 +33,6 @@
     "@biomejs/biome": "^2.4.10",
     "@types/node": "^25.5.2",
     "@typescript/native-preview": "^7.0.0-dev.20260418.1",
-    "cpconfig": "^1.5.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.2"
   }

@@ -4404,7 +4404,6 @@ __metadata:
     "@toon-format/toon": ^2.1.0
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
     ai: ^6.0.146
-    cpconfig: ^1.5.0
     db-migrate: ^0.11.14
     db-migrate-pg: ^1.5.2
     kysely: ^0.28.15
@@ -4424,7 +4423,6 @@ __metadata:
   resolution: "@justtellme/api@workspace:api"
   dependencies:
     "@justtellme/cpconfig": "workspace:^"
-    cpconfig: ^1.5.0
     openapi-typescript: ^7.13.0
     yaml: ^2.8.3
   languageName: unknown
@@ -4439,7 +4437,6 @@ __metadata:
     "@justtellme/external-id": "workspace:^"
     "@types/jsonwebtoken": ^9.0.10
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
-    cpconfig: ^1.5.0
     jsonwebtoken: ^9.0.3
     typescript: ^6.0.3
     vitest: ^4.1.2
@@ -4457,7 +4454,6 @@ __metadata:
     "@openapi-typescript-infra/service": ^6.13.1
     "@openapi-typescript-infra/service-tester": ^7.1.2
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
-    cpconfig: ^1.5.0
     stytch: ^13.2.3
     typescript: ^6.0.3
     vitest: ^4.1.2
@@ -4475,7 +4471,6 @@ __metadata:
     "@openapi-typescript-infra/service-tester": ^7.1.2
     "@types/node": ^25.5.2
     "@types/pg": ^8.20.0
-    cpconfig: ^1.5.0
     pg: ^8.20.0
     typescript: ^6.0.3
     vitest: ^4.1.2
@@ -4496,7 +4491,6 @@ __metadata:
     "@openapi-typescript-infra/service": ^6.13.1
     "@openapi-typescript-infra/service-tester": ^7.1.2
     "@stytch/nextjs": ^22.0.5
-    cpconfig: ^1.5.0
     next: ^16.2.4
     next-urql: ^5.0.2
     posthog-js: ^1.369.3
@@ -4513,7 +4507,6 @@ __metadata:
     "@biomejs/biome": ^2.4.10
     "@types/node": ^25.5.2
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
-    cpconfig: ^1.5.0
     typescript: ^6.0.3
     vitest: ^4.1.2
   languageName: unknown
@@ -4529,7 +4522,6 @@ __metadata:
     "@playwright/test": ^1.59.1
     "@types/node": ^25.5.2
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
-    cpconfig: ^1.5.1
     date-fns: ^4.1.0
     dotenv: ^17.4.2
     typescript: ^6.0.3
@@ -4546,7 +4538,6 @@ __metadata:
     "@openapi-typescript-infra/external-id": ^1.1.0
     "@types/node": ^25.5.2
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
-    cpconfig: ^1.5.0
     typescript: ^6.0.3
     vitest: ^4.1.2
   bin:
@@ -4566,7 +4557,6 @@ __metadata:
     "@openapi-typescript-infra/service": ^6.13.1
     "@openapi-typescript-infra/service-tester": ^7.1.2
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
-    cpconfig: ^1.5.0
     dataloader: ^2.2.3
     eslint: 9
     redis: ^5.11.0
@@ -4601,7 +4591,6 @@ __metadata:
     "@types/react": ^19.2.14
     "@types/react-dom": ^19.2.3
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
-    cpconfig: ^1.5.0
     graphql: ^16.13.2
     graphql-query-complexity: ^1.1.0
     graphql-scalars: ^1.25.0
@@ -4626,7 +4615,6 @@ __metadata:
     "@openapi-typescript-infra/service": ^6.13.1
     "@openapi-typescript-infra/service-tester": ^7.1.2
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
-    cpconfig: ^1.5.0
     date-fns: ^4.1.0
     db-migrate: ^0.11.14
     db-migrate-pg: ^1.5.2
@@ -4651,7 +4639,6 @@ __metadata:
     "@openapi-typescript-infra/service": ^6.13.1
     "@openapi-typescript-infra/service-tester": ^7.1.2
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
-    cpconfig: ^1.5.0
     date-fns: ^4.1.0
     db-migrate: ^0.11.14
     db-migrate-pg: ^1.5.2
@@ -4675,7 +4662,6 @@ __metadata:
     "@openapi-typescript-infra/service-tester": ^7.1.2
     "@temporalio/client": ^1.15.0
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
-    cpconfig: ^1.5.0
     kysely: ^0.28.15
     pg: ^8.20.0
     typescript: ^6.0.3
@@ -4693,7 +4679,6 @@ __metadata:
     "@types/minimist": ^1.2.5
     "@types/node": ^25.5.2
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
-    cpconfig: ^1.5.0
     figlet: ^1.11.0
     ink: ^7.0.1
     minimist: ^1.2.8
@@ -4720,7 +4705,6 @@ __metadata:
     "@types/jwt-encode": ^1.0.3
     "@types/node": ^25.5.2
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
-    cpconfig: ^1.5.0
     jwt-encode: ^1.0.1
     msw: ^2.13.4
     node-mocks-http: ^1.17.2
@@ -4745,7 +4729,6 @@ __metadata:
     "@types/express-session": ^1.19.0
     "@types/lodash": ^4.17.24
     "@types/node": ^25.5.2
-    cpconfig: ^1.5.0
     lodash: ^4.18.1
     pino-pretty: ^13.1.3
     supertest: ^7.2.2
@@ -4767,7 +4750,6 @@ __metadata:
     "@openapi-typescript-infra/service-tester": ^7.1.2
     "@types/node": ^25.5.2
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
-    cpconfig: ^1.5.0
     fetch-to-curl-ts: ^1.0.2
     openapi-fetch: 0.17.0
     run-pg-sql: ^1.2.0
@@ -4786,7 +4768,6 @@ __metadata:
     "@biomejs/biome": ^2.4.10
     "@justtellme/cpconfig": "workspace:^"
     "@legendapp/state": ^3.0.0-beta.46
-    cpconfig: ^1.5.0
     typescript: ^6.0.3
     vitest: ^4.1.2
   languageName: unknown
@@ -4802,7 +4783,6 @@ __metadata:
     "@openapi-typescript-infra/service": ^6.13.1
     "@openapi-typescript-infra/service-tester": ^7.1.2
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
-    cpconfig: ^1.5.0
     date-fns: ^4.1.0
     db-migrate: ^0.11.14
     db-migrate-pg: ^1.5.2
@@ -4826,7 +4806,6 @@ __metadata:
     "@types/node": ^25.6.0
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
     ai: ^6.0.168
-    cpconfig: ^1.5.0
     fast-xml-parser: ^5.7.1
     tsx: ^4.21.0
     typescript: ^6.0.3
@@ -4847,7 +4826,6 @@ __metadata:
     "@types/react-dom": ^19.2.3
     class-variance-authority: ^0.7.1
     clsx: ^2.1.1
-    cpconfig: ^1.5.0
     react: ^19.2.4
     react-dom: ^19.2.4
     tailwind-merge: ^3.5.0
@@ -4879,7 +4857,6 @@ __metadata:
     "@types/node": ^25.5.2
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
     connect-redis: ^9.0.0
-    cpconfig: ^1.5.0
     express-session: ^1.19.0
     jsonwebtoken: ^9.0.3
     jwt-decode: ^4.0.0
@@ -4909,7 +4886,6 @@ __metadata:
     "@types/react": ^19.2.14
     "@types/react-dom": ^19.2.3
     "@types/redis-mock": ^0.17.3
-    cpconfig: ^1.5.0
     next: ^16.2.2
     pino-pretty: ^13.1.3
     posthog-js: ^1.369.3
@@ -12063,15 +12039,6 @@ __metadata:
     typescript:
       optional: true
   checksum: 7cc04fcbb04f72db1074ee754952a6a0a228d07932d076b0e4fc82c75bc14aa0b0cb7989c161710e038ea42539d919d643a2b268c580ac7da7b3dedd52d8bb7b
-  languageName: node
-  linkType: hard
-
-"cpconfig@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "cpconfig@npm:1.5.0"
-  bin:
-    cpconfig: build/cli.js
-  checksum: 7cbcb67f1ef879a404dd5aaeeaca67292a6db71453c1246cf7298124de10fd2aa9cd20755a3b86ce4d93959f3acc9840fd2e9f8b91ac46823784a31f6ca0e496
   languageName: node
   linkType: hard
 

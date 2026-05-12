@@ -17,13 +17,11 @@
   "scripts": {
     "build": "make",
     "clean": "make clean",
-    "postinstall": "cpconfig",
     "typecheck": "tsgo --noEmit -p tsconfig.json",
     "generate:agent-internal": "openapi-typescript agent-internal/agent-internal.yaml -o generated/agent-internal.ts"
   },
   "devDependencies": {
     "@justtellme/cpconfig": "workspace:^",
-    "cpconfig": "^1.5.0",
     "openapi-typescript": "^7.13.0",
     "yaml": "^2.8.3"
   }

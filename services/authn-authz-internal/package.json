@@ -17,8 +17,7 @@
     "clean": "make clean",
     "start": "start-service",
     "repl": "start-service --repl",
-    "lint": "biome check .",
-    "postinstall": "cpconfig"
+    "lint": "biome check ."
   },
   "config": {
     "cpconfig": "@justtellme/cpconfig"
@@ -45,7 +44,6 @@
     "@justtellme/service": "workspace:^",
     "@justtellme/web-auth": "workspace:^",
     "@openapi-typescript-infra/service": "^6.13.1",
-    "cpconfig": "^1.5.0",
     "stytch": "^13.2.3"
   }
 }

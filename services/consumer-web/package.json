@@ -19,8 +19,7 @@
     "repl": "NODE_OPTIONS='--import tsx/esm' start-service --repl",
     "lint": "biome check .",
     "build:next": "next build",
-    "check-bundles": "node src/scripts/check-bundle-size.ts",
-    "postinstall": "cpconfig"
+    "check-bundles": "node src/scripts/check-bundle-size.ts"
   },
   "config": {
     "cpconfig": "@justtellme/cpconfig"
@@ -43,7 +42,6 @@
   "devDependencies": {
     "@biomejs/biome": "^2.4.10",
     "@openapi-typescript-infra/service-tester": "^7.1.2",
-    "cpconfig": "^1.5.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.2"
   },

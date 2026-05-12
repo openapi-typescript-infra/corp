@@ -20,7 +20,6 @@
     "build": "tsgo -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json",
     "lint": "biome check .",
-    "postinstall": "cpconfig",
     "test": "vitest"
   },
   "keywords": [
@@ -36,7 +35,6 @@
     "@types/jwt-encode": "^1.0.3",
     "@types/node": "^25.5.2",
     "@typescript/native-preview": "^7.0.0-dev.20260418.1",
-    "cpconfig": "^1.5.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.2"
   },

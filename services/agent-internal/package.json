@@ -23,8 +23,7 @@
     "migration:undo": "db-migrate --config migrations/db-migrate.json down",
     "migration:create": "db-migrate --config migrations/db-migrate.json create",
     "generate": "make generate",
-    "lint": "biome check .",
-    "postinstall": "cpconfig"
+    "lint": "biome check ."
   },
   "config": {
     "cpconfig": "@justtellme/cpconfig"
@@ -45,7 +44,6 @@
     "@biomejs/biome": "^2.4.10",
     "@openapi-typescript-infra/service-tester": "^7.1.2",
     "@typescript/native-preview": "^7.0.0-dev.20260418.1",
-    "cpconfig": "^1.5.0",
     "kysely-codegen": "^0.20.0",
     "run-pg-sql": "^1.2.0",
     "typescript": "^6.0.3",

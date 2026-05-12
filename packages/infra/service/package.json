@@ -15,7 +15,6 @@
     "build": "tsgo -p tsconfig.build.json",
     "test": "vitest",
     "lint": "biome check src",
-    "postinstall": "cpconfig",
     "typecheck": "tsgo --noEmit -p tsconfig.json"
   },
   "files": [
@@ -52,7 +51,6 @@
     "@justtellme/api": "workspace:^",
     "@justtellme/cpconfig": "workspace:^",
     "@openapi-typescript-infra/service": "^6.13.1",
-    "cpconfig": "^1.5.0",
     "fetch-to-curl-ts": "^1.0.2",
     "openapi-fetch": "0.17.0",
     "tsc-alias": "^1.8.16"

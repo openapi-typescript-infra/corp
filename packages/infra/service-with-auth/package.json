@@ -16,7 +16,6 @@
     "typecheck": "tsgo --noEmit -p tsconfig.json",
     "clean": "yarn dlx rimraf ./build",
     "lint": "biome check src",
-    "postinstall": "cpconfig",
     "start": "yarn start-service --rootDirectory __tests__/justtellme-api --codepath src --packageDir __tests__/justtellme-api"
   },
   "engines": {
@@ -53,7 +52,6 @@
     "@justtellme/service": "workspace:^",
     "@justtellme/web-auth": "workspace:^",
     "@openapi-typescript-infra/service": "^6.13.1",
-    "cpconfig": "^1.5.0",
     "lodash": "^4.18.1"
   },
   "packageManager": "yarn@3.8.7"
