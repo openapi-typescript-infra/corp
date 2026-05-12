@@ -63,10 +63,10 @@
     "justtellme"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^2.4.10",
+    "@biomejs/biome": "^2.4.15",
     "@openapi-typescript-infra/service-tester": "^7.1.2",
     "@types/express-session": "^1.19.0",
-    "@types/node": "^25.5.2",
+    "@types/node": "^25.7.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@types/redis-mock": "^0.17.3",
@@ -75,16 +75,16 @@
     "supertest": "^7.2.2",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.6"
   },
   "dependencies": {
     "@justtellme/service-with-auth": "workspace:^",
-    "@openapi-typescript-infra/service": "^6.13.1",
-    "@stytch/nextjs": "^22.0.5",
-    "next": "^16.2.2",
-    "posthog-js": "^1.369.3",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "@openapi-typescript-infra/service": "^6.14.1",
+    "@stytch/nextjs": "^22.0.9",
+    "next": "^16.2.6",
+    "posthog-js": "^1.373.2",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
   },
   "packageManager": "yarn@3.8.7"
 }
