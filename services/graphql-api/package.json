@@ -38,7 +38,7 @@
     "@graphql-eslint/eslint-plugin": "^4.4.0",
     "@openapi-typescript-infra/service-tester": "^7.1.2",
     "@typescript/native-preview": "^7.0.0-dev.20260418.1",
-    "eslint": "9",
+    "eslint": "10",
     "typescript": "^6.0.3",
     "vitest": "^4.1.2"
   },
