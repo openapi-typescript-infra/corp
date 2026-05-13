@@ -114,6 +114,12 @@ spec:
       nodeSelector:
       {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
+      {{- $replicas := default (ternary 1 2 (eq .Values.gcp.env "development")) .Values.replicaCount }}
+      {{- if or .Values.autoscale.enabled (gt (int $replicas) 1) }}
+      # Only render anti-affinity when spread is meaningful (HPA on or replicas > 1).
+      # Single-replica deploys can't be spread, and GKE Autopilot's
+      # autogke-pod-limit-constraints webhook rejects pods that declare
+      # podAntiAffinity with CPU requests below 500m.
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -124,3 +130,4 @@ spec:
                     values:
                       - {{ .Values.name }}
               topologyKey: kubernetes.io/hostname
+      {{- end }}
