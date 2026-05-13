@@ -17,6 +17,35 @@ monitoring:
 logging:
   logz.io: true
 
+# Gateway API parent for HTTPRoutes generated from `mappings`.
+# Defaults to "{gcp.env}-gateway" in envoy-gateway-system, matching the
+# Gateway provisioned by terraform/infra/modules/envoy_gateway.
+gateway:
+  name: ""
+  namespace: envoy-gateway-system
+
+# Each entry under `mappings` produces an HTTPRoute (and a BackendTrafficPolicy
+# when retry / idleTimeout / responseOverrides are set). Supported fields:
+#   prefix: /api/v1                  # PathPrefix match (default "/")
+#   pathRegex: ^/foo/(.*)$           # RegularExpression match (mutex with prefix)
+#   service: my-service              # backend service (default .Values.name)
+#   port: 80                         # backend port (default 80)
+#   hostnames: ["api.example.com"]   # optional host filter
+#   gateway: prod-gateway            # override parent gateway
+#   gatewayNamespace: envoy-gateway-system
+#   rewrite: /                       # URLRewrite ReplacePrefixMatch
+#   headers:                         # add to upstream request
+#     x-foo: bar
+#   timeout: 30000                   # request timeout, ms
+#   retry:
+#     attempts: 3                    # default 2
+#     triggers: ["5xx", "gateway-error"]   # default ["5xx"]
+#   idleTimeout: 60000               # http connection idle timeout, ms
+#   responseOverrides:
+#     "404":
+#       contentType: text/html
+#       body: |
+#         <html>404</html>
 mappings: {}
 
 gcp: {}

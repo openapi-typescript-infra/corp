@@ -1,54 +1,106 @@
 {{- if gt (len .Values.mappings) 0 -}}
 {{- $root := . -}}
-{{- range $key, $value := .Values.mappings -}}
-apiVersion: getambassador.io/v2
-kind: Mapping
-metadata:
-  name: {{ $root.Values.name }}-{{ $key }}-mapping
-  namespace: {{ .Release.Namespace }}
-spec:
-  prefix: {{ $value.prefix }}
-  service: {{ $root.Values.name -}}{{- if hasKey $value "port" -}}:{{ $value.port }}{{- end }}
-  {{ if hasKey $value "host" }}host: {{ $value.host }}{{- end }}
-  ambassador_id:
-    {{- range $value.ambassadors }}
-    - ambassador-{{ . }}
-    {{- end }}
-  rewrite: {{ default "" $value.rewrite | quote }}
-  {{- if hasKey $value "retry" }}
-  retry_policy:
-    num_retries: {{ default 2 $value.retry.attempts }}
-    retry_on: {{ default "5xx" $value.retry.on }}
-  {{- end }}
-  {{- if $value.websockets }}
-  allow_upgrade:
-  - websocket
-  {{- end }}
-  {{- if hasKey $value "headers" }}
-  add_request_headers:
-    {{- range $key, $value := $value.headers }}
-    {{ $key }}: {{ $value | quote }}
-    {{- end }}
-  {{- end }}
-  {{- if hasKey $value "timeout" }}
-  timeout_ms: {{ $value.timeout }}
-  {{- end }}
-  {{- if hasKey $value "idle_timeout" }}
-  idle_timeout_ms: {{ $value.idle_timeout }}
-  {{- end }}
-  {{- if hasKey $value "prefix_regex" }}
-  prefix_regex: {{ $value.prefix_regex }}
-  {{- end }}
-  {{- if hasKey $value "status" }}
-  error_response_overrides:
-  {{- range $code, $spec := $value.status }}
-  - on_status_code: {{ $code }}
-    body:
-      content_type: {{ default "text/html" $spec.mimeType }}
-      text_format_source:
-        filename: {{ ternary (printf "/ambassador/errorpages/%s.html" $code) $spec.file (empty $spec.file) }}
-  {{- end -}}
-  {{- end }}
+{{- $defaultGateway := default (printf "%s-gateway" $root.Values.gcp.env) $root.Values.gateway.name -}}
+{{- $defaultGatewayNs := default "envoy-gateway-system" $root.Values.gateway.namespace -}}
+{{- range $key, $value := .Values.mappings }}
+{{- $gatewayName := default $defaultGateway $value.gateway -}}
+{{- $gatewayNs := default $defaultGatewayNs $value.gatewayNamespace -}}
+{{- $service := default $root.Values.name $value.service -}}
+{{- $port := default 80 $value.port }}
 ---
-{{ end -}}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ $root.Values.name }}-{{ $key }}
+  namespace: {{ $root.Release.Namespace }}
+spec:
+  parentRefs:
+    - name: {{ $gatewayName }}
+      namespace: {{ $gatewayNs }}
+  {{- if $value.hostnames }}
+  hostnames:
+    {{- range $value.hostnames }}
+    - {{ . | quote }}
+    {{- end }}
+  {{- end }}
+  rules:
+    - matches:
+        - path:
+            {{- if hasKey $value "pathRegex" }}
+            type: RegularExpression
+            value: {{ $value.pathRegex | quote }}
+            {{- else }}
+            type: PathPrefix
+            value: {{ default "/" $value.prefix | quote }}
+            {{- end }}
+      {{- $hasRewrite := hasKey $value "rewrite" -}}
+      {{- $hasHeaders := hasKey $value "headers" -}}
+      {{- if or $hasRewrite $hasHeaders }}
+      filters:
+        {{- if $hasRewrite }}
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: {{ $value.rewrite | quote }}
+        {{- end }}
+        {{- if $hasHeaders }}
+        - type: RequestHeaderModifier
+          requestHeaderModifier:
+            add:
+              {{- range $hk, $hv := $value.headers }}
+              - name: {{ $hk | quote }}
+                value: {{ $hv | quote }}
+              {{- end }}
+        {{- end }}
+      {{- end }}
+      backendRefs:
+        - name: {{ $service }}
+          port: {{ $port }}
+      {{- if hasKey $value "timeout" }}
+      timeouts:
+        request: {{ printf "%dms" (int $value.timeout) | quote }}
+      {{- end }}
+{{- if or (hasKey $value "retry") (hasKey $value "idleTimeout") (hasKey $value "responseOverrides") }}
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+  name: {{ $root.Values.name }}-{{ $key }}
+  namespace: {{ $root.Release.Namespace }}
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: {{ $root.Values.name }}-{{ $key }}
+  {{- if hasKey $value "retry" }}
+  retry:
+    numRetries: {{ default 2 $value.retry.attempts }}
+    retryOn:
+      triggers:
+        {{- range (default (list "5xx") $value.retry.triggers) }}
+        - {{ . | quote }}
+        {{- end }}
+  {{- end }}
+  {{- if hasKey $value "idleTimeout" }}
+  timeout:
+    http:
+      connectionIdleTimeout: {{ printf "%dms" (int $value.idleTimeout) | quote }}
+  {{- end }}
+  {{- if hasKey $value "responseOverrides" }}
+  responseOverride:
+    {{- range $code, $spec := $value.responseOverrides }}
+    - match:
+        statusCodes:
+          - type: Value
+            value: {{ $code | int }}
+      response:
+        contentType: {{ default "text/html" $spec.contentType | quote }}
+        body:
+          type: Inline
+          inline: {{ $spec.body | quote }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- end }}
 {{- end -}}
