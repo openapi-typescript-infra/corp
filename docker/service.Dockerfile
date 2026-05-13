@@ -69,9 +69,15 @@ RUN npm run prepack --if-present \
     && printf '#!/bin/sh\n/nodejs/bin/node node_modules/@openapi-typescript-infra/service/build/bin/start-service.js --repl "$@"' > /staging/repl \
     && chmod a+rx /staging/start /staging/repl
 
-# By separating the run steps below, we will hopefully cache the layers up to this point
-RUN (npm version --no-git-tag-version $BUILD_VERSION || true) \
-    && true
+# Stamp the service package version. Separated from the dep-install RUN
+# above so version bumps don't bust that layer's cache.
+#
+# Plain `fs.writeFileSync` rather than `npm version`, which chokes on
+# yarn's `workspace:^` protocol used by in-repo deps:
+#   npm error code EUNSUPPORTEDPROTOCOL
+#   npm error Unsupported URL Type "workspace:": workspace:^
+# The previous `|| true` masked the failure so the stamp silently no-op'd.
+RUN node -e "const fs=require('node:fs');const p=process.argv[1];const pkg=JSON.parse(fs.readFileSync(p,'utf8'));pkg.version=process.argv[2];fs.writeFileSync(p,JSON.stringify(pkg,null,2)+'\n');" package.json "$BUILD_VERSION"
 
 ## --------------> Add to default image
 FROM gcr.io/distroless/nodejs24-debian13:latest AS base
