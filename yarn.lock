@@ -4507,8 +4507,11 @@ __metadata:
     "@biomejs/biome": ^2.4.10
     "@types/node": ^25.5.2
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
+    tsc-alias: ^1.8.17
     typescript: ^6.0.3
     vitest: ^4.1.2
+  bin:
+    build-package: bin/build-package.ts
   languageName: unknown
   linkType: soft
 
@@ -22456,6 +22459,23 @@ __metadata:
   bin:
     tsc-alias: dist/bin/index.js
   checksum: 7bae356371fbd110768d0865d6740f670128f192a409901b698ea4d6787bb942282148faed4bb753c420cb94df016ac0d9da63b8bb28d7c83fcf83d658150616
+  languageName: node
+  linkType: hard
+
+"tsc-alias@npm:^1.8.17":
+  version: 1.8.17
+  resolution: "tsc-alias@npm:1.8.17"
+  dependencies:
+    chokidar: ^3.5.3
+    commander: ^9.0.0
+    get-tsconfig: ^4.10.0
+    globby: ^11.0.4
+    mylas: ^2.1.9
+    normalize-path: ^3.0.0
+    plimit-lit: ^1.2.6
+  bin:
+    tsc-alias: dist/bin/index.js
+  checksum: 51b9df34101f18ebc5ae33eabc1375b9497de0d6e9398075af53bade57cf2aff55beeb65020b0aa434fa2c32082b87ef3acc525288914d9cf5df3eb87e7447ae
   languageName: node
   linkType: hard
 

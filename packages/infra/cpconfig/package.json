@@ -7,8 +7,19 @@
     ".": {
       "production": "./dist/index.js",
       "default": "./src/index.ts"
-    }
+    },
+    "./ts-extension-replacer.cjs": "./ts-extension-replacer.cjs"
   },
+  "bin": {
+    "build-package": "bin/build-package.ts"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "src",
+    "templates",
+    "ts-extension-replacer.cjs"
+  ],
   "type": "module",
   "types": "./src/index.ts",
   "author": "Developers <developers@justtellme.com>",
@@ -28,6 +39,9 @@
   ],
   "config": {
     "cpconfig": "./src/index.ts"
+  },
+  "dependencies": {
+    "tsc-alias": "^1.8.17"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.10",
