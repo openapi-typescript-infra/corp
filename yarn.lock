@@ -364,14 +364,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@asteasolutions/zod-to-openapi@npm:^7.3.4":
-  version: 7.3.4
-  resolution: "@asteasolutions/zod-to-openapi@npm:7.3.4"
+"@asteasolutions/zod-to-openapi@npm:^8.5.0":
+  version: 8.5.0
+  resolution: "@asteasolutions/zod-to-openapi@npm:8.5.0"
   dependencies:
     openapi3-ts: ^4.1.2
   peerDependencies:
-    zod: ^3.20.2
-  checksum: 897568b35a5a317c91cf9419d49d9ce8ab1eb8e97253b0d11149032f62a5f692b27abefe7a081717225ac5b49b14df275ae691219a09605a8c347949375a1554
+    zod: ^4.0.0
+  checksum: ab6be8294378ae9a0c5bc28c123cd14912a9464de8760ad3cf31e48e0fb9ad2efce1b756f52c43a8f2c1d30b1bd5db112f5ecdd52ba9a715755c28d0f94effe6
   languageName: node
   linkType: hard
 
@@ -4802,7 +4802,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@justtellme/tools@workspace:packages/infra/tools"
   dependencies:
-    "@asteasolutions/zod-to-openapi": ^7.3.4
+    "@asteasolutions/zod-to-openapi": ^8.5.0
     "@biomejs/biome": ^2.4.10
     "@justtellme/cpconfig": "workspace:^"
     "@toon-format/toon": ^2.1.0
