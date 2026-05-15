@@ -29,7 +29,7 @@
     "#src/*": "./src/*"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "yarn -T run build-package",
     "lint": "biome check .",
     "test": "vitest"
   },

@@ -16325,6 +16325,7 @@ __metadata:
   resolution: "just-tell-me@workspace:."
   dependencies:
     "@biomejs/biome": ^2.4.10
+    "@justtellme/cpconfig": "workspace:^"
     "@openapi-typescript-infra/cluster-proxy": ^1.8.0
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
     cpconfig: ^1.5.1

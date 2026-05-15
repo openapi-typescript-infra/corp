@@ -11,7 +11,7 @@
   "types": "./src/index.ts",
   "type": "module",
   "scripts": {
-    "build": "tsgo -p tsconfig.build.json",
+    "build": "yarn -T run build-package",
     "test": "vitest",
     "typecheck": "tsgo --noEmit -p tsconfig.json",
     "clean": "yarn dlx rimraf ./build",

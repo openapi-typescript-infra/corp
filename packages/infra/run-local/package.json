@@ -13,7 +13,7 @@
   "type": "module",
   "bin": "src/bin/run-local.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "yarn -T run build-package",
     "typecheck": "tsgo -p tsconfig.json",
     "clean": "yarn dlx rimraf ./build",
     "lint": "biome check src",

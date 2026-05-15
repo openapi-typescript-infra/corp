@@ -15,7 +15,7 @@
   "license": "UNLICENSED",
   "bin": "src/cli.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "yarn -T run build-package",
     "lint": "biome check .",
     "test": "vitest",
     "typecheck": "tsc --noEmit -p tsconfig.json"

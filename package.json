@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.10",
+    "@justtellme/cpconfig": "workspace:^",
     "@openapi-typescript-infra/cluster-proxy": "^1.8.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",

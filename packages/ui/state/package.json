@@ -22,7 +22,7 @@
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
-    "build": "tsgo -p tsconfig.build.json",
+    "build": "yarn -T run build-package",
     "clean": "yarn dlx rimraf ./dist",
     "lint": "biome check .",
     "test": "vitest"

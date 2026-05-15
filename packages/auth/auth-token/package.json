@@ -14,7 +14,7 @@
   "author": "Developers <developers@justtellme.com>",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "tsgo -p tsconfig.build.json",
+    "build": "yarn -T run build-package",
     "lint": "biome check .",
     "test": "vitest",
     "typecheck": "tsgo --noEmit -p tsconfig.json"

@@ -15,7 +15,7 @@
     "#src/*": "./src/*"
   },
   "scripts": {
-    "build": "tsgo -p tsconfig.build.json",
+    "build": "yarn -T run build-package",
     "generate": "tsx ./src/codegen/generate-input-output-schemas.ts && tsx ./src/codegen/generate-agent-schemas.ts",
     "lint": "biome check .",
     "test": "vitest",

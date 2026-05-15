@@ -12,7 +12,7 @@
   "types": "./src/index.ts",
   "type": "module",
   "scripts": {
-    "build": "tsgo -p tsconfig.build.json",
+    "build": "yarn -T run build-package",
     "test": "vitest",
     "lint": "biome check src",
     "typecheck": "tsgo --noEmit -p tsconfig.json"
