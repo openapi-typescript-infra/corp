@@ -44,7 +44,7 @@
   ],
   "devDependencies": {
     "@biomejs/biome": "^2.4.10",
-    "@graphql-codegen/cli": "^6.3.1",
+    "@graphql-codegen/cli": "^7.0.0",
     "@graphql-codegen/typescript-resolvers": "^5.1.7",
     "@justtellme/cpconfig": "workspace:^",
     "@openapi-typescript-infra/service-tester": "^7.1.2",
