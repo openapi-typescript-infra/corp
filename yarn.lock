@@ -4340,7 +4340,7 @@ __metadata:
   dependencies:
     "@biomejs/biome": ^2.4.10
     "@justtellme/state": "workspace:^"
-    "@legendapp/state": ^3.0.0-beta.46
+    "@legendapp/state": ^3.0.0-beta.47
     "@react-navigation/bottom-tabs": ^7.15.9
     "@react-navigation/elements": ^2.9.14
     "@react-navigation/native": ^7.2.2
@@ -4487,7 +4487,7 @@ __metadata:
     "@justtellme/state": "workspace:^"
     "@justtellme/ui-kit": "workspace:^"
     "@justtellme/web-service": "workspace:^"
-    "@legendapp/state": ^3.0.0-beta.46
+    "@legendapp/state": ^3.0.0-beta.47
     "@openapi-typescript-infra/service": ^6.13.1
     "@openapi-typescript-infra/service-tester": ^7.1.2
     "@stytch/nextjs": ^22.0.5
@@ -4770,7 +4770,7 @@ __metadata:
   dependencies:
     "@biomejs/biome": ^2.4.10
     "@justtellme/cpconfig": "workspace:^"
-    "@legendapp/state": ^3.0.0-beta.46
+    "@legendapp/state": ^3.0.0-beta.47
     typescript: ^6.0.3
     vitest: ^4.1.2
   languageName: unknown
@@ -4935,9 +4935,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@legendapp/state@npm:^3.0.0-beta.46":
-  version: 3.0.0-beta.46
-  resolution: "@legendapp/state@npm:3.0.0-beta.46"
+"@legendapp/state@npm:^3.0.0-beta.47":
+  version: 3.0.0-beta.47
+  resolution: "@legendapp/state@npm:3.0.0-beta.47"
   dependencies:
     use-sync-external-store: ^1.2.2
   peerDependencies:
@@ -4945,7 +4945,7 @@ __metadata:
   peerDependenciesMeta:
     expo-sqlite:
       optional: true
-  checksum: 05d621bd7322a913e1c357052bc228c470079da2374ca7c3c40a8bf94eba3908d84858be55983bbe893c4415b8b9327a991ced2d573f4f3bdbd73b355f54dbbb
+  checksum: ab6e08588356e9994165dc25da7c6239a751ace5729e70482efca463b54bc57f0c7e9803d572b5a2fc765f51011a84bdf3bc1955eca03c5855006379b207fce2
   languageName: node
   linkType: hard
 

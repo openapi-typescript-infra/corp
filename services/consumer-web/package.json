@@ -51,7 +51,7 @@
     "@justtellme/state": "workspace:^",
     "@justtellme/ui-kit": "workspace:^",
     "@justtellme/web-service": "workspace:^",
-    "@legendapp/state": "^3.0.0-beta.46",
+    "@legendapp/state": "^3.0.0-beta.47",
     "@openapi-typescript-infra/service": "^6.13.1",
     "@stytch/nextjs": "^22.0.5",
     "next": "^16.2.4",
