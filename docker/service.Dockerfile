@@ -83,7 +83,23 @@ RUN node -e "const fs=require('node:fs');const p=process.argv[1];const pkg=JSON.
 FROM gcr.io/distroless/nodejs24-debian13:latest AS base
 COPY --from=build --chown=nonroot:nonroot /staging/ /bin/
 RUN /bin/busybox mkdir -p /nodejs/app && \
-    /bin/busybox chown nonroot:nonroot /nodejs/app
+    /bin/busybox chown nonroot:nonroot /nodejs/app && \
+    /bin/busybox ln -s /nodejs/app/node_modules /node_modules
+# /node_modules → /nodejs/app/node_modules:
+# Turbopack's pages-router production build writes hashed external-
+# package symlinks into private/node_modules/, e.g.
+#   private/node_modules/@ant-design/cssinjs-<hash>
+#     -> ../../../../../node_modules/@ant-design/cssinjs
+# The relative target is computed against the build host's directory
+# depth (services/<svc>/private/... → repo-root/node_modules/...). The
+# container WORKDIR is /nodejs/app, only one level under /, so the same
+# `../../../../../node_modules/...` overshoots the filesystem root and
+# resolves to /node_modules/..., which doesn't exist — every SSR page
+# render then fails with `Cannot find module @ant-design/cssinjs-<hash>`.
+# Pointing /node_modules at the real /nodejs/app/node_modules makes the
+# bake-time relative paths resolve at runtime. Harmless for non-Next
+# services; no one else writes to / at this depth. See
+# https://github.com/vercel/next.js/issues/87737.
 
 ## --------------> Build the pipeline directory
 FROM base AS final
