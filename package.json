@@ -42,7 +42,7 @@
     "@justtellme/cpconfig": "workspace:^",
     "@openapi-typescript-infra/cluster-proxy": "^1.8.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.4.0",
+    "lint-staged": "^17.0.4",
     "nodemon": "^3.1.14",
     "tsc-alias": "^1.8.16",
     "turbo": "^2.9.3"
