@@ -23,6 +23,6 @@
   "devDependencies": {
     "@justtellme/cpconfig": "workspace:^",
     "openapi-typescript": "^7.13.0",
-    "yaml": "^2.8.3"
+    "yaml": "^2.9.0"
   }
 }
