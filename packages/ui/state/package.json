@@ -38,9 +38,9 @@
     "@legendapp/state": "^3.0.0-beta.46"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.10",
+    "@biomejs/biome": "^2.4.15",
     "@justtellme/cpconfig": "workspace:^",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.7"
   }
 }

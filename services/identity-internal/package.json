@@ -38,23 +38,23 @@
     "express"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^2.4.10",
+    "@biomejs/biome": "^2.4.15",
     "@openapi-typescript-infra/service-tester": "^7.1.2",
     "@typescript/native-preview": "^7.0.0-dev.20260418.1",
     "kysely-codegen": "^0.20.0",
     "run-pg-sql": "^1.2.0",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.7"
   },
   "dependencies": {
     "@justtellme/cpconfig": "workspace:^",
     "@justtellme/service": "workspace:^",
-    "@openapi-typescript-infra/service": "^6.13.1",
-    "date-fns": "^4.1.0",
+    "@openapi-typescript-infra/service": "^6.14.1",
+    "date-fns": "^4.3.0",
     "db-migrate": "^0.11.14",
     "db-migrate-pg": "^1.5.2",
-    "kysely": "^0.28.15",
-    "pg": "^8.20.0",
+    "kysely": "^0.29.2",
+    "pg": "^8.21.0",
     "states-us": "^1.1.1"
   }
 }
