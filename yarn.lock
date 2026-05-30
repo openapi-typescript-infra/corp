@@ -4471,7 +4471,7 @@ __metadata:
     "@openapi-typescript-infra/service": ^6.13.1
     "@openapi-typescript-infra/service-tester": ^7.1.2
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
-    stytch: ^13.2.3
+    stytch: ^14.0.0
     typescript: ^6.0.3
     vitest: ^4.1.2
   languageName: unknown
@@ -4926,7 +4926,7 @@ __metadata:
     nock: ^14.0.11
     node-mocks-http: ^1.17.2
     redis: ^5.11.0
-    stytch: ^13.2.3
+    stytch: ^14.0.0
     typescript: ^6.0.3
     vitest: ^4.1.2
     vitest-fetch-mock: ^0.4.5
@@ -16212,7 +16212,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^5.6.3":
+"jose@npm:^5.10.0":
   version: 5.10.0
   resolution: "jose@npm:5.10.0"
   checksum: e80965ef3ab47baafac3517f53fa9c74b948b57690de524f51320c314cd545ef51ec7b18761605d58fb5965b7c5e12b2bb6ddae87a6ccf55e3f4ad077347d8d7
@@ -21925,13 +21925,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stytch@npm:^13.2.3":
-  version: 13.2.3
-  resolution: "stytch@npm:13.2.3"
+"stytch@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "stytch@npm:14.0.0"
   dependencies:
-    jose: ^5.6.3
+    jose: ^5.10.0
     undici: ^6.24.0
-  checksum: fc8d8c0c9d206269efd94e54c73e7fd5c368d1665d1b9ff71bb4a9a248cf29e197a6a734271d6d43b1a859daf1f32f482d992755601131917869acd7fe89f689
+  checksum: eb79c5b1b876928552403166def2a5d115f063555eab89c0a41e6be578458692e60324ec4ddc17d863d14efa55e1b5051a17a4b54914bf037ae6bc3f05df15ce
   languageName: node
   linkType: hard
 

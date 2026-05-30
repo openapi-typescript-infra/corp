@@ -46,6 +46,6 @@
     "@justtellme/service": "workspace:^",
     "@justtellme/web-auth": "workspace:^",
     "@openapi-typescript-infra/service": "^6.13.1",
-    "stytch": "^13.2.3"
+    "stytch": "^14.0.0"
   }
 }
