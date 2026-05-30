@@ -48,8 +48,8 @@
   },
   "dependencies": {
     "@google-cloud/secret-manager": "^6.1.1",
-    "@justtellme/api": "workspace:^",
     "@justtellme/cpconfig": "workspace:^",
+    "@justtellme/identity-internal-client": "workspace:^",
     "@openapi-typescript-infra/service": "^6.13.1",
     "fetch-to-curl-ts": "^1.0.2",
     "openapi-fetch": "0.17.0",

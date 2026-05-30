@@ -15,7 +15,7 @@ export function LazyPostHog({ children }: { children: ReactNode }) {
       import('posthog-js/react'),
       import('@justtellme/state'),
     ]).then(([providerMod, trackerMod, posthogReactMod, stateMod]) => {
-      const Provider = providerMod.HSPostHogProvider;
+      const Provider = providerMod.AppPostHogProvider;
       const Tracker = trackerMod.PostHogPageviewTracker;
       const usePostHog = posthogReactMod.usePostHog;
       const { setAnalyticsClient } = stateMod;

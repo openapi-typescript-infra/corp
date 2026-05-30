@@ -2,8 +2,8 @@ import crypto from 'node:crypto';
 import type { RequestWithApp, ResponseFromApp } from '@openapi-typescript-infra/service';
 import { ServiceError } from '@openapi-typescript-infra/service';
 
-import type { HSWebConfigurationSchema } from './config.ts';
-import type { HSWebServiceLocals } from './types.ts';
+import type { JTMWebConfigurationSchema } from './config.ts';
+import type { JTMWebServiceLocals } from './types.ts';
 
 const DEFAULT_COOKIE_NAME = '_csrf';
 const RES_COOKIE_PROP = Symbol('CSRF initial request property');
@@ -39,7 +39,7 @@ function shouldValidate(url: string, exclude?: (string | RegExp)[], include?: (s
 }
 
 export function assignCsrfCookie(
-  config: HSWebConfigurationSchema['csrf'],
+  config: JTMWebConfigurationSchema['csrf'],
   _req: RequestWithApp,
   res: ResponseFromApp,
 ) {
@@ -50,7 +50,7 @@ export function assignCsrfCookie(
 }
 
 export function isValidCsrf(
-  config: HSWebConfigurationSchema['csrf'],
+  config: JTMWebConfigurationSchema['csrf'],
   req: RequestWithApp,
   res: ResponseFromApp,
   // If you pull the expected value from somewhere else (like session), you can pass it in here
@@ -92,7 +92,7 @@ export function isValidCsrf(
 }
 
 export function validateCsrf(
-  config: HSWebConfigurationSchema['csrf'],
+  config: JTMWebConfigurationSchema['csrf'],
   req: RequestWithApp,
   res: ResponseFromApp,
 ) {
@@ -112,7 +112,7 @@ export function validateCsrf(
 
 export function getCsrf<
   SLocals extends
-    HSWebServiceLocals<HSWebConfigurationSchema> = HSWebServiceLocals<HSWebConfigurationSchema>,
+    JTMWebServiceLocals<JTMWebConfigurationSchema> = JTMWebServiceLocals<JTMWebConfigurationSchema>,
 >(req: RequestWithApp<SLocals>) {
   const conf = req.app.locals.config.csrf;
   const cookie = req.cookies?.[conf.headerAndCookieName || DEFAULT_COOKIE_NAME];

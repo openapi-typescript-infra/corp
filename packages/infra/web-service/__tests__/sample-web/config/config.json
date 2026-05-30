@@ -1,5 +1,5 @@
 {
-  "$schema": "tsschema://src/types.ts#HSWebConfigurationSchema",
+  "$schema": "tsschema://src/types.ts#JTMWebConfigurationSchema",
   "USE_REGISTRY": false,
   "routing": {
     "openapi": false

@@ -1,4 +1,4 @@
-import type { paths as IdentityInternal } from '@justtellme/api/identity-internal';
+import type { paths as IdentityInternal } from '@justtellme/identity-internal-client';
 import type { DatasourcesType } from '@justtellme/service';
 import { createDatasourceClients } from '@justtellme/service';
 

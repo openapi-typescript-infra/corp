@@ -1,6 +1,6 @@
 {
   "name": "JTM Cluster Proxy",
-  "zones": ["local.dev.justtellme.com", "hs"],
+  "zones": ["local.dev.justtellme.com", "jtm"],
   "clusterSuffix": ".jtm.svc.cluster.local",
   "certs": {
     "keyFile": "~/.certs/_wildcard.local.dev.justtellme.com.keyfile.pem",
@@ -9,7 +9,7 @@
   },
   "auth": {
     "cookieName": "jtmsession-dev",
-    "endpoint": "http://authn-authz-internal.hs/envoy/token-check",
+    "endpoint": "http://authn-authz-internal.jtm/envoy/token-check",
     "headerNames": ["x-auth-token"]
   },
   "host": "127.0.0.2",

@@ -45,6 +45,7 @@
   "dependencies": {
     "@justtellme/cpconfig": "workspace:^",
     "@justtellme/graphql-service": "workspace:^",
+    "@justtellme/identity-internal-client": "workspace:^",
     "@openapi-typescript-infra/service": "^6.13.1",
     "dataloader": "^2.2.3",
     "redis": "^5.11.0"

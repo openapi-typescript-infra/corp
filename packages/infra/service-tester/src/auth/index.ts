@@ -1,9 +1,9 @@
-import type { HSExpress } from '@justtellme/service';
 import type { AuthPrincipalInit } from '@justtellme/auth-token';
 import { AuthPrincipal } from '@justtellme/auth-token';
+import type { JTMExpress } from '@justtellme/service';
 
 export async function getTokenForPrincipal(
-  app: HSExpress,
+  app: JTMExpress,
   {
     uuid,
     options,

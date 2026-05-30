@@ -2,7 +2,7 @@
   "$schema": "tsschema://src/types/config.ts#AuthnAuthzInternalConfigSchema",
   "session": {
     "secret": "gsm:session_secret",
-    "cookieName": "hssession",
+    "cookieName": "JTMSession",
     "cookieDomain": ".dev.justtellme.com",
     "maxAge": 604800000,
   },

@@ -78,6 +78,7 @@
     "vitest": "^4.1.2"
   },
   "dependencies": {
+    "@justtellme/identity-internal-client": "workspace:^",
     "@justtellme/service-with-auth": "workspace:^",
     "@openapi-typescript-infra/service": "^6.13.1",
     "@stytch/nextjs": "^22.0.5",

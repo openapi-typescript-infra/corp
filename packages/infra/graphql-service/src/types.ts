@@ -1,9 +1,9 @@
 import type { ContextFunction } from '@apollo/server';
 import type { ExpressContextFunctionArgument } from '@as-integrations/express5';
 import type {
-  HSAuthRequestLocals,
-  HSAuthService,
-  HSAuthServiceLocals,
+  JTMAuthRequestLocals,
+  JTMAuthService,
+  JTMAuthServiceLocals,
 } from '@justtellme/service-with-auth';
 import type {
   RequestLike,
@@ -19,7 +19,7 @@ import type { JTMGraphQLConfigurationSchema } from './config.ts';
 
 export interface JTMGraphQLServiceLocals<
   Config extends JTMGraphQLConfigurationSchema = JTMGraphQLConfigurationSchema,
-> extends HSAuthServiceLocals<Config> {
+> extends JTMAuthServiceLocals<Config> {
   /**
    * A middleware function that will add session to the request
    */
@@ -31,7 +31,7 @@ export interface JTMGraphQLServiceLocals<
   withAuthAndSession(req: Request, res: Response, next: NextFunction): void;
 }
 
-export interface JTMGraphQLRequestLocals extends HSAuthRequestLocals {
+export interface JTMGraphQLRequestLocals extends JTMAuthRequestLocals {
   query: string;
   /**
    * An estimate of the query complexity based on analysis of the query and annotations on the schema.
@@ -46,9 +46,9 @@ export interface JTMGraphQLRequestLocals extends HSAuthRequestLocals {
 
 export interface JTMGraphQLService<
   ServiceLocals extends
-    HSAuthServiceLocals<JTMGraphQLConfigurationSchema> = JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema>,
+    JTMAuthServiceLocals<JTMGraphQLConfigurationSchema> = JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema>,
   RequestLocals extends JTMGraphQLRequestLocals = JTMGraphQLRequestLocals,
-> extends HSAuthService<ServiceLocals, RequestLocals> {
+> extends JTMAuthService<ServiceLocals, RequestLocals> {
   getContext: ContextFunction<[ExpressContextFunctionArgument], JTMGraphQLContext<ServiceLocals>>;
   getWsContext: (
     app: ServiceExpress<ServiceLocals>,
@@ -63,7 +63,7 @@ export interface JTMGraphQLService<
  */
 export type JTMGraphQLServiceRequest<
   ServiceLocals extends
-    HSAuthServiceLocals<JTMGraphQLConfigurationSchema> = JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema>,
+    JTMAuthServiceLocals<JTMGraphQLConfigurationSchema> = JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema>,
 > = RequestWithApp<ServiceLocals>;
 
 export type JTMGraphQLServiceResponse<
@@ -86,6 +86,6 @@ export type JTMGraphQLServiceRouter<
  */
 export type JTMGraphQLRequestLike<
   SLocals extends
-    HSAuthServiceLocals<JTMGraphQLConfigurationSchema> = JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema>,
+    JTMAuthServiceLocals<JTMGraphQLConfigurationSchema> = JTMGraphQLServiceLocals<JTMGraphQLConfigurationSchema>,
   RLocals extends JTMGraphQLRequestLocals = JTMGraphQLRequestLocals,
 > = RequestLike<SLocals, RLocals>;

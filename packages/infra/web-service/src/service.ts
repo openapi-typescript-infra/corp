@@ -3,20 +3,20 @@ import { useJTMServiceWithAuth } from '@justtellme/service-with-auth';
 import type { Service } from '@openapi-typescript-infra/service';
 import { getNodeEnv, insertConfigurationBefore, isDev } from '@openapi-typescript-infra/service';
 import next from 'next';
-import type { HSWebConfigurationSchema } from './config.ts';
+import type { JTMWebConfigurationSchema } from './config.ts';
 import { validateCsrf } from './csrf.ts';
-import type { HSWebRequestLocals, HSWebServiceLocals } from './types.ts';
+import type { JTMWebRequestLocals, JTMWebServiceLocals } from './types.ts';
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
-export function useHSWebService<
+export function useJTMWebService<
   SLocals extends
-    HSWebServiceLocals<HSWebConfigurationSchema> = HSWebServiceLocals<HSWebConfigurationSchema>,
-  RLocals extends HSWebRequestLocals = HSWebRequestLocals,
+    JTMWebServiceLocals<JTMWebConfigurationSchema> = JTMWebServiceLocals<JTMWebConfigurationSchema>,
+  RLocals extends JTMWebRequestLocals = JTMWebRequestLocals,
 >(baseService?: Service<SLocals, RLocals>): Service<SLocals, RLocals> {
   const base = useJTMServiceWithAuth(baseService);
   let rootDirectory: string;
-  let csrfConfig: HSWebConfigurationSchema['csrf'];
+  let csrfConfig: JTMWebConfigurationSchema['csrf'];
 
   return {
     ...base,

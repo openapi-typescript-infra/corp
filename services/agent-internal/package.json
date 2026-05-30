@@ -52,6 +52,7 @@
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.66",
     "@ai-sdk/openai": "^3.0.50",
+    "@justtellme/agent-internal-client": "workspace:^",
     "@justtellme/auth-token": "workspace:^",
     "@justtellme/cloud-sql": "workspace:^",
     "@justtellme/cpconfig": "workspace:^",

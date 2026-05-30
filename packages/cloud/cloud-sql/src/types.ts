@@ -1,6 +1,6 @@
 import type { ClientConfig } from 'pg';
 
-export interface HSCloudSqlConfiguration extends ClientConfig {
+export interface JTMCloudSqlConfiguration extends ClientConfig {
   /**
    * Whether to use the CloudSQL Connector to connect or just straight PG
    */
@@ -10,7 +10,7 @@ export interface HSCloudSqlConfiguration extends ClientConfig {
    * When you call getPgPool, you will get back
    * a second pool for the read-only replica.
    */
-  readOnlyReplica?: boolean | string | Omit<HSCloudSqlConfiguration, 'readOnlyReplica'>;
+  readOnlyReplica?: boolean | string | Omit<JTMCloudSqlConfiguration, 'readOnlyReplica'>;
   /**
    * The maximum number of connections to allow
    */

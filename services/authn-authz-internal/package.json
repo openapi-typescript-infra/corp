@@ -40,7 +40,9 @@
     "vitest": "^4.1.2"
   },
   "dependencies": {
+    "@justtellme/authn-authz-internal-client": "workspace:^",
     "@justtellme/cpconfig": "workspace:^",
+    "@justtellme/identity-internal-client": "workspace:^",
     "@justtellme/service": "workspace:^",
     "@justtellme/web-auth": "workspace:^",
     "@openapi-typescript-infra/service": "^6.13.1",

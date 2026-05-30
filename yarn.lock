@@ -4379,6 +4379,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@justtellme/agent-internal-client@workspace:^, @justtellme/agent-internal-client@workspace:api/agent-internal":
+  version: 0.0.0-use.local
+  resolution: "@justtellme/agent-internal-client@workspace:api/agent-internal"
+  dependencies:
+    "@justtellme/api-common": "workspace:^"
+    openapi-typescript: ^7.13.0
+  languageName: unknown
+  linkType: soft
+
 "@justtellme/agent-internal@workspace:services/agent-internal":
   version: 0.0.0-use.local
   resolution: "@justtellme/agent-internal@workspace:services/agent-internal"
@@ -4386,6 +4395,7 @@ __metadata:
     "@ai-sdk/anthropic": ^3.0.66
     "@ai-sdk/openai": ^3.0.50
     "@biomejs/biome": ^2.4.10
+    "@justtellme/agent-internal-client": "workspace:^"
     "@justtellme/auth-token": "workspace:^"
     "@justtellme/cloud-sql": "workspace:^"
     "@justtellme/cpconfig": "workspace:^"
@@ -4418,13 +4428,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@justtellme/api@workspace:^, @justtellme/api@workspace:api":
+"@justtellme/api-common@workspace:^, @justtellme/api-common@workspace:api/common":
   version: 0.0.0-use.local
-  resolution: "@justtellme/api@workspace:api"
-  dependencies:
-    "@justtellme/cpconfig": "workspace:^"
-    openapi-typescript: ^7.13.0
-    yaml: ^2.8.3
+  resolution: "@justtellme/api-common@workspace:api/common"
   languageName: unknown
   linkType: soft
 
@@ -4443,12 +4449,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@justtellme/authn-authz-internal-client@workspace:^, @justtellme/authn-authz-internal-client@workspace:api/authn-authz-internal":
+  version: 0.0.0-use.local
+  resolution: "@justtellme/authn-authz-internal-client@workspace:api/authn-authz-internal"
+  dependencies:
+    "@justtellme/api-common": "workspace:^"
+    openapi-typescript: ^7.13.0
+  languageName: unknown
+  linkType: soft
+
 "@justtellme/authn-authz-internal@workspace:services/authn-authz-internal":
   version: 0.0.0-use.local
   resolution: "@justtellme/authn-authz-internal@workspace:services/authn-authz-internal"
   dependencies:
     "@biomejs/biome": ^2.4.10
+    "@justtellme/authn-authz-internal-client": "workspace:^"
     "@justtellme/cpconfig": "workspace:^"
+    "@justtellme/identity-internal-client": "workspace:^"
     "@justtellme/service": "workspace:^"
     "@justtellme/web-auth": "workspace:^"
     "@openapi-typescript-infra/service": ^6.13.1
@@ -4483,6 +4500,7 @@ __metadata:
   dependencies:
     "@biomejs/biome": ^2.4.10
     "@justtellme/cpconfig": "workspace:^"
+    "@justtellme/identity-internal-client": "workspace:^"
     "@justtellme/service": "workspace:^"
     "@justtellme/state": "workspace:^"
     "@justtellme/ui-kit": "workspace:^"
@@ -4557,6 +4575,7 @@ __metadata:
     "@graphql-eslint/eslint-plugin": ^4.4.0
     "@justtellme/cpconfig": "workspace:^"
     "@justtellme/graphql-service": "workspace:^"
+    "@justtellme/identity-internal-client": "workspace:^"
     "@openapi-typescript-infra/service": ^6.13.1
     "@openapi-typescript-infra/service-tester": ^7.1.2
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
@@ -4608,12 +4627,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@justtellme/identity-internal-client@workspace:^, @justtellme/identity-internal-client@workspace:api/identity-internal":
+  version: 0.0.0-use.local
+  resolution: "@justtellme/identity-internal-client@workspace:api/identity-internal"
+  dependencies:
+    "@justtellme/api-common": "workspace:^"
+    openapi-typescript: ^7.13.0
+  languageName: unknown
+  linkType: soft
+
 "@justtellme/identity-internal@workspace:services/identity-internal":
   version: 0.0.0-use.local
   resolution: "@justtellme/identity-internal@workspace:services/identity-internal"
   dependencies:
     "@biomejs/biome": ^2.4.10
     "@justtellme/cpconfig": "workspace:^"
+    "@justtellme/identity-internal-client": "workspace:^"
     "@justtellme/service": "workspace:^"
     "@openapi-typescript-infra/service": ^6.13.1
     "@openapi-typescript-infra/service-tester": ^7.1.2
@@ -4631,6 +4660,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@justtellme/payment-internal-client@workspace:^, @justtellme/payment-internal-client@workspace:api/payment-internal":
+  version: 0.0.0-use.local
+  resolution: "@justtellme/payment-internal-client@workspace:api/payment-internal"
+  dependencies:
+    "@justtellme/api-common": "workspace:^"
+    openapi-typescript: ^7.13.0
+  languageName: unknown
+  linkType: soft
+
 "@justtellme/payment-internal@workspace:services/payment-internal":
   version: 0.0.0-use.local
   resolution: "@justtellme/payment-internal@workspace:services/payment-internal"
@@ -4638,6 +4676,8 @@ __metadata:
     "@biomejs/biome": ^2.4.10
     "@justtellme/cpconfig": "workspace:^"
     "@justtellme/external-id": "workspace:^"
+    "@justtellme/identity-internal-client": "workspace:^"
+    "@justtellme/payment-internal-client": "workspace:^"
     "@justtellme/service": "workspace:^"
     "@openapi-typescript-infra/service": ^6.13.1
     "@openapi-typescript-infra/service-tester": ^7.1.2
@@ -4654,12 +4694,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@justtellme/rest-api-client@workspace:^, @justtellme/rest-api-client@workspace:api/rest-api":
+  version: 0.0.0-use.local
+  resolution: "@justtellme/rest-api-client@workspace:api/rest-api"
+  dependencies:
+    "@justtellme/api-common": "workspace:^"
+    openapi-typescript: ^7.13.0
+  languageName: unknown
+  linkType: soft
+
 "@justtellme/rest-api@workspace:services/rest-api":
   version: 0.0.0-use.local
   resolution: "@justtellme/rest-api@workspace:services/rest-api"
   dependencies:
     "@biomejs/biome": ^2.4.10
     "@justtellme/cpconfig": "workspace:^"
+    "@justtellme/rest-api-client": "workspace:^"
     "@justtellme/service-with-auth": "workspace:^"
     "@openapi-typescript-infra/service": ^6.13.1
     "@openapi-typescript-infra/service-tester": ^7.1.2
@@ -4723,8 +4773,8 @@ __metadata:
   resolution: "@justtellme/service-with-auth@workspace:packages/infra/service-with-auth"
   dependencies:
     "@biomejs/biome": ^2.4.10
-    "@justtellme/api": "workspace:^"
     "@justtellme/cpconfig": "workspace:^"
+    "@justtellme/identity-internal-client": "workspace:^"
     "@justtellme/service": "workspace:^"
     "@justtellme/web-auth": "workspace:^"
     "@openapi-typescript-infra/service": ^6.13.1
@@ -4747,8 +4797,8 @@ __metadata:
   dependencies:
     "@biomejs/biome": ^2.4.10
     "@google-cloud/secret-manager": ^6.1.1
-    "@justtellme/api": "workspace:^"
     "@justtellme/cpconfig": "workspace:^"
+    "@justtellme/identity-internal-client": "workspace:^"
     "@openapi-typescript-infra/service": ^6.13.1
     "@openapi-typescript-infra/service-tester": ^7.1.2
     "@types/node": ^25.5.2
@@ -4776,6 +4826,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@justtellme/task-internal-client@workspace:^, @justtellme/task-internal-client@workspace:api/task-internal":
+  version: 0.0.0-use.local
+  resolution: "@justtellme/task-internal-client@workspace:api/task-internal"
+  dependencies:
+    "@justtellme/api-common": "workspace:^"
+    openapi-typescript: ^7.13.0
+  languageName: unknown
+  linkType: soft
+
 "@justtellme/task-internal@workspace:services/task-internal":
   version: 0.0.0-use.local
   resolution: "@justtellme/task-internal@workspace:services/task-internal"
@@ -4783,6 +4842,7 @@ __metadata:
     "@biomejs/biome": ^2.4.10
     "@justtellme/cpconfig": "workspace:^"
     "@justtellme/service": "workspace:^"
+    "@justtellme/task-internal-client": "workspace:^"
     "@openapi-typescript-infra/service": ^6.13.1
     "@openapi-typescript-infra/service-tester": ^7.1.2
     "@typescript/native-preview": ^7.0.0-dev.20260418.1
@@ -4847,10 +4907,10 @@ __metadata:
   resolution: "@justtellme/web-auth@workspace:packages/auth/web-auth"
   dependencies:
     "@biomejs/biome": ^2.4.10
-    "@justtellme/api": "workspace:^"
     "@justtellme/auth-token": "workspace:^"
     "@justtellme/cpconfig": "workspace:^"
     "@justtellme/external-id": "workspace:^"
+    "@justtellme/identity-internal-client": "workspace:^"
     "@justtellme/service": "workspace:^"
     "@openapi-typescript-infra/service": ^6.13.1
     "@openapi-typescript-infra/service-tester": ^7.1.2
@@ -4880,6 +4940,7 @@ __metadata:
   resolution: "@justtellme/web-service@workspace:packages/infra/web-service"
   dependencies:
     "@biomejs/biome": ^2.4.10
+    "@justtellme/identity-internal-client": "workspace:^"
     "@justtellme/service-with-auth": "workspace:^"
     "@openapi-typescript-infra/service": ^6.13.1
     "@openapi-typescript-infra/service-tester": ^7.1.2
@@ -23776,7 +23837,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.0.0, yaml@npm:^2.3.1, yaml@npm:^2.6.1, yaml@npm:^2.7.1, yaml@npm:^2.8.0, yaml@npm:^2.8.3":
+"yaml@npm:^2.0.0, yaml@npm:^2.3.1, yaml@npm:^2.6.1, yaml@npm:^2.7.1, yaml@npm:^2.8.0":
   version: 2.8.3
   resolution: "yaml@npm:2.8.3"
   bin:

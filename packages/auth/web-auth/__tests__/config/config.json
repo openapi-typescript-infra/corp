@@ -5,7 +5,7 @@
   "session": {
     "enabled": true,
     "secret": "change-me",
-    "cookieName": "hssession-dev",
+    "cookieName": "JTMSession-dev",
     "cookieDomain": ".dev.justtellme.com",
     "secureCookie": true,
     "proxy": true,

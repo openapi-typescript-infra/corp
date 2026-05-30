@@ -1,14 +1,14 @@
-import { fromExternalID } from '@justtellme/external-id';
 import { AuthPrincipal, type AuthPrincipalRole } from '@justtellme/auth-token';
+import { fromExternalID } from '@justtellme/external-id';
 import type { JTMConfigurationSchema, JTMServiceLocals } from '@justtellme/service';
 import type { ServiceExpress } from '@openapi-typescript-infra/service';
 import { decode } from 'jsonwebtoken';
 import type { Session, User } from 'stytch';
 
-import type { AuthDatasources, HSAuthConfiguration } from '../types.ts';
+import type { AuthDatasources, JTMAuthConfiguration } from '../types.ts';
 
 export type AuthApp = ServiceExpress<
-  JTMServiceLocals<JTMConfigurationSchema & HSAuthConfiguration> & AuthDatasources
+  JTMServiceLocals<JTMConfigurationSchema & JTMAuthConfiguration> & AuthDatasources
 >;
 
 export function toIat(date: Date | string | number | undefined): number | undefined {

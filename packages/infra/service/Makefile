@@ -1,11 +1,11 @@
 # Use node to resolve the service makefile to accommodate pnpm and other linkers
 SERVICE_MAKEFILE := $(shell node --experimental-import-meta-resolve -e "console.log(new URL(import.meta.resolve('@openapi-typescript-infra/service/Makefile'), import.meta.url).pathname)")
-API_PKG := $(shell node --experimental-import-meta-resolve -e "import fs from 'fs'; import path from 'path'; const p = new URL(import.meta.resolve('@justtellme/api/specs/${SERVICE_NAME}'), import.meta.url).pathname; console.log(fs.realpathSync(path.resolve(p, '../../..')))")
-API_SPEC := $(API_PKG)/dist/specs/$(SERVICE_NAME).json
+API_PKG := $(shell node --experimental-import-meta-resolve -e "import fs from 'fs'; import path from 'path'; const p = new URL(import.meta.resolve('@justtellme/${SERVICE_NAME}-client/spec'), import.meta.url).pathname; console.log(fs.realpathSync(path.resolve(p, '../..')))")
+API_SPEC := $(API_PKG)/dist/spec.json
 TSC = tsgo
 
 # Capture this Makefile's directory BEFORE including (which changes MAKEFILE_LIST)
-_HS_SERVICE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+_SERVICE_ROOT_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 _TSC_ALIAS := $(shell node --experimental-import-meta-resolve -e "import {createRequire} from 'module'; const r = createRequire(import.meta.url); console.log(r.resolve('tsc-alias/dist/bin/index.js'))")
 
 # Filter out rules we redefine below: service generation and ts build
@@ -18,7 +18,7 @@ include $(shell _tmp=$$(mktemp) && sed -e '/^src\/generated\/service\/index\.ts:
 $(ts_build_stamp): $(src_files) tsconfig.build.json tsconfig.json $(if $(missing_ts_outputs),FORCE,)
 	yarn $(TSC) -p tsconfig.json
 	@yarn $(TSC) -p tsconfig.build.json > /dev/null 2>&1 || true
-	node $(_TSC_ALIAS) --project tsconfig.build.json -r $(_HS_SERVICE_DIR)ts-extension-replacer.cjs
+	node $(_TSC_ALIAS) --project tsconfig.build.json -r $(__SERVICE_ROOT_DIR)ts-extension-replacer.cjs
 	@mkdir -p $(build_dir)
 	@touch $@
 

@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "@justtellme/cpconfig": "workspace:^",
+    "@justtellme/identity-internal-client": "workspace:^",
     "@justtellme/service": "workspace:^",
     "@justtellme/state": "workspace:^",
     "@justtellme/ui-kit": "workspace:^",

@@ -49,6 +49,7 @@
   "dependencies": {
     "@justtellme/cpconfig": "workspace:^",
     "@justtellme/service": "workspace:^",
+    "@justtellme/task-internal-client": "workspace:^",
     "@openapi-typescript-infra/service": "^6.13.1",
     "date-fns": "^4.1.0",
     "db-migrate": "^0.11.14",

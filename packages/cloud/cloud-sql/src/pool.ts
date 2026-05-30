@@ -1,11 +1,11 @@
 import { AuthTypes, Connector, IpAddressTypes } from '@google-cloud/cloud-sql-connector';
-import type { AnyJTMServiceLocals, HSExpress, JTMServiceLocals } from '@justtellme/service';
+import type { AnyJTMServiceLocals, JTMExpress, JTMServiceLocals } from '@justtellme/service';
 import { getNodeEnv } from '@openapi-typescript-infra/service';
 import pg from 'pg';
 
-import type { HSCloudSqlConfiguration } from './types.ts';
+import type { JTMCloudSqlConfiguration } from './types.ts';
 
-function defaultUsername(app: HSExpress, env: ReturnType<typeof getNodeEnv>) {
+function defaultUsername(app: JTMExpress, env: ReturnType<typeof getNodeEnv>) {
   switch (env) {
     case 'production':
     case 'staging':
@@ -13,7 +13,7 @@ function defaultUsername(app: HSExpress, env: ReturnType<typeof getNodeEnv>) {
     case 'development':
     case 'test':
     default:
-      return process.env.HS_DB_USER || app.locals.name;
+      return process.env.JTM_DB_USER || app.locals.name;
   }
 }
 
@@ -25,8 +25,8 @@ interface CloudSqlInterface {
 }
 
 async function getRoPool<SLocals extends AnyJTMServiceLocals = JTMServiceLocals>(
-  app: HSExpress<SLocals>,
-  config: HSCloudSqlConfiguration,
+  app: JTMExpress<SLocals>,
+  config: JTMCloudSqlConfiguration,
   pool: pg.Pool,
 ): Promise<CloudSqlInterface> {
   const { readOnlyReplica, host = process.env.DATABASE_ID, ...baseConfig } = config;
@@ -57,18 +57,18 @@ async function getRoPool<SLocals extends AnyJTMServiceLocals = JTMServiceLocals>
  * We will fetch a config called "db," which is the default
  */
 export async function getPgPool<SLocals extends AnyJTMServiceLocals = JTMServiceLocals>(
-  app: HSExpress<SLocals>,
-  config?: HSCloudSqlConfiguration,
+  app: JTMExpress<SLocals>,
+  config?: JTMCloudSqlConfiguration,
 ): Promise<CloudSqlInterface> {
   const env = getNodeEnv();
-  const finalConfig = (config || app.locals.config.db || {}) as HSCloudSqlConfiguration;
+  const finalConfig = (config || app.locals.config.db || {}) as JTMCloudSqlConfiguration;
   const { name } = app.locals;
 
   let useCloudConnector = finalConfig.useCloudConnector;
   if (!('useCloudConnector' in finalConfig)) {
     // Prod and dev (staging) k8s clusters use the cloud connector by default
     useCloudConnector =
-      env === 'production' || env === 'staging' || Boolean(process.env.HS_USE_CLOUD_CONNECTOR);
+      env === 'production' || env === 'staging' || Boolean(process.env.USE_CLOUD_CONNECTOR);
   }
 
   const { authType, maxPoolSize, useCloudConnector: __, user, database, ...pgConfig } = finalConfig;

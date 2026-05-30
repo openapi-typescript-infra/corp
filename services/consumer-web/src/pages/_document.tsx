@@ -23,7 +23,7 @@ const getClientSideVariables = (includeStytchAdminToken: boolean) => {
   };
 };
 
-class HSDocument extends Document {
+class AppDocument extends Document {
   render() {
     const page = this.props.__NEXT_DATA__.page;
     const includeStytchAdminToken = page !== '/404' && page !== '/_error';
@@ -49,4 +49,4 @@ class HSDocument extends Document {
   }
 }
 
-export default HSDocument;
+export default AppDocument;

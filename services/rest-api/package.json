@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@justtellme/cpconfig": "workspace:^",
+    "@justtellme/rest-api-client": "workspace:^",
     "@justtellme/service-with-auth": "workspace:^",
     "@openapi-typescript-infra/service": "^6.13.1",
     "@temporalio/client": "^1.15.0",

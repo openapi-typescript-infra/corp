@@ -2,7 +2,7 @@
   "$schema": "tsschema://src/config.ts#JTMConfigurationSchema",
   "session": {
     "secret": "env:SESSION_SECRET",
-    "cookieName": "hssession",
+    "cookieName": "JTMSession",
     "cookieDomain": ".justtellme.com",
     "maxAge": 604800000
   },

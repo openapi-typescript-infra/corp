@@ -1,11 +1,11 @@
-import { useHSWebService } from '@justtellme/web-service';
+import { useJTMWebService } from '@justtellme/web-service';
 
 import { createConsumerWebDatasources } from './types/datasources.ts';
 import type { ConsumerWeb, ConsumerWebLocals } from './types/index.ts';
 
 export function service(): ConsumerWeb['Service'] {
   // biome-ignore lint/correctness/useHookAtTopLevel: not a React hook
-  const base = useHSWebService<ConsumerWebLocals>();
+  const base = useJTMWebService<ConsumerWebLocals>();
   return {
     ...base,
     async start(app) {

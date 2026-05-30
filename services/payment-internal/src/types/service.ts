@@ -1,4 +1,4 @@
-import type { HSRequestLocals, JTMServiceLocals } from '@justtellme/service';
+import type { JTMRequestLocals, JTMServiceLocals } from '@justtellme/service';
 import type { ServiceTypes } from '@openapi-typescript-infra/service';
 import type { Kysely } from 'kysely';
 import type { RedisClientType } from 'redis';
@@ -14,7 +14,7 @@ export interface PaymentInternalLocals extends JTMServiceLocals<PaymentInternalC
   redis?: RedisClientType;
 }
 
-export type PaymentInternalRequestLocals = HSRequestLocals;
+export type PaymentInternalRequestLocals = JTMRequestLocals;
 
 export type PaymentInternal = ServiceTypes<PaymentInternalLocals, PaymentInternalRequestLocals>;
 

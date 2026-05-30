@@ -1,5 +1,5 @@
 import type { ServiceExpress, ServiceRouter } from '@openapi-typescript-infra/service';
-import type { HSWebServiceLocals } from '../../../../src/types.ts';
+import type { JTMWebServiceLocals } from '../../../../src/types.ts';
 
 declare module 'express-session' {
   interface SessionData {
@@ -7,7 +7,7 @@ declare module 'express-session' {
   }
 }
 
-export function route(router: ServiceRouter, app: ServiceExpress<HSWebServiceLocals>) {
+export function route(router: ServiceRouter, app: ServiceExpress<JTMWebServiceLocals>) {
   const { withSession } = app.locals;
 
   router.get('/test', withSession, async (req, res) => {

@@ -1,5 +1,9 @@
-import type { JTMConfigurationSchema, JTMServiceLocals, JTMServiceRequest } from '@justtellme/service';
 import { AuthPrincipal } from '@justtellme/auth-token';
+import type {
+  JTMConfigurationSchema,
+  JTMServiceLocals,
+  JTMServiceRequest,
+} from '@justtellme/service';
 import {
   isDev,
   isTest,
@@ -14,9 +18,9 @@ import { getVerificationCache } from './authorization/verificationCache.ts';
 import { createSessionMiddleware } from './session/index.ts';
 import type {
   AuthDatasources,
-  HSAuthConfiguration,
+  JTMAuthConfiguration,
   JTMServiceWithSessionLocals,
-  HSSessionConfiguration,
+  JTMSessionConfiguration,
 } from './types.ts';
 
 export type TraditionalMiddleware = (req: Request, res: Response, next: NextFunction) => void;
@@ -53,8 +57,8 @@ export async function getPrincipal(req: RequestLike) {
     return req.user;
   }
   const config = req.app.locals.config as JTMConfigurationSchema &
-    HSSessionConfiguration &
-    HSAuthConfiguration;
+    JTMSessionConfiguration &
+    JTMAuthConfiguration;
   if (config.auth?.authToken === 'decode' && req.headers['x-auth-token']) {
     return new AuthPrincipal(req.headers['x-auth-token'].toString());
   }
@@ -77,7 +81,7 @@ export async function getPrincipal(req: RequestLike) {
 
 export async function getMiddleware<RequestDocumentFactory extends typeof getRequestDocument>(
   app: ServiceExpress<JTMServiceLocals & AuthDatasources>,
-  config: HSSessionConfiguration & HSAuthConfiguration,
+  config: JTMSessionConfiguration & JTMAuthConfiguration,
   options: SessionMiddlewareOptions<RequestDocumentFactory> = {},
 ) {
   const { requestDocumentFactory = getRequestDocument } = options;

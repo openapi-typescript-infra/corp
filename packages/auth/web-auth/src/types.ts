@@ -1,10 +1,10 @@
-import type { paths as IdentityInternal } from '@justtellme/api/identity-internal';
+import type { paths as IdentityInternal } from '@justtellme/identity-internal-client';
 import type { JTMServiceLocals } from '@justtellme/service';
 import type createClient from 'openapi-fetch';
 import type { RedisClientOptions } from 'redis';
 import type { Client } from 'stytch';
 
-export interface HSAuthConfiguration {
+export interface JTMAuthConfiguration {
   auth: {
     enabled: boolean;
 
@@ -34,7 +34,7 @@ export interface HSAuthConfiguration {
   };
 }
 
-export interface HSSessionConfiguration {
+export interface JTMSessionConfiguration {
   session: {
     enabled: boolean;
 

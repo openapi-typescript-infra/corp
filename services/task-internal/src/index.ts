@@ -1,6 +1,6 @@
-import ApiSpec from '@justtellme/api/specs/task-internal' with { type: 'json' };
 import { createTableCache, getPgPool } from '@justtellme/cloud-sql';
 import { useJTMService } from '@justtellme/service';
+import ApiSpec from '@justtellme/task-internal-client/spec' with { type: 'json' };
 import { Kysely, PostgresDialect } from 'kysely';
 
 import type { DB } from './generated/database.ts';

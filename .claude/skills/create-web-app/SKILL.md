@@ -143,13 +143,13 @@ Note: includes `@justtellme/web-service/Makefile` (not `@justtellme/service/Make
 ## src/index.ts
 
 ```typescript
-import { useHSWebService } from '@justtellme/web-service';
+import { useJTMWebService } from '@justtellme/web-service';
 
 import { create<PascalName>Datasources } from './types/datasources.ts';
 import type { <PascalName>, <PascalName>Locals } from './types/index.ts';
 
 export function service(): <PascalName>['Service'] {
-  const base = useHSWebService<<PascalName>Locals>();
+  const base = useJTMWebService<<PascalName>Locals>();
   return {
     ...base,
     async start(app) {
@@ -165,7 +165,7 @@ export function service(): <PascalName>['Service'] {
 }
 ```
 
-Key difference: uses `useHSWebService` (from `@justtellme/web-service`), NOT `useJTMService`. This sets up Next.js, Stytch auth, sessions, and all the web middleware automatically.
+Key difference: uses `useJTMWebService` (from `@justtellme/web-service`), NOT `useJTMService`. This sets up Next.js, Stytch auth, sessions, and all the web middleware automatically.
 
 ## src/types/
 
@@ -173,39 +173,39 @@ Key difference: uses `useHSWebService` (from `@justtellme/web-service`), NOT `us
 
 ```typescript
 import type { ServiceTypes } from '@openapi-typescript-infra/service';
-import type { HSWebRequestLocals, HSWebServiceLocals } from '@justtellme/web-service';
+import type { JTMWebRequestLocals, JTMWebServiceLocals } from '@justtellme/web-service';
 
 import type { operationHandlers } from '../generated/service/index.ts';
 
 import type { create<PascalName>Datasources } from './datasources.ts';
 import type { <PascalName>ConfigSchema } from './config.ts';
 
-export interface <PascalName>Locals extends HSWebServiceLocals<<PascalName>ConfigSchema> {
+export interface <PascalName>Locals extends JTMWebServiceLocals<<PascalName>ConfigSchema> {
   datasources: ReturnType<typeof create<PascalName>Datasources>;
 }
 
-export type <PascalName>RequestLocals = HSWebRequestLocals;
+export type <PascalName>RequestLocals = JTMWebRequestLocals;
 
 export type <PascalName> = ServiceTypes<<PascalName>Locals, <PascalName>RequestLocals>;
 
 export type <PascalName>Api = operationHandlers<<PascalName>Locals, <PascalName>RequestLocals>;
 ```
 
-Note: extends `HSWebServiceLocals` and `HSWebRequestLocals` (from web-service), not the plain `HS*` variants.
+Note: extends `JTMWebServiceLocals` and `JTMWebRequestLocals` (from web-service), not the plain `JTM*` variants.
 
 ### config.ts
 
 ```typescript
-import type { HSWebConfigurationSchema } from '@justtellme/web-service';
+import type { JTMWebConfigurationSchema } from '@justtellme/web-service';
 
 import type { create<PascalName>Datasources } from './datasources.ts';
 
-export interface <PascalName>ConfigSchema extends HSWebConfigurationSchema {
+export interface <PascalName>ConfigSchema extends JTMWebConfigurationSchema {
   datasources: ReturnType<typeof create<PascalName>Datasources>;
 }
 ```
 
-Note: extends `HSWebConfigurationSchema` (from web-service), not `JTMConfigurationSchema`.
+Note: extends `JTMWebConfigurationSchema` (from web-service), not `JTMConfigurationSchema`.
 
 ### datasources.ts
 
@@ -225,9 +225,9 @@ export * from './NextPage.ts';
 Define what variables are exposed to the browser via `window.hs`:
 
 ```typescript
-import type { HSClientSideVariables } from '@justtellme/web-service';
+import type { JTMClientSideVariables } from '@justtellme/web-service';
 
-export interface <PascalName>ClientSideVariables extends HSClientSideVariables {
+export interface <PascalName>ClientSideVariables extends JTMClientSideVariables {
   // Add app-specific client variables here
 }
 ```

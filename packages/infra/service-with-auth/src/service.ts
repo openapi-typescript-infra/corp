@@ -1,15 +1,15 @@
-import { useJTMService } from '@justtellme/service';
 import type { AuthPrincipal } from '@justtellme/auth-token';
+import { useJTMService } from '@justtellme/service';
 import { getMiddleware, getPrincipal } from '@justtellme/web-auth';
 import type { Service } from '@openapi-typescript-infra/service';
 import { insertConfigurationBefore } from '@openapi-typescript-infra/service';
 import path from 'path';
 import { Client } from 'stytch';
-import type { HSAuthConfigurationSchema } from './config.ts';
+import type { JTMAuthConfigurationSchema } from './config.ts';
 import { createAuthDatasources } from './datasources.ts';
-import type { HSAuthRequestLocals, HSAuthServiceLocals } from './types.ts';
+import type { JTMAuthRequestLocals, JTMAuthServiceLocals } from './types.ts';
 
-function stytchClient(config: HSAuthConfigurationSchema['auth']['stytch']) {
+function stytchClient(config: JTMAuthConfigurationSchema['auth']['stytch']) {
   return new Client({
     project_id: config.project_id,
     secret: config.secret || 'none',
@@ -18,8 +18,8 @@ function stytchClient(config: HSAuthConfigurationSchema['auth']['stytch']) {
 
 export function useJTMServiceWithAuth<
   SLocals extends
-    HSAuthServiceLocals<HSAuthConfigurationSchema> = HSAuthServiceLocals<HSAuthConfigurationSchema>,
-  RLocals extends HSAuthRequestLocals = HSAuthRequestLocals,
+    JTMAuthServiceLocals<JTMAuthConfigurationSchema> = JTMAuthServiceLocals<JTMAuthConfigurationSchema>,
+  RLocals extends JTMAuthRequestLocals = JTMAuthRequestLocals,
 >(baseService?: Service<SLocals, RLocals>): Service<SLocals, RLocals> {
   const base = useJTMService(baseService);
   let session: Awaited<ReturnType<typeof getMiddleware>> | undefined;

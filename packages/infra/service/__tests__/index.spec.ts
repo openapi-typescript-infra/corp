@@ -1,14 +1,15 @@
-import path from 'path';
-
-import { beforeAll, describe, expect, test } from 'vitest';
-import { getReusableApp, request } from '@openapi-typescript-infra/service-tester';
-import type { paths } from '@justtellme/api/identity-internal';
+import type { paths } from '@justtellme/identity-internal-client';
 import { AuthPrincipal } from '@justtellme/web-auth';
+import { getReusableApp, request } from '@openapi-typescript-infra/service-tester';
+import path from 'path';
+import { beforeAll, describe, expect, test } from 'vitest';
 
 import { createDatasourceClients, useJTMService } from '../src/index.ts';
 
 const Datasources = ['identityInternal'] as const;
-interface DatasourcePaths { identityInternal: paths; }
+interface DatasourcePaths {
+  identityInternal: paths;
+}
 
 describe('basic service', () => {
   beforeAll(async () => {
@@ -36,18 +37,24 @@ describe('basic service', () => {
       version: '1.0.0',
     });
 
-    const datasources = createDatasourceClients<keyof DatasourcePaths, DatasourcePaths>(app, Datasources, {
-      identityInternal: {
-        baseUrl: `http://localhost:${app.locals.config.server.port}`,
+    const datasources = createDatasourceClients<keyof DatasourcePaths, DatasourcePaths>(
+      app,
+      Datasources,
+      {
+        identityInternal: {
+          baseUrl: `http://localhost:${app.locals.config.server.port}`,
+        },
       },
-    });
+    );
 
     let calledOnRequest = false;
     let calledOnResponse = false;
     datasources.identityInternal.use({
       onRequest({ request }) {
         calledOnRequest = true;
-        expect(request.headers.get('user-agent')).toMatch(/just-tell-me-internal\/1\.0\.0 nodejs\/v\d+\.\d+\.\d+ \(\w+ \w+\)/);
+        expect(request.headers.get('user-agent')).toMatch(
+          /just-tell-me-internal\/1\.0\.0 nodejs\/v\d+\.\d+\.\d+ \(\w+ \w+\)/,
+        );
         expect(request.keepalive).toBe(false);
         expect(request.headers.get('x-auth-token')).toBeDefined();
         const principal = request.headers.get('x-auth-token');
@@ -61,7 +68,10 @@ describe('basic service', () => {
       },
     });
 
-    const rz = await datasources.identityInternal.GET('/identity/individuals', { params: { query: { individual_uuids: [] } }, keepalive: false });
+    const rz = await datasources.identityInternal.GET('/identity/individuals', {
+      params: { query: { individual_uuids: [] } },
+      keepalive: false,
+    });
     expect(calledOnRequest).toBe(true);
     expect(calledOnResponse).toBe(true);
     expect(rz.data).toMatchInlineSnapshot(`
@@ -70,17 +80,23 @@ describe('basic service', () => {
       }
     `);
 
-    const errorSource = createDatasourceClients<keyof DatasourcePaths, DatasourcePaths>(app, Datasources, {
-      identityInternal: {
-        // https will fail
-        baseUrl: `https://localhost:${app.locals.config.server.port}`,
+    const errorSource = createDatasourceClients<keyof DatasourcePaths, DatasourcePaths>(
+      app,
+      Datasources,
+      {
+        identityInternal: {
+          // https will fail
+          baseUrl: `https://localhost:${app.locals.config.server.port}`,
+        },
       },
-    });
+    );
     let errored = false;
-    await errorSource.identityInternal.GET('/identity/individuals', { params: { query: { individual_uuids: [] } } }).catch((error) => {
-      errored = true;
-      expect(error.message).toMatch(/identityInternal: fetch failed/);
-    });
+    await errorSource.identityInternal
+      .GET('/identity/individuals', { params: { query: { individual_uuids: [] } } })
+      .catch((error) => {
+        errored = true;
+        expect(error.message).toMatch(/identityInternal: fetch failed/);
+      });
     expect(errored).toBe(true);
   });
 });

@@ -1,4 +1,4 @@
-import type { paths as IdentityInternal } from '@justtellme/api/identity-internal';
+import type { paths as IdentityInternal } from '@justtellme/identity-internal-client';
 import { getReusableApp, request } from '@openapi-typescript-infra/service-tester';
 import jsonwebtoken from 'jsonwebtoken';
 import type createClient from 'openapi-fetch';

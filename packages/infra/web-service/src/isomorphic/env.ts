@@ -1,15 +1,15 @@
-import type { HSClientSideVariables } from '../client-side-vars.ts';
+import type { JTMClientSideVariables } from '../client-side-vars.ts';
 
-export function getEnvVar<T extends HSClientSideVariables = HSClientSideVariables>(
+export function getEnvVar<T extends JTMClientSideVariables = JTMClientSideVariables>(
   varName: keyof T,
 ): string;
 
-export function getEnvVar<T extends HSClientSideVariables>(
+export function getEnvVar<T extends JTMClientSideVariables>(
   varName: keyof T,
   defaultValue: string,
 ): string;
 
-export function getEnvVar<T extends HSClientSideVariables = HSClientSideVariables>(
+export function getEnvVar<T extends JTMClientSideVariables = JTMClientSideVariables>(
   varName: keyof T,
   defaultValue?: string,
 ): string | undefined {

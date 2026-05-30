@@ -1,9 +1,9 @@
 import type { DatasourceSpec, JTMConfigurationSchema } from '@justtellme/service';
-import type { HSAuthConfiguration, HSSessionConfiguration } from '@justtellme/web-auth';
+import type { JTMAuthConfiguration, JTMSessionConfiguration } from '@justtellme/web-auth';
 
-type CombinedConfig = JTMConfigurationSchema & HSSessionConfiguration & HSAuthConfiguration;
+type CombinedConfig = JTMConfigurationSchema & JTMSessionConfiguration & JTMAuthConfiguration;
 
-export interface HSAuthConfigurationSchema extends CombinedConfig {
+export interface JTMAuthConfigurationSchema extends CombinedConfig {
   datasources: {
     identityInternal?: DatasourceSpec;
   };

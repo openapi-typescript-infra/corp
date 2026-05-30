@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "@justtellme/cpconfig": "workspace:^",
+    "@justtellme/identity-internal-client": "workspace:^",
     "@justtellme/service": "workspace:^",
     "@openapi-typescript-infra/service": "^6.13.1",
     "date-fns": "^4.1.0",

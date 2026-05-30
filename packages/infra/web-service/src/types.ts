@@ -1,8 +1,8 @@
-import type { paths as IdentityInternal } from '@justtellme/api/identity-internal';
+import type { paths as IdentityInternal } from '@justtellme/identity-internal-client';
 import type {
-  HSAuthRequestLocals,
-  HSAuthService,
-  HSAuthServiceLocals,
+  JTMAuthRequestLocals,
+  JTMAuthService,
+  JTMAuthServiceLocals,
 } from '@justtellme/service-with-auth';
 import type {
   RequestLike,
@@ -13,11 +13,11 @@ import type {
 import type { NextFunction, Request, Response } from 'express';
 import type createClient from 'openapi-fetch';
 
-import type { HSWebConfigurationSchema } from './config.ts';
+import type { JTMWebConfigurationSchema } from './config.ts';
 
-export interface HSWebServiceLocals<
-  Config extends HSWebConfigurationSchema = HSWebConfigurationSchema,
-> extends HSAuthServiceLocals<Config> {
+export interface JTMWebServiceLocals<
+  Config extends JTMWebConfigurationSchema = JTMWebConfigurationSchema,
+> extends JTMAuthServiceLocals<Config> {
   // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   next: ReturnType<typeof import('next').default>;
   /**
@@ -35,30 +35,30 @@ export interface HSWebServiceLocals<
   };
 }
 
-export type HSWebRequestLocals = HSAuthRequestLocals;
+export type JTMWebRequestLocals = JTMAuthRequestLocals;
 
-export type HSWebService<
+export type JTMWebService<
   ServiceLocals extends
-    HSAuthServiceLocals<HSWebConfigurationSchema> = HSWebServiceLocals<HSWebConfigurationSchema>,
-  RequestLocals extends HSWebRequestLocals = HSWebRequestLocals,
-> = HSAuthService<ServiceLocals, RequestLocals>;
+    JTMAuthServiceLocals<JTMWebConfigurationSchema> = JTMWebServiceLocals<JTMWebConfigurationSchema>,
+  RequestLocals extends JTMWebRequestLocals = JTMWebRequestLocals,
+> = JTMAuthService<ServiceLocals, RequestLocals>;
 
 /**
  * Convenience types for the basic request and response
  */
-export type HSWebServiceRequest<
+export type JTMWebServiceRequest<
   ServiceLocals extends
-    HSAuthServiceLocals<HSWebConfigurationSchema> = HSWebServiceLocals<HSWebConfigurationSchema>,
+    JTMAuthServiceLocals<JTMWebConfigurationSchema> = JTMWebServiceLocals<JTMWebConfigurationSchema>,
 > = RequestWithApp<ServiceLocals>;
 
-export type HSWebServiceResponse<
+export type JTMWebServiceResponse<
   ResBody = object,
   ServiceLocals extends
-    HSAuthServiceLocals<HSWebConfigurationSchema> = HSWebServiceLocals<HSWebConfigurationSchema>,
+    JTMAuthServiceLocals<JTMWebConfigurationSchema> = JTMWebServiceLocals<JTMWebConfigurationSchema>,
 > = Response<ResBody, ServiceLocals>;
-export type HSWebServiceRouter<
-  SLocals extends HSWebServiceLocals = HSWebServiceLocals,
-  RLocals extends HSWebRequestLocals = HSWebRequestLocals,
+export type JTMWebServiceRouter<
+  SLocals extends JTMWebServiceLocals = JTMWebServiceLocals,
+  RLocals extends JTMWebRequestLocals = JTMWebRequestLocals,
 > = ServiceRouter<SLocals, RLocals>;
 
 /**
@@ -69,10 +69,10 @@ export type HSWebServiceRouter<
  * like query strings or body or similar. Most often, you want the
  * logger.
  */
-export type HSWebRequestLike<
+export type JTMWebRequestLike<
   SLocals extends
-    HSAuthServiceLocals<HSWebConfigurationSchema> = HSWebServiceLocals<HSWebConfigurationSchema>,
-  RLocals extends HSWebRequestLocals = HSWebRequestLocals,
+    JTMAuthServiceLocals<JTMWebConfigurationSchema> = JTMWebServiceLocals<JTMWebConfigurationSchema>,
+  RLocals extends JTMWebRequestLocals = JTMWebRequestLocals,
 > = RequestLike<SLocals, RLocals>;
 
-export type HSWebServiceTypes = ServiceTypes<HSWebServiceLocals, HSWebRequestLocals>;
+export type JTMWebServiceTypes = ServiceTypes<JTMWebServiceLocals, JTMWebRequestLocals>;
