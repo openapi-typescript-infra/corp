@@ -11,11 +11,13 @@ output "gcp_project_id" {
 output "kubernetes_endpoint" {
   description = "Kubernetes cluster endpoint"
   value       = module.gke.cluster_endpoint
+  sensitive   = true
 }
 
 output "postgres_connection_info" {
   description = "Cloud SQL Postgres connection info"
   value       = module.cloud_sql.connection_info
+  sensitive   = true
 }
 
 output "secret_names" {

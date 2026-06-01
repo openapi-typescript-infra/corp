@@ -7,7 +7,8 @@ resource "google_sql_database_instance" "instances" {
   database_version = "POSTGRES_18"
 
   settings {
-    tier = each.value.tier
+    tier              = each.value.tier
+    activation_policy = var.suspended ? "NEVER" : each.value.activation_policy
 
     database_flags {
       name  = "cloudsql.iam_authentication"

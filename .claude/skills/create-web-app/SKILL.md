@@ -222,7 +222,7 @@ export * from './NextPage.ts';
 
 ### client-variables.ts
 
-Define what variables are exposed to the browser via `window.hs`:
+Define what variables are exposed to the browser via `window.jtm`:
 
 ```typescript
 import type { JTMClientSideVariables } from '@justtellme/web-service';

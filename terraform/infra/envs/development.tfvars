@@ -23,7 +23,6 @@ secrets = [
   "stytch_secret",
   "stytch_partner_secret",
   "stytch_admin_secret",
-  "cloudflare_api_token",
 ]
 
 pubsub_topics = {
@@ -32,7 +31,6 @@ pubsub_topics = {
   }
 }
 
-# Cloudflare — api_token read from Secret Manager at plan/apply time
 cloudflare_zone_id = "1ab92e0aa6efb0e7e00594eaa800530f"
 
 cloudflare_dns_records = {

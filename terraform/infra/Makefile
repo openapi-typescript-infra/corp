@@ -3,12 +3,16 @@
 ENV            ?= development
 GCP_PROJECT_ID ?= justtellme-dev
 GCP_REGION     ?= us-central1
+GCLOUD         ?= gcloud
+SUSPENDED      ?= false
 
 TF_DIR         := .
 BOOTSTRAP_DIR  := ./bootstrap
 ENVS_DIR       := ./envs
 STATE_BUCKET   := $(GCP_PROJECT_ID)-terraform-state
+BOOTSTRAP_STATE := terraform.$(GCP_PROJECT_ID).tfstate
 TFVARS         := $(ENVS_DIR)/$(ENV).tfvars
+CLOUDFLARE_API_TOKEN_SECRET ?= cloudflare_api_token
 
 # --- Validation ---
 
@@ -23,6 +27,18 @@ define check_env
 		echo "Error: $(TFVARS) not found"; \
 		exit 1; \
 	fi
+endef
+
+define terraform_with_cloudflare_token
+	cd $(TF_DIR) && \
+	if [ -z "$$TF_VAR_cloudflare_api_token" ]; then \
+		echo "Loading Cloudflare API token from Secret Manager secret $(CLOUDFLARE_API_TOKEN_SECRET) in $(GCP_PROJECT_ID)"; \
+		cloudflare_api_token="$$( $(GCLOUD) secrets versions access latest --secret="$(CLOUDFLARE_API_TOKEN_SECRET)" --project="$(GCP_PROJECT_ID)" )" || exit 1; \
+		export TF_VAR_cloudflare_api_token="$$cloudflare_api_token"; \
+	fi; \
+	terraform $(1) \
+		-var-file="$(TFVARS)" \
+		-var="suspended=$(SUSPENDED)"
 endef
 
 # --- Core targets ---
@@ -44,23 +60,19 @@ init-upgrade: ## Re-initialize and upgrade provider versions
 
 plan: ## Show execution plan for ENV
 	$(check_env)
-	cd $(TF_DIR) && terraform plan \
-		-var-file="$(TFVARS)"
+	$(call terraform_with_cloudflare_token,plan)
 
 apply: ## Apply changes for ENV (requires confirmation)
 	$(check_env)
-	cd $(TF_DIR) && terraform apply \
-		-var-file="$(TFVARS)"
+	$(call terraform_with_cloudflare_token,apply)
 
 destroy: ## Destroy all resources for ENV (requires confirmation)
 	$(check_env)
-	cd $(TF_DIR) && terraform destroy \
-		-var-file="$(TFVARS)"
+	$(call terraform_with_cloudflare_token,destroy)
 
 refresh: ## Refresh state for ENV without modifying resources
 	$(check_env)
-	cd $(TF_DIR) && terraform apply -refresh-only \
-		-var-file="$(TFVARS)"
+	$(call terraform_with_cloudflare_token,apply -refresh-only)
 
 output: ## Show outputs for ENV
 	$(check_env)
@@ -68,8 +80,7 @@ output: ## Show outputs for ENV
 
 console: ## Open Terraform console for ENV
 	$(check_env)
-	cd $(TF_DIR) && terraform console \
-		-var-file="$(TFVARS)"
+	$(call terraform_with_cloudflare_token,console)
 
 # --- Formatting & validation ---
 
@@ -89,26 +100,34 @@ lint: fmt-check validate ## Run all checks (format + validate)
 .PHONY: bootstrap-init bootstrap-plan bootstrap-apply
 
 bootstrap-init: ## Initialize the bootstrap directory (local state)
-	cd $(BOOTSTRAP_DIR) && terraform init
+	cd $(BOOTSTRAP_DIR) && terraform init \
+		-reconfigure \
+		-backend-config="path=$(BOOTSTRAP_STATE)"
 
 bootstrap-plan: ## Plan the state bucket creation
+	@$(MAKE) bootstrap-init GCP_PROJECT_ID=$(GCP_PROJECT_ID) GCP_REGION=$(GCP_REGION)
 	cd $(BOOTSTRAP_DIR) && terraform plan \
 		-var="gcp_project_id=$(GCP_PROJECT_ID)" \
 		-var="gcp_region=$(GCP_REGION)"
 
 bootstrap-apply: ## Create the GCS state bucket
+	@$(MAKE) bootstrap-init GCP_PROJECT_ID=$(GCP_PROJECT_ID) GCP_REGION=$(GCP_REGION)
 	cd $(BOOTSTRAP_DIR) && terraform apply \
 		-var="gcp_project_id=$(GCP_PROJECT_ID)" \
 		-var="gcp_region=$(GCP_REGION)"
 
 # --- Environment shortcuts ---
 
-.PHONY: dev-init dev-plan dev-apply
+.PHONY: dev-init dev-plan dev-apply dev-suspend-plan dev-suspend-apply dev-resume-plan dev-resume-apply
 .PHONY: prod-init prod-plan prod-apply
 
 dev-init:     ; @$(MAKE) init  ENV=development
 dev-plan:     ; @$(MAKE) plan  ENV=development
 dev-apply:    ; @$(MAKE) apply ENV=development
+dev-suspend-plan:  ; @$(MAKE) plan  ENV=development SUSPENDED=true
+dev-suspend-apply: ; @$(MAKE) apply ENV=development SUSPENDED=true
+dev-resume-plan:   ; @$(MAKE) plan  ENV=development SUSPENDED=false
+dev-resume-apply:  ; @$(MAKE) apply ENV=development SUSPENDED=false
 
 prod-init:    ; @$(MAKE) init  ENV=production
 prod-plan:    ; @$(MAKE) plan  ENV=production

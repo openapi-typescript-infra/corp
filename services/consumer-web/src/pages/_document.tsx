@@ -34,7 +34,7 @@ class AppDocument extends Document {
           <link rel="stylesheet" href="/theme.css" />
           <script
             dangerouslySetInnerHTML={{
-              __html: `window.hs = ${JSON.stringify(
+              __html: `window.jtm = ${JSON.stringify(
                 getClientSideVariables(includeStytchAdminToken),
               )}`,
             }}

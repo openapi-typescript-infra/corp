@@ -13,11 +13,18 @@ variable "environment" {
   type        = string
 }
 
+variable "suspended" {
+  description = "Stop Cloud SQL instances for idle environments."
+  type        = bool
+  default     = false
+}
+
 variable "postgres_instances" {
   description = "Map of Postgres instance configurations"
   type = map(object({
-    tier      = string
-    databases = list(string)
+    tier              = string
+    activation_policy = optional(string, "ALWAYS")
+    databases         = list(string)
   }))
 }
 

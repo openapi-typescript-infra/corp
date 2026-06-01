@@ -17,7 +17,7 @@ export function getEnvVar<T extends JTMClientSideVariables = JTMClientSideVariab
   const hasProcess = typeof process !== 'undefined';
 
   const value =
-    (isBrowser && (window as Window & { hs?: T })?.hs?.[varName]) ||
+    (isBrowser && (window as Window & { jtm?: T })?.jtm?.[varName]) ||
     (hasProcess && process.env?.[varName as string]) ||
     undefined;
 

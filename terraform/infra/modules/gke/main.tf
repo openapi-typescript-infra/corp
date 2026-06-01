@@ -35,7 +35,7 @@ resource "google_container_node_pool" "primary" {
   location = var.gcp_zone
   cluster  = google_container_cluster.cluster.name
 
-  node_count = var.gke_config.node_count
+  node_count = var.suspended ? 0 : var.gke_config.node_count
 
   node_config {
     machine_type = var.gke_config.machine_type

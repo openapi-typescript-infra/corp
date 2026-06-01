@@ -52,6 +52,51 @@ This avoids:
 
 ---
 
+## Bootstrap Secrets
+
+Some provider credentials must exist before Terraform can plan the full stack.
+
+For Cloudflare, create a scoped API token for the application's Cloudflare zone and store it manually in each GCP project as a Secret Manager secret named `cloudflare_api_token`.
+
+The Makefile loads this secret from the active `GCP_PROJECT_ID` before Terraform commands that need the Cloudflare provider:
+
+```sh
+make dev-plan GCP_PROJECT_ID=PROJECT_DEV_ID
+make prod-plan GCP_PROJECT_ID=PROJECT_PROD_ID
+```
+
+If `TF_VAR_cloudflare_api_token` is already set, the Makefile uses that value instead of reading Secret Manager.
+
+---
+
+## Suspend Development
+
+Development can be put into a lower-cost idle mode without destroying Terraform-managed resources.
+
+Suspended mode:
+
+- Scales the GKE development node pool to `0` nodes.
+- Sets Cloud SQL activation policy to `NEVER`, stopping database compute.
+- Keeps Terraform state, Secret Manager secrets, Artifact Registry repositories, VPC resources, Cloudflare DNS records, and other metadata resources in place.
+
+Plan and apply suspend mode:
+
+```sh
+make dev-suspend-plan GCP_PROJECT_ID=PROJECT_DEV_ID
+make dev-suspend-apply GCP_PROJECT_ID=PROJECT_DEV_ID
+```
+
+Resume development:
+
+```sh
+make dev-resume-plan GCP_PROJECT_ID=PROJECT_DEV_ID
+make dev-resume-apply GCP_PROJECT_ID=PROJECT_DEV_ID
+```
+
+This is not true zero cost: storage, retained IP/gateway resources, registry contents, backups, and other non-compute resources may still bill. Use `destroy` only when the environment can be fully recreated.
+
+---
+
 ## Application Assumptions
 
 This template assumes:

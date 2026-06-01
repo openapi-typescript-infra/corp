@@ -25,11 +25,18 @@ variable "gcp_zone" {
   default     = "us-central1-a"
 }
 
+variable "suspended" {
+  description = "Reduce idle development costs by scaling compute to zero and stopping Cloud SQL."
+  type        = bool
+  default     = false
+}
+
 variable "postgres_instances" {
   description = "Map of Postgres instance configurations"
   type = map(object({
-    tier      = optional(string, "db-f1-micro")
-    databases = list(string)
+    tier              = optional(string, "db-f1-micro")
+    activation_policy = optional(string, "ALWAYS")
+    databases         = list(string)
   }))
   default = {}
 }
@@ -71,6 +78,13 @@ variable "cloudflare_zone_id" {
   description = "Cloudflare zone ID"
   type        = string
   default     = ""
+}
+
+variable "cloudflare_api_token" {
+  description = "Cloudflare API token used by Terraform to manage DNS and WAF. Prefer TF_VAR_cloudflare_api_token or a local uncommitted tfvars file."
+  type        = string
+  default     = null
+  sensitive   = true
 }
 
 variable "cloudflare_dns_records" {

@@ -7,7 +7,7 @@ export interface JTMConfigurationSchema extends ConfigurationSchema {
     // (essentially development only)
     registryUrl?: string;
     // If true, inter-service calls will assume you are running cluster-proxy which maintains a registry
-    // of local services. If false, we go directly to <service-name>.hs.svc.cluster.local
+    // of local services. If false, we go directly to <service-name>.jtm.svc.cluster.local
     useRegistry?: boolean;
   };
 }

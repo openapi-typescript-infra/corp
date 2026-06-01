@@ -4,17 +4,8 @@ provider "google" {
   zone    = var.gcp_zone
 }
 
-# --- Cloudflare credentials from Secret Manager ---
-
-data "google_secret_manager_secret_version" "cloudflare_api_token" {
-  secret  = "cloudflare_api_token"
-  project = var.gcp_project_id
-
-  depends_on = [module.secrets]
-}
-
 provider "cloudflare" {
-  api_token = data.google_secret_manager_secret_version.cloudflare_api_token.secret_data
+  api_token = var.cloudflare_api_token
 }
 
 # --- Kubernetes and Helm providers (GKE-backed) ---
@@ -112,6 +103,7 @@ module "gke" {
   gcp_region     = var.gcp_region
   gcp_zone       = var.gcp_zone
   environment    = var.environment
+  suspended      = var.suspended
   gke_config     = var.gke_config
   network_id     = module.networking.network_id
   subnet_id      = module.networking.subnet_id
@@ -122,8 +114,8 @@ module "gke" {
 module "workload_identity" {
   source = "./modules/workload_identity"
 
-  gcp_project_id      = var.gcp_project_id
-  service_accounts    = local.service_accounts
+  gcp_project_id          = var.gcp_project_id
+  service_accounts        = local.service_accounts
   cloudsql_instance_names = module.cloud_sql.instance_names
 
   depends_on = [module.gke, module.cloud_sql]
@@ -146,6 +138,7 @@ module "cloud_sql" {
   gcp_project_id     = var.gcp_project_id
   gcp_region         = var.gcp_region
   environment        = var.environment
+  suspended          = var.suspended
   postgres_instances = var.postgres_instances
   network_id         = module.networking.network_id
 

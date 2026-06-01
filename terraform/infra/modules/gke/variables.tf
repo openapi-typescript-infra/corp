@@ -18,6 +18,12 @@ variable "environment" {
   type        = string
 }
 
+variable "suspended" {
+  description = "Scale GKE node pools to zero for idle environments."
+  type        = bool
+  default     = false
+}
+
 variable "gke_config" {
   description = "GKE cluster configuration"
   type = object({
