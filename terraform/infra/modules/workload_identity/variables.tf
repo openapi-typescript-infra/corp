@@ -12,10 +12,10 @@ variable "k8s_namespace" {
 variable "service_accounts" {
   description = "Map of service name to its configuration"
   type = map(object({
-    roles             = optional(set(string), [])
-    gsm_secrets       = optional(set(string), [])
+    roles              = optional(set(string), [])
+    gsm_secrets        = optional(set(string), [])
     cloudsql_instances = optional(set(string), [])
-    k8s_namespace     = optional(string)
+    k8s_namespace      = optional(string)
   }))
   default = {}
 }

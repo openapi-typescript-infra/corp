@@ -1,4 +1,5 @@
 import { getNodeEnv } from '@openapi-typescript-infra/service';
+import type { DocumentProps } from 'next/document.js';
 import Document, { Head, Html, Main, NextScript } from 'next/document.js';
 
 const readEnv = (name: string, fallback = ''): string => {
@@ -24,6 +25,8 @@ const getClientSideVariables = (includeStytchAdminToken: boolean) => {
 };
 
 class AppDocument extends Document {
+  declare props: Readonly<DocumentProps>;
+
   render() {
     const page = this.props.__NEXT_DATA__.page;
     const includeStytchAdminToken = page !== '/404' && page !== '/_error';

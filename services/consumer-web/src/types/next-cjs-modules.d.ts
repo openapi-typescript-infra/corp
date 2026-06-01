@@ -10,6 +10,7 @@
 
 declare module 'next/router.js' {
   export * from 'next/router';
+  export { useRouter } from 'next/router';
 }
 
 declare module 'next/head.js' {
@@ -18,13 +19,16 @@ declare module 'next/head.js' {
 
 declare module 'next/document.js' {
   export * from 'next/document';
-  export { default } from 'next/document';
+  export type { DocumentProps } from 'next/document';
+  export { default, Head, Html, Main, NextScript } from 'next/document';
 }
 
 declare module 'next/app.js' {
+  export type { AppProps } from 'next/app';
   export * from 'next/app';
 }
 
 declare module 'next/navigation.js' {
   export * from 'next/navigation';
+  export { usePathname, useRouter, useSearchParams } from 'next/navigation';
 }
