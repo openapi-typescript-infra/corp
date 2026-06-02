@@ -56,7 +56,7 @@ spec:
               value: "true"
             {{- if .Values.database.gcpId }}
             - name: DATABASE_ID
-              value: "{{ .Values.gcp.project }}:{{ default "us-central1" .Values.database.region }}:pg-{{- ternary "dev-" "" (eq .Values.gcp.env "development") -}}{{ .Values.database.gcpId }}"
+              value: "{{ .Values.gcp.project }}:{{ default "us-central1" .Values.database.region }}:{{ default (printf "%s-pg-%s" .Values.gcp.env .Values.database.gcpId) .Values.database.instance }}"
             {{- end }}
             {{- include "base-service.env" . | trimSuffix "\n" | indent 12 }}
             {{- include "base-service.worker-env" . | trimSuffix "\n" | indent 12 }}

@@ -44,7 +44,8 @@ The manifests are applied by running `helm template` and applied to GKE. You can
 | gcp.region | us-central1 | deployment | The region in which the service is running. Managed by github actions |
 | database | none | deployment | Details about the database being used, if any (this is a map). |
 | database.region | us-central1 | deployment | The region in which the database is running |
-| database.gcpId | **required** | deployment | The GCP id of the database such as identity (which becomes pg-dev-identity in dev and pg-identity in prod). Only required if you have a database |
+| database.gcpId | **required** | deployment | The Cloud SQL instance suffix such as main (which becomes development-pg-main in development and production-pg-main in production). Only required if you have a database |
+| database.instance | derived from database.gcpId | deployment, db-migration | Optional Cloud SQL instance name override when the Terraform resource name does not follow the standard environment-pg-id convention |
 | database.username | svc@env.iam | deployment | Usually don't need to override |
 | database.migrate | true | db-migration | Whether to automatically run database migration on deploys |
 | resources | [variables](base-service/values.yaml) | deployment | cpu and memory requests and limits |

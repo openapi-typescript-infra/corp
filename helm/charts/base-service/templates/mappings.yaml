@@ -20,7 +20,7 @@ spec:
   {{- if $value.hostnames }}
   hostnames:
     {{- range $value.hostnames }}
-    - {{ . | quote }}
+    - {{ tpl . $root | quote }}
     {{- end }}
   {{- end }}
   rules:

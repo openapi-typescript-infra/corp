@@ -65,12 +65,14 @@ The token must be scoped to the application's zone and needs these zone permissi
 - `Zone Settings:Edit`
 - `Rulesets:Edit`
 
-The Makefile loads this secret from the active `GCP_PROJECT_ID` before Terraform commands that need the Cloudflare provider:
+The Makefile loads this secret from the project implied by the environment shortcut before Terraform commands that need the Cloudflare provider:
 
 ```sh
-make dev-plan GCP_PROJECT_ID=PROJECT_DEV_ID
-make prod-plan GCP_PROJECT_ID=PROJECT_PROD_ID
+make dev-plan
+make prod-plan
 ```
+
+By default the project IDs are derived as `$(GCP_PROJECT_PREFIX)-dev` and `$(GCP_PROJECT_PREFIX)-prod`. Override `GCP_PROJECT_PREFIX` in the Makefile for a new repo.
 
 If `TF_VAR_cloudflare_api_token` is already set, the Makefile uses that value instead of reading Secret Manager.
 
@@ -89,15 +91,15 @@ Suspended mode:
 Plan and apply suspend mode:
 
 ```sh
-make dev-suspend-plan GCP_PROJECT_ID=PROJECT_DEV_ID
-make dev-suspend-apply GCP_PROJECT_ID=PROJECT_DEV_ID
+make dev-suspend-plan
+make dev-suspend-apply
 ```
 
 Resume development:
 
 ```sh
-make dev-resume-plan GCP_PROJECT_ID=PROJECT_DEV_ID
-make dev-resume-apply GCP_PROJECT_ID=PROJECT_DEV_ID
+make dev-resume-plan
+make dev-resume-apply
 ```
 
 Resume targets first wake any Cloud SQL instances whose names begin with the environment prefix, then run Terraform. This avoids Terraform failing while refreshing database users on a stopped instance.

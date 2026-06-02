@@ -3,4 +3,16 @@ base-service:
   team: platform
 
   serviceAccount:
-    create: true
+    create: false
+
+  env:
+    REDIS_HOST: redis
+    REDIS_PORT: "6379"
+
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 2
+    failureThreshold: 30
+    successThreshold: 1
+    timeoutSeconds: 3

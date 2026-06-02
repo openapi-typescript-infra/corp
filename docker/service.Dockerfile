@@ -117,6 +117,14 @@ COPY --chown=nonroot:nonroot migrations/ /nodejs/app/migrations/
 COPY --chown=nonroot:nonroot api/ /nodejs/app/api/
 COPY --chown=nonroot:nonroot public/ /nodejs/app/public/
 COPY --chown=nonroot:nonroot private/ /nodejs/app/private/
+# Turbopack's pages-router production build writes hashed external-package
+# symlinks into private/node_modules, e.g.
+#   private/node_modules/next-<hash> -> ../../../../../node_modules/next
+# Runtime code requires those hashed package names from the normal module
+# lookup path. Recreate each generated link as a real package directory under
+# app-level node_modules, using the already-flattened production node_modules
+# as the source. See https://github.com/vercel/next.js/issues/87737.
+RUN ["/bin/busybox", "sh", "-c", "if [ -d /nodejs/app/private/node_modules ]; then cd /nodejs/app/private/node_modules && /bin/busybox find . -type l | while read link; do target=$(/bin/busybox readlink \"$link\"); package_path=${target#*node_modules/}; if [ \"$package_path\" = \"$target\" ] || [ ! -e \"/nodejs/app/node_modules/$package_path\" ]; then continue; fi; dest=\"/nodejs/app/node_modules/${link#./}\"; /bin/busybox mkdir -p \"$(/bin/busybox dirname \"$dest\")\"; /bin/busybox cp -rL \"/nodejs/app/node_modules/$package_path\" \"$dest\"; done; fi"]
 
 ## --------------> Flatten where possible
 FROM base

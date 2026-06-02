@@ -1,4 +1,9 @@
 {{- if and .Values.database.gcpId (ne .Values.database.migrate false) }}
+{{- $databaseInstance := default (printf "%s-pg-%s" .Values.gcp.env .Values.database.gcpId) .Values.database.instance -}}
+{{- $passwordSecret := default dict .Values.database.passwordSecret -}}
+{{- $secretName := default (printf "%s-db-credentials" .Values.database.gcpId) $passwordSecret.name -}}
+{{- $secretKey := default "password" $passwordSecret.key -}}
+{{- $user := default (printf "%s_pg-%s" .Values.gcp.env .Values.database.gcpId) .Values.database.user -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -10,39 +15,55 @@ spec:
   template:
     spec:
       serviceAccountName: {{ include "base-service.serviceAccountName" . }}
+      initContainers:
+        - name: cloudsql-proxy
+          restartPolicy: Always
+          args:
+            - '--structured-logs'
+            - '--private-ip'
+            - '--address=0.0.0.0'
+            - '{{ .Values.gcp.project }}:{{ default "us-central1" .Values.database.region }}:{{ $databaseInstance }}?port=5432'
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.14.2
+          securityContext:
+            runAsUser: 2 # non-root user
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+          startupProbe:
+            tcpSocket:
+              port: 5432
+            periodSeconds: 2
+            failureThreshold: 30
       containers:
         - name: {{ .Values.name }}
           imagePullPolicy: IfNotPresent
           image: "{{ .Values.image.registry }}/{{ .Values.gcp.project }}/{{ .Values.image.repository }}/{{ .Values.name }}:{{ .Values.tag }}"
           env:
+            - name: GOOGLE_CLOUD_PROJECT
+              value: {{ .Values.gcp.project | quote }}
             - name: NODE_ENV
               value: production
             - name: APP_ENV
               value: {{ ternary "staging" "production" (eq .Values.gcp.env "development") }}
+            - name: PGHOST
+              value: "127.0.0.1"
+            - name: PGPORT
+              value: "5432"
+            - name: PGDATABASE
+              value: {{ default .Values.name .Values.database.name | quote }}
+            - name: PGUSER
+              value: {{ $user | quote }}
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.database.gcpId }}-db-credentials
-                  key: password
+                  name: {{ $secretName | quote }}
+                  key: {{ $secretKey | quote }}
           command:
             - /nodejs/bin/node
-            - /nodejs/app/node_modules/.bin/wait-for-cloudsql
             - /nodejs/app/node_modules/.bin/db-migrate
             - -e
             - {{ default "production" .Values.database.migrationEnvironment }}
             - --config
             - /nodejs/app/migrations/db-migrate.json
             - up
-        - name: cloudsql-proxy
-          args:
-            - '--structured-logs'
-            - '--quitquitquit'
-            - '--private-ip'
-            - '{{ .Values.gcp.project }}:{{ default "us-central1" .Values.database.region }}:pg-{{- if eq .Values.gcp.env "development" -}}dev-{{- end -}}{{ .Values.database.gcpId }}?port=5432'
-          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.2.0
-          securityContext:
-            runAsUser: 2 # non-root user
-            runAsNonRoot: true
-            allowPrivilegeEscalation: false
       restartPolicy: Never
 {{- end -}}

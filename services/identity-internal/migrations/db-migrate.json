@@ -10,10 +10,11 @@
   },
   "production": {
     "driver": "pg",
-    "user": "identity-owner",
+    "user": { "ENV": "PGUSER" },
     "password": { "ENV": "PGPASSWORD" },
-    "host": "localhost",
-    "database": "identity"
+    "host": { "ENV": "PGHOST" },
+    "database": { "ENV": "PGDATABASE" },
+    "port": { "ENV": "PGPORT" }
   },
   "sql-file": true
 }

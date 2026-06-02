@@ -4,3 +4,4 @@ base-service:
 
   database:
     gcpId: main
+    name: identity

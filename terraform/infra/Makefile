@@ -1,7 +1,8 @@
 # --- Configuration ---
 
 ENV            ?= development
-GCP_PROJECT_ID ?= justtellme-dev
+GCP_PROJECT_PREFIX ?= justtellme
+GCP_PROJECT_ID ?= $(GCP_PROJECT_PREFIX)-$(if $(filter production,$(ENV)),prod,dev)
 GCP_REGION     ?= us-central1
 GCLOUD         ?= gcloud
 SUSPENDED      ?= false
@@ -154,11 +155,14 @@ bootstrap-apply: ## Create the GCS state bucket
 # --- Environment shortcuts ---
 
 .PHONY: dev-init dev-plan dev-apply dev-suspend-plan dev-suspend-apply dev-resume-plan dev-resume-apply
-.PHONY: prod-init prod-plan prod-apply
+.PHONY: dev-bootstrap-plan dev-bootstrap-apply
+.PHONY: prod-init prod-plan prod-apply prod-bootstrap-plan prod-bootstrap-apply
 
 dev-init:     ; @$(MAKE) init  ENV=development
 dev-plan:     ; @$(MAKE) plan  ENV=development
 dev-apply:    ; @$(MAKE) apply ENV=development
+dev-bootstrap-plan:  ; @$(MAKE) bootstrap-plan  ENV=development
+dev-bootstrap-apply: ; @$(MAKE) bootstrap-apply ENV=development
 dev-suspend-plan:  ; @$(MAKE) plan  ENV=development SUSPENDED=true
 dev-suspend-apply: ; @$(MAKE) apply ENV=development SUSPENDED=true
 dev-resume-plan:
@@ -171,6 +175,8 @@ dev-resume-apply:
 prod-init:    ; @$(MAKE) init  ENV=production
 prod-plan:    ; @$(MAKE) plan  ENV=production
 prod-apply:   ; @$(MAKE) apply ENV=production
+prod-bootstrap-plan:  ; @$(MAKE) bootstrap-plan  ENV=production
+prod-bootstrap-apply: ; @$(MAKE) bootstrap-apply ENV=production
 
 # --- Utility ---
 
