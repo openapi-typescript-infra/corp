@@ -4,18 +4,6 @@ locals {
   name_prefix     = var.environment
   k8s_name_prefix = var.environment
 
-  # Service accounts that need GCP IAM identities via Workload Identity.
-  # These are environment-independent — every environment gets the same set.
-  service_accounts = {
-    identity-internal = {
-      roles = [
-        "roles/cloudsql.client",
-        "roles/cloudsql.instanceUser",
-      ]
-      cloudsql_instances = ["pg-main"]
-    }
-  }
-
   gcp_apis = [
     "secretmanager.googleapis.com",
     "pubsub.googleapis.com",

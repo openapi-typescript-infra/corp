@@ -1,12 +1,11 @@
 # Use node to resolve the service makefile to accommodate pnpm and other linkers
 SERVICE_MAKEFILE := $(shell node --experimental-import-meta-resolve -e "console.log(new URL(import.meta.resolve('@openapi-typescript-infra/service/Makefile'), import.meta.url).pathname)")
-API_PKG := $(shell node --experimental-import-meta-resolve -e "import fs from 'fs'; import path from 'path'; const p = new URL(import.meta.resolve('@justtellme/${SERVICE_NAME}-client/spec'), import.meta.url).pathname; console.log(fs.realpathSync(path.resolve(p, '../..')))")
-API_SPEC := $(API_PKG)/dist/spec.json
+API_PKG := $(shell node --experimental-import-meta-resolve -e "import fs from 'fs'; import path from 'path'; try { const p = new URL(import.meta.resolve('@justtellme/${SERVICE_NAME}-client/spec'), import.meta.url).pathname; console.log(fs.realpathSync(path.resolve(p, '../..'))); } catch {}")
+API_SPEC := $(if $(API_PKG),$(API_PKG)/dist/spec.json,)
 TSC = tsgo
 
-# Capture this Makefile's directory BEFORE including (which changes MAKEFILE_LIST)
-_SERVICE_ROOT_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 _TSC_ALIAS := $(shell node --experimental-import-meta-resolve -e "import {createRequire} from 'module'; const r = createRequire(import.meta.url); console.log(r.resolve('tsc-alias/dist/bin/index.js'))")
+_TS_EXT_REPLACER := $(shell node --experimental-import-meta-resolve -e "import {createRequire} from 'module'; const r = createRequire(import.meta.url); console.log(r.resolve('@justtellme/cpconfig/ts-extension-replacer.cjs'))")
 
 # Filter out rules we redefine below: service generation and ts build
 include $(shell _tmp=$$(mktemp) && sed -e '/^src\/generated\/service\/index\.ts:/,/^$$/{d;}' -e '/^\$$(ts_build_stamp):/,/^$$/{d;}' -e '/^src\/generated\/database\.ts:/,/^$$/{d;}' $(SERVICE_MAKEFILE) > $$_tmp && echo $$_tmp)
@@ -18,7 +17,7 @@ include $(shell _tmp=$$(mktemp) && sed -e '/^src\/generated\/service\/index\.ts:
 $(ts_build_stamp): $(src_files) tsconfig.build.json tsconfig.json $(if $(missing_ts_outputs),FORCE,)
 	yarn $(TSC) -p tsconfig.json
 	@yarn $(TSC) -p tsconfig.build.json > /dev/null 2>&1 || true
-	node $(_TSC_ALIAS) --project tsconfig.build.json -r $(__SERVICE_ROOT_DIR)ts-extension-replacer.cjs
+	node $(_TSC_ALIAS) --project tsconfig.build.json -r $(_TS_EXT_REPLACER)
 	@mkdir -p $(build_dir)
 	@touch $@
 
@@ -30,7 +29,7 @@ else
 endif
 
 helm-template:
-	@echo "hs-base-service:" > ops/$(SERVICE_NAME)/values.local.yaml
+	@echo "$(HELM_VALUES_ROOT):" > ops/$(SERVICE_NAME)/values.local.yaml
 	@echo "  gcp:" >> ops/$(SERVICE_NAME)/values.local.yaml
 	@echo "    env: $(K8S_ENV)" >> ops/$(SERVICE_NAME)/values.local.yaml
 	@echo "    project: $(GCP_PROJECT)" >> ops/$(SERVICE_NAME)/values.local.yaml
@@ -57,29 +56,68 @@ init:
 	fi
 
 ACTIONS_DIRECTORY ?= ../github-actions
-DOCKER_REGISTRY ?= us-docker.pkg.dev/justtellme-dev/docker-images
+GCP_REGION ?= us-central1
+GKE_CLUSTER ?= $(K8S_ENV)-cluster
+GKE_LOCATION ?= $(GCP_REGION)-a
+K8S_NAMESPACE ?= app
+DOCKER_REGISTRY ?= $(GCP_REGION)-docker.pkg.dev/$(GCP_PROJECT)/docker-images
 GITHUB_SHA ?= $(shell git rev-parse HEAD)
 RUN_NUMBER ?= 0
+IMAGE_TAG ?= $(GITHUB_SHA)
+DEPLOY_TAG_PREFIX ?= $(if $(filter production,$(K8S_ENV)),prod,dev)
+DEPLOY_TAG ?= $(DEPLOY_TAG_PREFIX)-$(shell date -u +%Y%m%d-%H%M%S)
+SERVICE_PACKAGE ?= $(shell node -p "require('./package.json').name")
+HELM_VALUES_ROOT ?= $(shell awk '/^[[:space:]]*- name:/ { print $$3; exit }' ops/$(SERVICE_NAME)/Chart.yaml 2>/dev/null || echo base-service)
+HELM_VALUES_ROOT := $(or $(HELM_VALUES_ROOT),base-service)
+export GOOGLE_PACKAGES_TOKEN ?= $(shell if [ -f ./.npmrc ]; then sed -n 's/.*_authToken=\(.*\)/\1/gp' ./.npmrc; else sed -n 's/.*_authToken=\(.*\)/\1/gp' ~/.npmrc; fi | tail -n 1)
 
 # Build a docker image suitable for deployment
 # Requires GITHUB_SHA and RUN_NUMBER
 container:
 #	Ensure expected directories exist
-	touch api
-	touch private
-	touch public
-	touch migrations
 	touch README.md
-	touch src/config
-	$(eval USE_CACHE=$(shell if docker pull $(DOCKER_REGISTRY)/$(SERVICE_NAME):latest; then echo "--cache-from $(DOCKER_REGISTRY)/$(SERVICE_NAME):latest"; else echo ""; fi))
-	docker build \
-	  --build-arg GOOGLE_PACKAGES_TOKEN=$(shell if [ -f ./.npmrc ]; then sed -n 's/.*_authToken=\(.*\)/\1/gp' ./.npmrc; else sed -n 's/.*_authToken=\(.*\)/\1/gp' ~/.npmrc; fi) \
+	mkdir -p api private public migrations src/config
+	docker buildx build --load \
+	  --secret id=google_packages_token,env=GOOGLE_PACKAGES_TOKEN \
 	  --build-arg BUILD_VERSION=$(shell node -p "const fs=require('fs'); let pkg=JSON.parse(fs.readFileSync('./package.json')); const parts=pkg.version.split('.'); parts[2]='$(RUN_NUMBER)'; parts.join('.')") \
 		--build-context monorepo=../.. \
-	  --network=host $(USE_CACHE) \
-	  --tag $(DOCKER_REGISTRY)/$(SERVICE_NAME):$(GITHUB_SHA) \
-	  --tag $(DOCKER_REGISTRY)/$(SERVICE_NAME):latest . \
+	  --network=host \
+	  --platform linux/amd64 \
+	  --tag $(DOCKER_REGISTRY)/$(SERVICE_NAME):$(IMAGE_TAG) . \
 	  -f ../../docker/service.Dockerfile
+
+docker-auth:
+	gcloud auth configure-docker $(GCP_REGION)-docker.pkg.dev --quiet
+
+push-container: docker-auth
+	docker push $(DOCKER_REGISTRY)/$(SERVICE_NAME):$(IMAGE_TAG)
+
+deploy-build:
+	cd $$(git rev-parse --show-toplevel) && yarn turbo run build --filter="$(SERVICE_PACKAGE)..."
+	cd $$(git rev-parse --show-toplevel) && yarn turbo run build:next --filter="$(SERVICE_PACKAGE)..."
+
+deploy:
+	$(MAKE) deploy-build
+	$(MAKE) container IMAGE_TAG=$(DEPLOY_TAG)
+	$(MAKE) push-container IMAGE_TAG=$(DEPLOY_TAG)
+	gcloud container clusters get-credentials "$(GKE_CLUSTER)" \
+		--location="$(GKE_LOCATION)" --project="$(GCP_PROJECT)"
+	helm dependency update ops/$(SERVICE_NAME)
+	helm upgrade --install "$(SERVICE_NAME)" ops/$(SERVICE_NAME) \
+		--namespace "$(K8S_NAMESPACE)" \
+		--set "$(HELM_VALUES_ROOT).gcp.project=$(GCP_PROJECT)" \
+		--set "$(HELM_VALUES_ROOT).gcp.env=$(K8S_ENV)" \
+		--set "$(HELM_VALUES_ROOT).gcp.region=$(GCP_REGION)" \
+		--set "$(HELM_VALUES_ROOT).tag=$(DEPLOY_TAG)" \
+		--set-string "$(HELM_VALUES_ROOT).changeCause=local deploy $(SERVICE_NAME):$(DEPLOY_TAG)" \
+		--wait --timeout=5m
+	kubectl -n "$(K8S_NAMESPACE)" rollout status deployment/"$(SERVICE_NAME)" --timeout=5m
+
+deploy-dev:
+	$(MAKE) deploy K8S_ENV=development
+
+deploy-prod:
+	$(MAKE) deploy K8S_ENV=production
 
 check:
 	yarn biome check --write src

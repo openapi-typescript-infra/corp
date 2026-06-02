@@ -31,6 +31,23 @@ variable "suspended" {
   default     = false
 }
 
+variable "k8s_namespace" {
+  description = "Kubernetes namespace for application workloads."
+  type        = string
+  default     = "app"
+}
+
+variable "artifact_registry_docker_cleanup" {
+  description = "Cleanup policy for Docker images in Artifact Registry."
+  type = object({
+    dry_run                    = optional(bool, false)
+    keep_count                 = optional(number, 3)
+    delete_tagged_older_than   = optional(string, "604800s")
+    delete_untagged_older_than = optional(string, "86400s")
+  })
+  default = {}
+}
+
 variable "postgres_instances" {
   description = "Map of Postgres instance configurations"
   type = map(object({
@@ -68,8 +85,9 @@ variable "gke_config" {
 variable "envoy_gateway_config" {
   description = "Envoy Gateway configuration"
   type = object({
-    chart_version          = optional(string, "v1.3.0")
-    control_plane_replicas = optional(number, 2)
+    chart_version             = optional(string, "v1.7.2")
+    control_plane_replicas    = optional(number, 1)
+    control_plane_cpu_request = optional(string, "50m")
   })
   default = null
 }
@@ -85,6 +103,12 @@ variable "cloudflare_api_token" {
   type        = string
   default     = null
   sensitive   = true
+}
+
+variable "dev_secret_accessor_member" {
+  description = "Optional IAM member granted Secret Manager access in development, for example group:developers@example.com."
+  type        = string
+  default     = null
 }
 
 variable "cloudflare_dns_records" {

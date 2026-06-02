@@ -1,18 +1,8 @@
-"""
-An authenticated session is on behalf of an individual and
-contains a token that can be used to perform authenticated
-requests to this (and other) APIs
-"""
+"An authenticated session with a token for API requests."
 type AuthenticatedSession {
-  """
-  The session id, IF the session was established by graphql-api (e.g. you sent a password) and not
-  provided by the client (e.g. you sent a token)
-  """
+  "The session id when the session was established by graphql-api."
   id: ID
-  """
-  The UTC date and time when the token will expire (it can be renewed before that),
-  or null if the expiration is unknown or unrelated to time.
-  """
+  "The UTC date and time when the token will expire."
   expiration: DateTime
   "The individual on whose behalf the session is authenticated"
   individual: AuthenticatableIndividual
@@ -20,10 +10,7 @@ type AuthenticatedSession {
   token: String!
 }
 
-"""
-The various ways in which someone can prove their identity
-to us for access to the service
-"""
+"The ways someone can prove their identity to access the service."
 enum CredentialType {
   "Apple can be used to login"
   APPLE
@@ -43,11 +30,7 @@ enum CredentialType {
   TOTP
 }
 
-"""
-Information about the options available for creating an authenticated session
-on behalf of an individual. Note that this does not allow you determine if
-someone has an account. You will get values back for any identifier.
-"""
+"Options available for creating an authenticated session."
 type AuthenticatedSessionParameters {
   "The type of credentials that can be used to authenticate"
   credentialTypes: [CredentialType!]!

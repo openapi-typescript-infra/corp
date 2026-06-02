@@ -19,8 +19,7 @@ const getClientSideVariables = (includeStytchAdminToken: boolean) => {
         : 'https://api.dev.justtellme.com/graphql'),
     WHOAMI: readEnv('WHOAMI', '/'),
     COOKIE_DOMAIN: readEnv('COOKIE_DOMAIN'),
-    STYTCH_CONSUMER: readEnv('STYTCH_CONSUMER'),
-    STYTCH_ADMIN: includeStytchAdminToken ? readEnv('STYTCH_ADMIN') : '',
+    STYTCH_TOKEN: readEnv('STYTCH_TOKEN'),
   };
 };
 

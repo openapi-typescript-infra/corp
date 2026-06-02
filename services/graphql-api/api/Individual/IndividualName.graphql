@@ -1,13 +1,6 @@
-"""
-A structured representation of the elements of an
-individual's name.
-"""
+"A structured representation of the elements of an individual's name."
 type IndividualName {
-  """
-  The individual's full name, which is an automatically
-  stitched together from other component parts, and can be
-  more efficient for front end display
-  """
+  "The individual's full name stitched together from component parts."
   fullName: String!
   "Any professional credentials or certifications"
   credentials: [String!]

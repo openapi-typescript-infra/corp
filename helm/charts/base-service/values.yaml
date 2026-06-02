@@ -50,6 +50,10 @@ mappings: {}
 
 gcp: {}
 
+image:
+  registry: us-central1-docker.pkg.dev
+  repository: docker-images
+
 api:
   advertise: true
 

@@ -21,8 +21,6 @@ secrets = [
   "session_secret",
   "stytch_project_id",
   "stytch_secret",
-  "stytch_partner_secret",
-  "stytch_admin_secret",
 ]
 
 pubsub_topics = {

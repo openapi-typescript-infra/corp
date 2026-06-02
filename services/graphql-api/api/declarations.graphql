@@ -1,10 +1,4 @@
-"""
-The complexity directive indicates the cost of fetching
-a particular field. The value is a positive integer,
-where higher values indicate higher cost.
-"""
+"Indicates the cost of fetching a particular field."
 directive @complexity("The cost value for this field" value: Int) on FIELD_DEFINITION
-"""
-asinput makes it easier to define input types from regular types.
-"""
+"Makes it easier to define input types from regular types."
 directive @asinput("Fields to omit from the generated input type" omit: [String]) on OBJECT

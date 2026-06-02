@@ -2,9 +2,17 @@ import graphqlPlugin from '@graphql-eslint/eslint-plugin';
 
 export default [
   {
+    ignores: ['src/generated/**'],
+  },
+  {
     files: ['**/*.graphql'],
     languageOptions: {
       parser: graphqlPlugin.parser,
+      parserOptions: {
+        graphQLConfig: {
+          schema: './src/generated/schema.graphql',
+        },
+      },
     },
     plugins: {
       '@graphql-eslint': graphqlPlugin,

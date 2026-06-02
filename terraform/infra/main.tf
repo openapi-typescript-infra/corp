@@ -12,6 +12,10 @@ provider "cloudflare" {
 
 data "google_client_config" "default" {}
 
+data "google_project" "current" {
+  project_id = var.gcp_project_id
+}
+
 provider "kubernetes" {
   host                   = "https://${module.gke.cluster_endpoint}"
   token                  = data.google_client_config.default.access_token
@@ -24,6 +28,13 @@ provider "helm" {
     token                  = data.google_client_config.default.access_token
     cluster_ca_certificate = base64decode(module.gke.cluster_ca_certificate)
   }
+}
+
+provider "kubectl" {
+  host                   = "https://${module.gke.cluster_endpoint}"
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(module.gke.cluster_ca_certificate)
+  load_config_file       = false
 }
 
 # --- Always-on modules (all environments) ---
@@ -67,10 +78,48 @@ resource "google_artifact_registry_repository" "npm_packages" {
 }
 
 resource "google_artifact_registry_repository" "docker_images" {
-  repository_id = "docker-images"
-  location      = var.gcp_region
-  format        = "DOCKER"
-  description   = "Docker image registry for ${var.environment}"
+  repository_id          = "docker-images"
+  location               = var.gcp_region
+  format                 = "DOCKER"
+  description            = "Docker image registry for ${var.environment}"
+  cleanup_policy_dry_run = var.artifact_registry_docker_cleanup.dry_run
+
+  cleanup_policies {
+    id     = "keep-recent-versions"
+    action = "KEEP"
+
+    most_recent_versions {
+      keep_count = var.artifact_registry_docker_cleanup.keep_count
+    }
+  }
+
+  cleanup_policies {
+    id     = "delete-old-tagged"
+    action = "DELETE"
+
+    condition {
+      tag_state  = "TAGGED"
+      older_than = var.artifact_registry_docker_cleanup.delete_tagged_older_than
+    }
+  }
+
+  cleanup_policies {
+    id     = "delete-old-untagged"
+    action = "DELETE"
+
+    condition {
+      tag_state  = "UNTAGGED"
+      older_than = var.artifact_registry_docker_cleanup.delete_untagged_older_than
+    }
+  }
+
+  depends_on = [module.gcp_project]
+}
+
+resource "google_project_iam_member" "gke_nodes_artifact_registry_reader" {
+  project = var.gcp_project_id
+  role    = "roles/artifactregistry.reader"
+  member  = "serviceAccount:${data.google_project.current.number}-compute@developer.gserviceaccount.com"
 
   depends_on = [module.gcp_project]
 }
@@ -111,14 +160,26 @@ module "gke" {
   depends_on = [module.networking]
 }
 
-module "workload_identity" {
-  source = "./modules/workload_identity"
+resource "kubernetes_namespace" "app" {
+  metadata {
+    name = var.k8s_namespace
+  }
+
+  depends_on = [module.gke]
+}
+
+module "identity_internal" {
+  source = "./modules/app-services"
 
   gcp_project_id          = var.gcp_project_id
-  service_accounts        = local.service_accounts
+  service                 = "identity-internal"
+  k8s_namespace           = kubernetes_namespace.app.metadata[0].name
   cloudsql_instance_names = module.cloud_sql.instance_names
+  cloudsql_instances = [
+    "pg-main",
+  ]
 
-  depends_on = [module.gke, module.cloud_sql]
+  depends_on = [module.gke, module.cloud_sql, kubernetes_namespace.app]
 }
 
 module "envoy_gateway" {
@@ -161,8 +222,8 @@ module "cloudflare" {
 # --- Developer access (development only) ---
 
 resource "google_project_iam_member" "dev_secret_accessor" {
-  count   = local.is_development ? 1 : 0
+  count   = local.is_development && var.dev_secret_accessor_member != null ? 1 : 0
   project = var.gcp_project_id
   role    = "roles/secretmanager.secretAccessor"
-  member  = "group:developers@justtellme.live"
+  member  = var.dev_secret_accessor_member
 }

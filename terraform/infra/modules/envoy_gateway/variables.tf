@@ -16,7 +16,8 @@ variable "environment" {
 variable "envoy_gateway_config" {
   description = "Envoy Gateway configuration"
   type = object({
-    chart_version          = optional(string, "v1.3.0")
-    control_plane_replicas = optional(number, 2)
+    chart_version             = optional(string, "v1.7.2")
+    control_plane_replicas    = optional(number, 1)
+    control_plane_cpu_request = optional(string, "50m")
   })
 }

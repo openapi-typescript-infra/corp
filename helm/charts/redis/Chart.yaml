@@ -1,0 +1,6 @@
+apiVersion: v2
+name: redis
+description: In-cluster Redis for dev/staging session storage. Prod should use Memorystore.
+type: application
+version: 0.1.0
+appVersion: "7.4"

@@ -9,10 +9,10 @@ all: $(DIST_DIR)/spec.json $(DIST_DIR)/client.ts
 
 $(DIST_DIR)/spec.json: $(SPEC_YAML_FILES) $(COMMON_YAML_FILES)
 	@mkdir -p $(DIST_DIR)
-	npx --yes @redocly/cli@latest bundle $(SPEC_NAME).yaml -o $@
+	yarn dlx @redocly/cli@latest bundle $(SPEC_NAME).yaml -o $@
 
 $(DIST_DIR)/client.ts: $(DIST_DIR)/spec.json
-	npx --yes openapi-typescript $< --enum-values -o $@
+	yarn openapi-typescript $< --enum-values -o $@
 
 clean:
 	rm -rf $(DIST_DIR)

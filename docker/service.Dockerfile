@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 # This is a multistage build that results in a distroless container that runs the application
 # and has busybox on it for some runtime pleasantries (I know this is a bit against distroless)
 #
@@ -9,7 +10,6 @@ FROM busybox:1.37.0-uclibc AS busybox
 
 # --------------> The build image
 FROM node:24-bookworm AS build
-ARG GOOGLE_PACKAGES_TOKEN
 ARG BUILD_NODE_ENV=production
 ARG BUILD_VERSION=0.0.0
 WORKDIR /nodejs/monorepo
@@ -19,6 +19,7 @@ COPY --from=monorepo package.json yarn.lock .yarnrc.yml /nodejs/monorepo/
 COPY --from=monorepo .yarn /nodejs/monorepo/.yarn
 # Workspace packages must already be built (e.g. via turbo build) before docker build
 COPY --from=monorepo packages/ /nodejs/monorepo/packages/
+COPY --from=monorepo api/ /nodejs/monorepo/api/
 
 # Service files are nested under the monorepo so yarn can discover the root config
 COPY package.json cpconfig.* /nodejs/monorepo/services/current/
@@ -48,7 +49,9 @@ RUN ln -sr /staging/busybox /staging/sh && \
 # Run our custom yarn setup from the service workspace
 WORKDIR /nodejs/monorepo/services/current
 ENV NODE_ENV=$BUILD_NODE_ENV
-RUN npm run prepack --if-present \
+RUN --mount=type=secret,id=google_packages_token \
+    GOOGLE_PACKAGES_TOKEN="$(cat /run/secrets/google_packages_token)" \
+    && npm run prepack --if-present \
     && (yarn plugin remove @yarnpkg/plugin-gcp-auth || true) \
     && yarn config set npmScopes.justtellme.npmRegistryServer "https://us-central1-npm.pkg.dev/justtellme-dev/npm-packages/" \
     && yarn config set npmScopes.justtellme.npmAlwaysAuth true \

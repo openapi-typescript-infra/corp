@@ -13,7 +13,7 @@ spec:
       containers:
         - name: {{ .Values.name }}
           imagePullPolicy: IfNotPresent
-          image: "us-docker.pkg.dev/justtellme-dev/app-images/{{ .Values.name }}:{{ .Values.tag }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.gcp.project }}/{{ .Values.image.repository }}/{{ .Values.name }}:{{ .Values.tag }}"
           env:
             - name: NODE_ENV
               value: production

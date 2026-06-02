@@ -52,7 +52,9 @@ output "github_wif_service_account" {
 
 output "service_account_emails" {
   description = "Map of service name to GCP service account email (Workload Identity)"
-  value       = module.workload_identity.service_account_emails
+  value = {
+    identity-internal = module.identity_internal.gcp_service_account_email
+  }
 }
 
 output "gateway_ip" {

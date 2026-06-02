@@ -58,6 +58,13 @@ Some provider credentials must exist before Terraform can plan the full stack.
 
 For Cloudflare, create a scoped API token for the application's Cloudflare zone and store it manually in each GCP project as a Secret Manager secret named `cloudflare_api_token`.
 
+The token must be scoped to the application's zone and needs these zone permissions:
+
+- `Zone:Read`
+- `DNS:Edit`
+- `Zone Settings:Edit`
+- `Rulesets:Edit`
+
 The Makefile loads this secret from the active `GCP_PROJECT_ID` before Terraform commands that need the Cloudflare provider:
 
 ```sh
@@ -92,6 +99,8 @@ Resume development:
 make dev-resume-plan GCP_PROJECT_ID=PROJECT_DEV_ID
 make dev-resume-apply GCP_PROJECT_ID=PROJECT_DEV_ID
 ```
+
+Resume targets first wake any Cloud SQL instances whose names begin with the environment prefix, then run Terraform. This avoids Terraform failing while refreshing database users on a stopped instance.
 
 This is not true zero cost: storage, retained IP/gateway resources, registry contents, backups, and other non-compute resources may still bill. Use `destroy` only when the environment can be fully recreated.
 

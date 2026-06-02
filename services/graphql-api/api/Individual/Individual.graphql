@@ -1,9 +1,4 @@
-"""
-An individual may be both, but in a particular instantiation
-in the schema, they are considered one or the other. This enum
-allows us to be smarter in the resolvers without always having to
-"look up" the parent tree to figure it out.
-"""
+"The role an individual has in a particular schema instantiation."
 enum IndividualRole {
   "An external participant in the platform"
   CONSUMER

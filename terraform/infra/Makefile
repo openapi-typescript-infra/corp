@@ -13,6 +13,7 @@ STATE_BUCKET   := $(GCP_PROJECT_ID)-terraform-state
 BOOTSTRAP_STATE := terraform.$(GCP_PROJECT_ID).tfstate
 TFVARS         := $(ENVS_DIR)/$(ENV).tfvars
 CLOUDFLARE_API_TOKEN_SECRET ?= cloudflare_api_token
+SQL_INSTANCE_PREFIX ?= $(ENV)-
 
 # --- Validation ---
 
@@ -43,7 +44,7 @@ endef
 
 # --- Core targets ---
 
-.PHONY: init plan apply destroy refresh output console fmt validate clean help
+.PHONY: init plan apply destroy refresh resume-cloudsql output console fmt validate clean help
 
 init: ## Initialize Terraform for ENV (downloads providers, configures backend)
 	$(check_env)
@@ -73,6 +74,40 @@ destroy: ## Destroy all resources for ENV (requires confirmation)
 refresh: ## Refresh state for ENV without modifying resources
 	$(check_env)
 	$(call terraform_with_cloudflare_token,apply -refresh-only)
+
+resume-cloudsql: ## Wake Cloud SQL instances before Terraform refreshes users/databases
+	$(check_env)
+	@instances="$$( $(GCLOUD) sql instances list --project="$(GCP_PROJECT_ID)" --filter="name~^$(SQL_INSTANCE_PREFIX)" --format="value(name)" )"; \
+	if [ -z "$$instances" ]; then \
+		echo "No Cloud SQL instances found in $(GCP_PROJECT_ID) matching prefix $(SQL_INSTANCE_PREFIX)"; \
+	else \
+		for instance in $$instances; do \
+			state="$$( $(GCLOUD) sql instances describe "$$instance" --project="$(GCP_PROJECT_ID)" --format="value(state)" )"; \
+			activation_policy="$$( $(GCLOUD) sql instances describe "$$instance" --project="$(GCP_PROJECT_ID)" --format="value(settings.activationPolicy)" )"; \
+			if [ "$$state" = "RUNNABLE" ] && [ "$$activation_policy" = "ALWAYS" ]; then \
+				echo "Cloud SQL instance $$instance is already RUNNABLE with activation policy ALWAYS"; \
+				continue; \
+			fi; \
+			echo "Setting Cloud SQL instance $$instance activation policy to ALWAYS"; \
+			$(GCLOUD) sql instances patch "$$instance" --project="$(GCP_PROJECT_ID)" --activation-policy=ALWAYS --async --quiet --format="value(name)" >/dev/null || exit 1; \
+			attempts=0; \
+			while [ "$$attempts" -lt 60 ]; do \
+				state="$$( $(GCLOUD) sql instances describe "$$instance" --project="$(GCP_PROJECT_ID)" --format="value(state)" )"; \
+				activation_policy="$$( $(GCLOUD) sql instances describe "$$instance" --project="$(GCP_PROJECT_ID)" --format="value(settings.activationPolicy)" )"; \
+				if [ "$$state" = "RUNNABLE" ] && [ "$$activation_policy" = "ALWAYS" ]; then \
+					echo "Cloud SQL instance $$instance is RUNNABLE"; \
+					break; \
+				fi; \
+				echo "Waiting for $$instance to become RUNNABLE (state=$$state, activationPolicy=$$activation_policy)"; \
+				attempts=$$((attempts + 1)); \
+				sleep 10; \
+			done; \
+			if [ "$$attempts" -ge 60 ]; then \
+				echo "Timed out waiting for Cloud SQL instance $$instance to become RUNNABLE"; \
+				exit 1; \
+			fi; \
+		done; \
+	fi
 
 output: ## Show outputs for ENV
 	$(check_env)
@@ -126,8 +161,12 @@ dev-plan:     ; @$(MAKE) plan  ENV=development
 dev-apply:    ; @$(MAKE) apply ENV=development
 dev-suspend-plan:  ; @$(MAKE) plan  ENV=development SUSPENDED=true
 dev-suspend-apply: ; @$(MAKE) apply ENV=development SUSPENDED=true
-dev-resume-plan:   ; @$(MAKE) plan  ENV=development SUSPENDED=false
-dev-resume-apply:  ; @$(MAKE) apply ENV=development SUSPENDED=false
+dev-resume-plan:
+	@$(MAKE) resume-cloudsql ENV=development
+	@$(MAKE) plan ENV=development SUSPENDED=false
+dev-resume-apply:
+	@$(MAKE) resume-cloudsql ENV=development
+	@$(MAKE) apply ENV=development SUSPENDED=false
 
 prod-init:    ; @$(MAKE) init  ENV=production
 prod-plan:    ; @$(MAKE) plan  ENV=production
