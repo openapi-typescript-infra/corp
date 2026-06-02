@@ -28,14 +28,14 @@
     "cpconfig": "@justtellme/cpconfig"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.10",
+    "@biomejs/biome": "^2.4.16",
     "@justtellme/cpconfig": "workspace:^",
-    "@types/node": "^25.5.2",
+    "@types/node": "^25.9.1",
     "@typescript/native-preview": "^7.0.0-dev.20260418.1",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.8"
   },
   "dependencies": {
-    "@openapi-typescript-infra/external-id": "^1.1.0"
+    "@openapi-typescript-infra/external-id": "^1.2.0"
   }
 }
