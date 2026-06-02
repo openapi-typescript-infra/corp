@@ -47,7 +47,7 @@ The manifests are applied by running `helm template` and applied to GKE. You can
 | database.gcpId | **required** | deployment | The Cloud SQL instance suffix such as main (which becomes development-pg-main in development and production-pg-main in production). Only required if you have a database |
 | database.instance | derived from database.gcpId | deployment, db-migration | Optional Cloud SQL instance name override when the Terraform resource name does not follow the standard environment-pg-id convention |
 | database.username | svc@env.iam | deployment | Usually don't need to override |
-| database.migrate | true | db-migration | Whether to automatically run database migration on deploys |
+| database.migrate | true | db-migration | Whether to automatically run database migration on deploys. Migration jobs are named `<service-name>-migration-<timestamp>` |
 | resources | [variables](base-service/values.yaml) | deployment | cpu and memory requests and limits |
 | monitoring.enabled | true | PodMonitoring | Enables google monitoring of the deployment |
 | mappings | none | mappings | Maps API endpoints to service endpoints |

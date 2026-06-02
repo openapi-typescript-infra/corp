@@ -1,6 +1,6 @@
 // Managed manually; mobile-app does not use cpconfig.
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.12/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.10/schema.json",
   "files": {
     "ignoreUnknown": true,
     "includes": [

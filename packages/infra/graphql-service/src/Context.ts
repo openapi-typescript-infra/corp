@@ -1,6 +1,6 @@
 import type { BaseContext } from '@apollo/server';
-import { getPrincipal } from '@justtellme/web-auth';
 import type { AuthPrincipal } from '@justtellme/auth-token';
+import { getPrincipal } from '@justtellme/web-auth';
 import type { ServiceExpress } from '@openapi-typescript-infra/service';
 import type { GraphQLErrorExtensions } from 'graphql';
 import { GraphQLError } from 'graphql';

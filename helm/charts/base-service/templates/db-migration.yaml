@@ -4,10 +4,11 @@
 {{- $secretName := default (printf "%s-db-credentials" .Values.database.gcpId) $passwordSecret.name -}}
 {{- $secretKey := default "password" $passwordSecret.key -}}
 {{- $user := default (printf "%s_pg-%s" .Values.gcp.env .Values.database.gcpId) .Values.database.user -}}
+{{- $migrationJobName := printf "%s-migration-%s" (.Values.name | trunc 40 | trimSuffix "-") (now | date "200601021504") -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Values.database.gcpId }}-db-migration-{{ now | date "200601021504" }}
+  name: {{ $migrationJobName }}
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade
     "helm.sh/hook-delete-policy": hook-succeeded

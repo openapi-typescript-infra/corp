@@ -66,10 +66,7 @@ function extendServiceTest<
       expect(testApp).toBeTruthy();
       await use(testApp.locals as SLocals);
     },
-    client: async (
-      _: object,
-      use: Use<ReturnType<typeof createClient<SLocals, Paths>>>,
-    ) => {
+    client: async (_: object, use: Use<ReturnType<typeof createClient<SLocals, Paths>>>) => {
       const testApp = await getApp<SLocals>();
       expect(testApp).toBeTruthy();
       const client = createClient<SLocals, Paths>(testApp);

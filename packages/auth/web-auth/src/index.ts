@@ -1,5 +1,6 @@
 import type { AuthPrincipal } from '@justtellme/auth-token';
 
+export { AuthPrincipal } from '@justtellme/auth-token';
 export * from './authentication/index.ts';
 export * from './authorization/requestDocument.ts';
 export * from './middleware.ts';
