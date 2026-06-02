@@ -15,7 +15,7 @@
     "api": "turbo run build --filter='@justtellme/*-client' --filter='@justtellme/api-common'",
     "build": "turbo run build",
     "clean": "turbo run clean",
-    "cpconfig": "yarn workspaces foreach -Apv --exclude just-tell-me --exclude '@just-tell-me/mobile-app' exec cpconfig",
+    "cpconfig": "yarn workspaces foreach -Apv --exclude just-tell-me --exclude '@just-tell-me/mobile-app' --exclude '@justtellme/*-client' --exclude '@justtellme/api-common' exec cpconfig",
     "db:clean": "yarn workspaces foreach -Av --exclude just-tell-me run db:clean",
     "ios": "yarn workspace @just-tell-me/mobile-app run ios",
     "android": "yarn workspace mobile-app run android",
@@ -43,6 +43,7 @@
     "@openapi-typescript-infra/cluster-proxy": "^1.8.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
+    "node-gyp": "^12.3.0",
     "nodemon": "^3.1.14",
     "tsc-alias": "^1.8.16",
     "turbo": "^2.9.3"
