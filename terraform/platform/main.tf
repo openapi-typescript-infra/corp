@@ -16,6 +16,7 @@ provider "google" {
 
 locals {
   service_apis = [
+    "admin.googleapis.com",
     "artifactregistry.googleapis.com",
     "iam.googleapis.com",
     "iamcredentials.googleapis.com",
@@ -110,4 +111,37 @@ resource "google_project_iam_member" "artifact_registry_writers" {
   member  = "serviceAccount:${each.value}"
 
   depends_on = [google_project_service.apis]
+}
+
+resource "google_project_iam_member" "artifact_registry_writer_members" {
+  for_each = toset(var.artifact_registry_writer_members)
+
+  project = var.platform_project_id
+  role    = "roles/artifactregistry.writer"
+  member  = each.value
+
+  depends_on = [google_project_service.apis]
+}
+
+resource "google_service_account" "workspace_terraform" {
+  project      = var.platform_project_id
+  account_id   = "workspace-terraform"
+  display_name = "Workspace Terraform"
+  description  = "Service account used by Terraform to manage Google Workspace users and groups."
+
+  depends_on = [google_project_service.apis]
+}
+
+resource "google_service_account_iam_member" "workspace_terraform_token_creators" {
+  for_each = toset(var.workspace_terraform_token_creator_members)
+
+  service_account_id = google_service_account.workspace_terraform.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = each.value
+}
+
+resource "google_service_account_iam_member" "workspace_terraform_self_token_creator" {
+  service_account_id = google_service_account.workspace_terraform.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:${google_service_account.workspace_terraform.email}"
 }

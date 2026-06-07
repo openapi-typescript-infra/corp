@@ -17,3 +17,18 @@ output "artifact_registry_writers" {
   description = "Service accounts granted Artifact Registry writer access"
   value       = var.artifact_registry_writer_service_accounts
 }
+
+output "artifact_registry_writer_members" {
+  description = "Additional IAM members granted Artifact Registry writer access"
+  value       = var.artifact_registry_writer_members
+}
+
+output "workspace_terraform_service_account_email" {
+  description = "Service account used by Terraform to manage Google Workspace"
+  value       = google_service_account.workspace_terraform.email
+}
+
+output "workspace_terraform_oauth_client_id" {
+  description = "Numeric service account client ID to authorize in Google Workspace domain-wide delegation"
+  value       = google_service_account.workspace_terraform.unique_id
+}

@@ -87,6 +87,18 @@ Supported member types: `USER` (default), `GROUP`.
    make apply ORGANIZATION_ID=<org-id> BILLING_ACCOUNT_ID=<billing-account-id>
    ```
 
-2. Create a GCP service account with domain-wide delegation for the Google Workspace Admin SDK.
+2. Apply `terraform/platform` and authorize its
+   `workspace_terraform_oauth_client_id` output for domain-wide delegation in
+   Google Admin Console.
 3. Set `terraform.tfvars` with your workspace customer ID, admin email, and domain.
-4. Run `make init` to initialize the backend.
+4. Mint a short-lived token for the Workspace Terraform service account:
+
+   ```bash
+   export TF_VAR_googleworkspace_access_token="$(
+     gcloud auth print-access-token \
+       --impersonate-service-account=workspace-terraform@justtellme-platform.iam.gserviceaccount.com \
+       --scopes='https://www.googleapis.com/auth/cloud-platform'
+   )"
+   ```
+
+5. Run `make init` to initialize the backend.

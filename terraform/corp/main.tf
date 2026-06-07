@@ -16,12 +16,14 @@ terraform {
 }
 
 provider "googleworkspace" {
+  access_token            = var.googleworkspace_access_token
   customer_id             = var.workspace_customer_id
-  credentials             = fileexists("${path.module}/terraform-service-account.json") ? file("${path.module}/terraform-service-account.json") : null
+  credentials             = var.googleworkspace_access_token == null && fileexists("${path.module}/terraform-service-account.json") ? file("${path.module}/terraform-service-account.json") : null
   impersonated_user_email = var.workspace_admin_email
   oauth_scopes = [
     "https://www.googleapis.com/auth/admin.directory.group",
     "https://www.googleapis.com/auth/admin.directory.group.member",
     "https://www.googleapis.com/auth/admin.directory.user",
   ]
+  service_account = var.workspace_terraform_service_account_email
 }

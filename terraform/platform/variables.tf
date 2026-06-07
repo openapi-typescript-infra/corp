@@ -37,3 +37,15 @@ variable "artifact_registry_writer_service_accounts" {
     "github-actions-ci@justtellme-dev.iam.gserviceaccount.com",
   ]
 }
+
+variable "artifact_registry_writer_members" {
+  description = "Additional IAM members allowed to publish shared artifacts, such as local deployer users."
+  type        = list(string)
+  default     = []
+}
+
+variable "workspace_terraform_token_creator_members" {
+  description = "IAM members allowed to mint short-lived tokens for the Workspace Terraform service account."
+  type        = list(string)
+  default     = []
+}
