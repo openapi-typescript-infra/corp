@@ -1,0 +1,179 @@
+name: deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      services:
+        description: |
+          Comma-separated list of service names to deploy. Leave empty to let
+          turbo compute the affected set.
+        required: false
+        type: string
+        default: ""
+      force_all:
+        description: Deploy every chart-bearing service, ignoring the diff.
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  setup:
+    runs-on: self-hosted
+    if: vars.DEPLOYS_ENABLED == 'true'
+    outputs:
+      services: ${{ steps.pick.outputs.list }}
+      empty: ${{ steps.pick.outputs.empty }}
+      force_all: ${{ steps.force.outputs.force }}
+      base_sha: ${{ steps.base.outputs.sha }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+
+      - name: Setup mise (tools + env)
+        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+
+      - name: Cache yarn fetch
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            .yarn/cache
+            .yarn/install-state.gz
+          key: yarn-${{ runner.os }}-${{ hashFiles('yarn.lock', '.yarnrc.yml') }}
+          restore-keys: yarn-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Turbo remote cache (GitHub-backed)
+        uses: rharkor/caching-for-turbo@5d14fba18e450c09393333cfd4242e8b3cb455a6 # v2.4.2
+
+      - name: Resolve diff base SHA
+        id: base
+        run: |
+          set -euo pipefail
+          BASE=""
+          if [ "${{ github.event_name }}" = "push" ]; then
+            BASE="${{ github.event.before }}"
+          fi
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            BASE=$(git rev-parse HEAD~1 2>/dev/null || git rev-parse HEAD)
+          fi
+          echo "sha=$BASE" >> "$GITHUB_OUTPUT"
+
+      - name: Detect force-all conditions
+        id: force
+        run: |
+          set -euo pipefail
+          if [ "${{ inputs.force_all }}" = "true" ]; then
+            echo "force=true" >> "$GITHUB_OUTPUT"
+            echo "reason=workflow_dispatch input" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          BASE="${{ steps.base.outputs.sha }}"
+          CHANGED=$(git diff --name-only "$BASE"..HEAD || true)
+          if echo "$CHANGED" | grep -qE '^(helm/charts/base-service/|docker/service\.Dockerfile$|\.github/actions/build-container/|\.github/workflows/deploy\.yml$|\.github/workflows/build-and-deploy-service\.yml$|package\.json$|yarn\.lock$|\.yarnrc\.yml$|mise\.toml$|mise\.ci\.toml$)'; then
+            echo "force=true" >> "$GITHUB_OUTPUT"
+            echo "reason=global path changed" >> "$GITHUB_OUTPUT"
+          else
+            echo "force=false" >> "$GITHUB_OUTPUT"
+            echo "reason=per-service diff" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Pick services to deploy
+        id: pick
+        env:
+          INPUT_SERVICES: ${{ inputs.services }}
+          FORCE_ALL: ${{ steps.force.outputs.force }}
+          BASE_SHA: ${{ steps.base.outputs.sha }}
+        run: |
+          set -euo pipefail
+
+          DEPLOYABLE=()
+          for d in services/*/; do
+            name=$(basename "$d")
+            [ -f "$d/ops/$name/Chart.yaml" ] || continue
+            [ -f "$d/ops/.deploy-disabled" ] && continue
+            DEPLOYABLE+=("$name")
+          done
+
+          if [ -n "$INPUT_SERVICES" ]; then
+            REQUESTED=$(tr ',' '\n' <<< "$INPUT_SERVICES" | awk '{gsub(/^[[:space:]]+|[[:space:]]+$/, ""); if (length) print}')
+            PICKED=$(printf '%s\n' "${DEPLOYABLE[@]}" | grep -Fx -f <(echo "$REQUESTED") || true)
+            MISSING=$(comm -23 <(echo "$REQUESTED" | sort -u) <(echo "$PICKED" | sort -u))
+            if [ -n "$MISSING" ]; then
+              echo "::error::Requested services not deployable: $(echo "$MISSING" | tr '\n' ' ')"
+              exit 1
+            fi
+          elif [ "$FORCE_ALL" = "true" ]; then
+            PICKED=$(printf '%s\n' "${DEPLOYABLE[@]}")
+          else
+            TURBO_SCM_BASE="$BASE_SHA" \
+              yarn turbo ls --affected --filter='./services/*' --output=json \
+              | jq -r '.packages.items[].name | sub("^@justtellme/"; "")' \
+              > affected.txt
+            if [ -s affected.txt ]; then
+              PICKED=$(printf '%s\n' "${DEPLOYABLE[@]}" | grep -Fx -f affected.txt || true)
+            else
+              PICKED=""
+            fi
+          fi
+
+          LIST=$(echo "${PICKED:-}" | sed '/^$/d' | jq -R . | jq -s -c .)
+          echo "list=$LIST" >> "$GITHUB_OUTPUT"
+          if [ "$(jq 'length' <<< "$LIST")" -eq 0 ]; then
+            echo "empty=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "empty=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Picked: $LIST"
+
+      - name: Summarize setup
+        run: |
+          {
+            echo "## Deploy setup"
+            echo ""
+            echo "- Base SHA: \`${{ steps.base.outputs.sha }}\`"
+            echo "- Force-all: \`${{ steps.force.outputs.force }}\` (${{ steps.force.outputs.reason }})"
+            echo "- Services: \`${{ steps.pick.outputs.list }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  deploy:
+    needs: setup
+    if: vars.DEPLOYS_ENABLED == 'true' && needs.setup.outputs.empty == 'false'
+    strategy:
+      fail-fast: false
+      matrix:
+        service: ${{ fromJSON(needs.setup.outputs.services) }}
+    uses: ./.github/workflows/build-and-deploy-service.yml
+    with:
+      service: ${{ matrix.service }}
+    secrets: inherit
+
+  summary:
+    needs: [setup, deploy]
+    if: always() && vars.DEPLOYS_ENABLED == 'true'
+    runs-on: self-hosted
+    steps:
+      - name: Write summary
+        env:
+          SERVICES: ${{ needs.setup.outputs.services }}
+          DEPLOY_RESULT: ${{ needs.deploy.result }}
+          SETUP_RESULT: ${{ needs.setup.result }}
+          FORCE_ALL: ${{ needs.setup.outputs.force_all }}
+          BASE_SHA: ${{ needs.setup.outputs.base_sha }}
+        run: |
+          {
+            echo "## Deploy result"
+            echo ""
+            echo "- Setup: \`$SETUP_RESULT\`"
+            echo "- Deploy matrix: \`${DEPLOY_RESULT:-skipped}\`"
+            echo "- Force-all: \`$FORCE_ALL\`"
+            echo "- Base SHA: \`$BASE_SHA\`"
+            echo "- Services: \`$SERVICES\`"
+            echo "- Commit: \`${{ github.sha }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"

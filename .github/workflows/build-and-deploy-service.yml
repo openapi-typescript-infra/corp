@@ -1,0 +1,189 @@
+name: build-and-deploy-service
+
+on:
+  workflow_call:
+    inputs:
+      service:
+        description: Service id, matching services/<service> and ops/<service>.
+        required: true
+        type: string
+      environment:
+        description: Target environment.
+        required: false
+        type: string
+        default: development
+      gcp-project:
+        description: GCP project id for the target environment. Defaults to vars.GCP_PROJECT_ID.
+        required: false
+        type: string
+        default: ""
+      gke-cluster:
+        description: GKE cluster name.
+        required: false
+        type: string
+        default: development-cluster
+      gke-region:
+        description: GKE cluster region.
+        required: false
+        type: string
+        default: us-central1
+      namespace:
+        description: Kubernetes namespace for the release.
+        required: false
+        type: string
+        default: app
+      registry:
+        description: Container registry root. Defaults to the target GCP project's docker-images repo.
+        required: false
+        type: string
+        default: ""
+      db-secret-prefix:
+        description: Secret Manager prefix for database password secrets.
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build-and-push:
+    runs-on: self-hosted
+    concurrency:
+      group: deploy-${{ inputs.service }}-${{ inputs.environment }}
+      cancel-in-progress: false
+    env:
+      MISE_ENV: ci
+      SERVICE: ${{ inputs.service }}
+      SERVICE_DIR: services/${{ inputs.service }}
+      GCP_PROJECT: ${{ inputs.gcp-project != '' && inputs.gcp-project || vars.GCP_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+
+      - name: Authenticate to GCP via Workload Identity
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-actions/providers/github-oidc
+          service_account: github-actions-ci@${{ env.GCP_PROJECT }}.iam.gserviceaccount.com
+
+      - name: Configure docker auth for Artifact Registry
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+
+      - name: Setup mise (tools + env)
+        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+
+      - name: Cache yarn fetch
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            .yarn/cache
+            .yarn/install-state.gz
+          key: yarn-${{ runner.os }}-${{ hashFiles('yarn.lock', '.yarnrc.yml') }}
+          restore-keys: yarn-${{ runner.os }}-
+
+      - name: Install dependencies for target workspace
+        run: yarn workspaces focus just-tell-me "@justtellme/${SERVICE}"
+
+      - name: Turbo remote cache (GitHub-backed)
+        uses: rharkor/caching-for-turbo@5d14fba18e450c09393333cfd4242e8b3cb455a6 # v2.4.2
+
+      - name: Build target service's workspace deps
+        run: |
+          PKG=$(node -p "require('./${SERVICE_DIR}/package.json').name")
+          yarn turbo run build build:next --filter="${PKG}..."
+
+      - name: Build and push container
+        uses: ./.github/actions/build-container
+        with:
+          service: ${{ inputs.service }}
+          registry: ${{ inputs.registry }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: self-hosted
+    concurrency:
+      group: deploy-${{ inputs.service }}-${{ inputs.environment }}
+      cancel-in-progress: false
+    env:
+      SERVICE: ${{ inputs.service }}
+      CHART_DIR: services/${{ inputs.service }}/ops/${{ inputs.service }}
+      ENVIRONMENT: ${{ inputs.environment }}
+      GCP_PROJECT: ${{ inputs.gcp-project != '' && inputs.gcp-project || vars.GCP_PROJECT_ID }}
+      GKE_CLUSTER: ${{ inputs.gke-cluster }}
+      GKE_REGION: ${{ inputs.gke-region }}
+      NAMESPACE: ${{ inputs.namespace }}
+      DB_SECRET_PREFIX: ${{ inputs.db-secret-prefix }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - name: Authenticate to GCP via Workload Identity
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-actions/providers/github-oidc
+          service_account: github-actions-ci@${{ env.GCP_PROJECT }}.iam.gserviceaccount.com
+
+      - uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5.0.0
+        with:
+          version: v3.16.4
+
+      - name: Get GKE credentials
+        run: |
+          gcloud container clusters get-credentials "$GKE_CLUSTER" \
+            --region="$GKE_REGION" --project="$GCP_PROJECT"
+
+      - name: Detect database settings
+        id: dbcfg
+        run: |
+          set -euo pipefail
+          if grep -qE '^\s*gcpId:\s*[A-Za-z0-9_-]+' "$CHART_DIR/values.yaml"; then
+            DB_ID=$(awk '/^[[:space:]]*gcpId:[[:space:]]*/ {print $2; exit}' "$CHART_DIR/values.yaml")
+            SECRET_NAME="${DB_ID}-db-credentials"
+            if [ -n "$DB_SECRET_PREFIX" ]; then
+              SM_SECRET="${DB_SECRET_PREFIX}-${DB_ID}-db-credentials"
+            else
+              SM_SECRET="$SECRET_NAME"
+            fi
+            echo "has_db=true" >> "$GITHUB_OUTPUT"
+            echo "db_id=$DB_ID" >> "$GITHUB_OUTPUT"
+            echo "k8s_secret=$SECRET_NAME" >> "$GITHUB_OUTPUT"
+            echo "sm_secret=$SM_SECRET" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_db=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Sync database password from Secret Manager
+        if: steps.dbcfg.outputs.has_db == 'true'
+        run: |
+          set -euo pipefail
+          PG_PASSWORD=$(gcloud secrets versions access latest \
+            --secret="${{ steps.dbcfg.outputs.sm_secret }}" --project="$GCP_PROJECT")
+          kubectl -n "$NAMESPACE" create secret generic "${{ steps.dbcfg.outputs.k8s_secret }}" \
+            --from-literal=password="$PG_PASSWORD" \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: helm dependency update
+        run: helm dependency update "$CHART_DIR"
+
+      - name: helm upgrade --install
+        run: |
+          set -euo pipefail
+          CHANGE_CAUSE=$(git show -s --format='%H %ai %s' | tr ',' ' ')
+
+          helm upgrade --install "$SERVICE" "$CHART_DIR" \
+            --namespace "$NAMESPACE" \
+            --set "base-service.gcp.project=$GCP_PROJECT" \
+            --set "base-service.gcp.env=$ENVIRONMENT" \
+            --set "base-service.gcp.region=$GKE_REGION" \
+            --set "base-service.tag=${{ github.sha }}" \
+            --set-string "base-service.changeCause=$CHANGE_CAUSE" \
+            --wait --timeout=5m
+
+      - name: Verify rollout
+        run: |
+          kubectl -n "$NAMESPACE" rollout status \
+            deployment/"$SERVICE" --timeout=5m
+          kubectl -n "$NAMESPACE" get pods,svc \
+            -l app="$SERVICE"
