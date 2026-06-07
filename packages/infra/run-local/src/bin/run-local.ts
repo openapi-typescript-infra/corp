@@ -1,9 +1,8 @@
 #!/usr/bin/env node
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { render } from 'ink';
-import path from 'path';
-
 import React from 'react';
-import { fileURLToPath } from 'url';
 
 import { LocalRunnerApp } from '../app.tsx';
 

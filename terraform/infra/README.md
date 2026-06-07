@@ -41,6 +41,7 @@ Database topology can evolve without restructuring the project.
 ## Terraform State & Secrets
 
 - Terraform remote state is stored in Google Cloud Storage.
+- The canonical state bucket is created by the top-level `terraform/bootstrap` root in the platform GCP project and shared by Terraform roots with separate backend prefixes.
 - Secrets are stored in Google Secret Manager.
 - Local development uses Application Default Credentials (ADC) to access GCP services.
 
@@ -49,6 +50,25 @@ This avoids:
 - Secret emulation
 - Local state drift
 - Vault-style overhead
+
+Bootstrap the projects and state bucket once:
+
+```sh
+cd terraform/bootstrap
+make apply ORGANIZATION_ID=<org-id> BILLING_ACCOUNT_ID=<billing-account-id>
+```
+
+Then initialize shared platform resources and runtime environments:
+
+```sh
+cd ../platform
+make init
+make plan
+
+cd ../infra
+make dev-init
+make prod-init
+```
 
 ---
 
@@ -75,6 +95,63 @@ make prod-plan
 By default the project IDs are derived as `$(GCP_PROJECT_PREFIX)-dev` and `$(GCP_PROJECT_PREFIX)-prod`. Override `GCP_PROJECT_PREFIX` in the Makefile for a new repo.
 
 If `TF_VAR_cloudflare_api_token` is already set, the Makefile uses that value instead of reading Secret Manager.
+
+For Stytch, create a Workspace Management Key in the Stytch dashboard and store it manually in each GCP project as these Secret Manager secrets:
+
+- `stytch_workspace_key_id`
+- `stytch_workspace_key_secret`
+
+The Makefile loads those secrets into Terraform before plan/apply. If `TF_VAR_stytch_workspace_key_id` and `TF_VAR_stytch_workspace_key_secret` are already set, the Makefile uses those values instead of reading Secret Manager.
+
+Stytch projects, environments, public tokens, API secrets, and redirect URLs can be managed by Terraform through the official `stytchauth/stytch` provider. For a new app, define a managed project and environment in the env tfvars:
+
+```hcl
+stytch_project = {
+  name         = "My App Development"
+  project_slug = "my-app-development"
+}
+
+stytch_environment = {
+  name             = "Development"
+  environment_slug = "development"
+}
+
+stytch_redirect_urls = {
+  app_authenticate_return_url = {
+    url = "https://dev.example.com/authenticate?return_url={}"
+    valid_types = [
+      {
+        type = "LOGIN"
+      },
+      {
+        type = "SIGNUP"
+      },
+    ]
+  }
+}
+```
+
+Production normally uses the live environment created by `stytch_project`:
+
+```hcl
+stytch_project = {
+  name         = "My App Production"
+  project_slug = "my-app-production"
+
+  live_environment = {
+    name             = "Production"
+    environment_slug = "production"
+  }
+}
+
+stytch_environment = {
+  name             = "Production"
+  environment_slug = "production"
+  type             = "LIVE"
+}
+```
+
+When the `secrets` list includes `stytch_project_id`, `stytch_public_key`, and `stytch_secret`, Terraform writes the managed environment's project ID, public token, and API secret into Secret Manager. Existing dashboard-created Stytch projects, environments, public tokens, secrets, and redirect URLs must be imported before Terraform manages them. If an existing app should keep the dashboard-created project outside Terraform, set `stytch_project_slug` and `stytch_environment_slug` instead of `stytch_project`/`stytch_environment`.
 
 ---
 

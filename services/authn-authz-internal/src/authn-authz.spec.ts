@@ -75,7 +75,7 @@ describe('Basic test of authn-authz-internal', () => {
     request(app)
       .get('/envoy/token-check')
       .set('Cookie', Cookie)
-      .expect(200, (err, response) => {
+      .expect(200, (_err, response) => {
         expect(response.status).toBe(200);
         expect(response.headers['x-auth-token']).toBeDefined();
       });

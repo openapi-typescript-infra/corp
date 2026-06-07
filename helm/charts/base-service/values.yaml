@@ -52,6 +52,7 @@ gcp: {}
 
 image:
   registry: us-central1-docker.pkg.dev
+  project: ""
   repository: docker-images
 
 api:

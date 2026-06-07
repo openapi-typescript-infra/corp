@@ -1,3 +1,4 @@
+import type { IncomingHttpHeaders } from 'node:http';
 import type { BaseContext } from '@apollo/server';
 import type { AuthPrincipal } from '@justtellme/auth-token';
 import { getPrincipal } from '@justtellme/web-auth';
@@ -5,7 +6,6 @@ import type { ServiceExpress } from '@openapi-typescript-infra/service';
 import type { GraphQLErrorExtensions } from 'graphql';
 import { GraphQLError } from 'graphql';
 import type { Context } from 'graphql-ws';
-import type { IncomingHttpHeaders } from 'http';
 import { wrapAsCaseInsensitiveMap } from './caseInsensitiveMap.ts';
 import type { JTMGraphQLConfigurationSchema } from './config.ts';
 import type {

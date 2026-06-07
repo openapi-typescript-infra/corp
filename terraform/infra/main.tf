@@ -8,6 +8,11 @@ provider "cloudflare" {
   api_token = var.cloudflare_api_token
 }
 
+provider "stytch" {
+  workspace_key_id     = var.stytch_workspace_key_id
+  workspace_key_secret = var.stytch_workspace_key_secret
+}
+
 # --- Kubernetes and Helm providers (GKE-backed) ---
 
 data "google_client_config" "default" {}
@@ -62,64 +67,6 @@ module "pubsub" {
   gcp_project_id = var.gcp_project_id
   environment    = var.environment
   pubsub_topics  = var.pubsub_topics
-
-  depends_on = [module.gcp_project]
-}
-
-# --- Artifact Registry repositories ---
-
-resource "google_artifact_registry_repository" "npm_packages" {
-  repository_id = "npm-packages"
-  location      = var.gcp_region
-  format        = "NPM"
-  description   = "npm package registry for ${var.environment}"
-
-  depends_on = [module.gcp_project]
-}
-
-resource "google_artifact_registry_repository" "docker_images" {
-  repository_id          = "docker-images"
-  location               = var.gcp_region
-  format                 = "DOCKER"
-  description            = "Docker image registry for ${var.environment}"
-  cleanup_policy_dry_run = var.artifact_registry_docker_cleanup.dry_run
-
-  cleanup_policies {
-    id     = "keep-recent-versions"
-    action = "KEEP"
-
-    most_recent_versions {
-      keep_count = var.artifact_registry_docker_cleanup.keep_count
-    }
-  }
-
-  cleanup_policies {
-    id     = "delete-old-tagged"
-    action = "DELETE"
-
-    condition {
-      tag_state  = "TAGGED"
-      older_than = var.artifact_registry_docker_cleanup.delete_tagged_older_than
-    }
-  }
-
-  cleanup_policies {
-    id     = "delete-old-untagged"
-    action = "DELETE"
-
-    condition {
-      tag_state  = "UNTAGGED"
-      older_than = var.artifact_registry_docker_cleanup.delete_untagged_older_than
-    }
-  }
-
-  depends_on = [module.gcp_project]
-}
-
-resource "google_project_iam_member" "gke_nodes_artifact_registry_reader" {
-  project = var.gcp_project_id
-  role    = "roles/artifactregistry.reader"
-  member  = "serviceAccount:${data.google_project.current.number}-compute@developer.gserviceaccount.com"
 
   depends_on = [module.gcp_project]
 }

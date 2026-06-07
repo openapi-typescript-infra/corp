@@ -1,9 +1,9 @@
+import path from 'node:path';
 import type { AuthPrincipal } from '@justtellme/auth-token';
 import { useJTMService } from '@justtellme/service';
 import { getMiddleware, getPrincipal } from '@justtellme/web-auth';
 import type { Service } from '@openapi-typescript-infra/service';
 import { insertConfigurationBefore } from '@openapi-typescript-infra/service';
-import path from 'path';
 import { Client } from 'stytch';
 import type { JTMAuthConfigurationSchema } from './config.ts';
 import { createAuthDatasources } from './datasources.ts';
@@ -87,7 +87,7 @@ export function useJTMServiceWithAuth<
       await base?.onRequest?.(req, res);
       res.locals.getForwardHeaders = async () => {
         const user = await getPrincipal(req);
-        if (!user || !user.userUuid) {
+        if (!user?.userUuid) {
           return undefined;
         }
         const headers: Record<string, string> = {};

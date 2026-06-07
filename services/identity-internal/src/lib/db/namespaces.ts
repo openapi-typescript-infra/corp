@@ -111,7 +111,6 @@ export function canonicalize(identifier: string, namespace: Pick<NamespaceDetail
       return canonicalizePhone(identifier);
     case 'individual_name':
       return canonicalizeName(parseName(identifier));
-    case 'opaque':
     default:
       return identifier;
   }
@@ -131,8 +130,6 @@ export function isValidIdentifier(identifier: string, type: NamespaceDetail['typ
       const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
       return uuidRegex.test(identifier);
     }
-    case 'opaque':
-    case 'individual_name':
     default:
       return true;
   }

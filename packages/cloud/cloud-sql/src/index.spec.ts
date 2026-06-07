@@ -1,7 +1,7 @@
+import path from 'node:path';
 import type { JTMConfigurationSchema, JTMServiceLocals } from '@justtellme/service';
 import { useJTMService } from '@justtellme/service';
 import { getReusableApp } from '@openapi-typescript-infra/service-tester';
-import path from 'path';
 import { describe, expect, test } from 'vitest';
 
 import { getPgPool } from './index.ts';

@@ -60,7 +60,8 @@ GCP_REGION ?= us-central1
 GKE_CLUSTER ?= $(K8S_ENV)-cluster
 GKE_LOCATION ?= $(GCP_REGION)-a
 K8S_NAMESPACE ?= app
-DOCKER_REGISTRY ?= $(GCP_REGION)-docker.pkg.dev/$(GCP_PROJECT)/docker-images
+ARTIFACT_REGISTRY_PROJECT ?= justtellme-platform
+DOCKER_REGISTRY ?= $(GCP_REGION)-docker.pkg.dev/$(ARTIFACT_REGISTRY_PROJECT)/docker-images
 GITHUB_SHA ?= $(shell git rev-parse HEAD)
 RUN_NUMBER ?= 0
 IMAGE_TAG ?= $(GITHUB_SHA)
@@ -79,6 +80,7 @@ container:
 	mkdir -p api private public migrations src/config
 	docker buildx build --load \
 	  --secret id=google_packages_token,env=GOOGLE_PACKAGES_TOKEN \
+	  --build-arg NPM_REGISTRY_SERVER=https://$(GCP_REGION)-npm.pkg.dev/$(ARTIFACT_REGISTRY_PROJECT)/npm-packages/ \
 	  --build-arg BUILD_VERSION=$(shell node -p "const fs=require('fs'); let pkg=JSON.parse(fs.readFileSync('./package.json')); const parts=pkg.version.split('.'); parts[2]='$(RUN_NUMBER)'; parts.join('.')") \
 		--build-context monorepo=../.. \
 	  --network=host \
@@ -108,6 +110,7 @@ deploy:
 		--set "$(HELM_VALUES_ROOT).gcp.project=$(GCP_PROJECT)" \
 		--set "$(HELM_VALUES_ROOT).gcp.env=$(K8S_ENV)" \
 		--set "$(HELM_VALUES_ROOT).gcp.region=$(GCP_REGION)" \
+		--set "$(HELM_VALUES_ROOT).image.project=$(ARTIFACT_REGISTRY_PROJECT)" \
 		--set "$(HELM_VALUES_ROOT).tag=$(DEPLOY_TAG)" \
 		--set-string "$(HELM_VALUES_ROOT).changeCause=local deploy $(SERVICE_NAME):$(DEPLOY_TAG)" \
 		--wait --timeout=5m

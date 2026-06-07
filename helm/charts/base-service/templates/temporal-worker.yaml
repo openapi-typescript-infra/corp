@@ -29,7 +29,7 @@ spec:
       containers:
         - name: {{ .Values.name }}
           imagePullPolicy: IfNotPresent
-          image: "{{ .Values.image.registry }}/{{ .Values.gcp.project }}/{{ .Values.image.repository }}/{{ .Values.name }}:{{ .Values.tag }}"
+          image: "{{ .Values.image.registry }}/{{ default .Values.gcp.project .Values.image.project }}/{{ .Values.image.repository }}/{{ .Values.name }}:{{ .Values.tag }}"
           resources:
             requests:
             {{- if default .Values.resources.cpu.requests .Values.temporal.resources.cpu.requests }}

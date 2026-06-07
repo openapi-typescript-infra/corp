@@ -126,9 +126,9 @@ export function addShortstopHandlers(handlers: ServiceOptions['shortstopHandlers
   const secretmanagerClient = new SecretManagerServiceClient();
   const modified = { ...handlers };
 
-  modified['gsm'] = getGsmHandler(secretmanagerClient, true);
-  modified['gsm_optional'] = getGsmHandler(secretmanagerClient, false);
-  modified['gcp'] = getGcpIdentity;
+  modified.gsm = getGsmHandler(secretmanagerClient, true);
+  modified.gsm_optional = getGsmHandler(secretmanagerClient, false);
+  modified.gcp = getGcpIdentity;
 
   return modified;
 }

@@ -30,16 +30,6 @@ output "pubsub_topics" {
   value       = module.pubsub.topic_ids
 }
 
-output "artifact_registry_npm_url" {
-  description = "Artifact Registry URL for npm packages"
-  value       = "https://${google_artifact_registry_repository.npm_packages.location}-npm.pkg.dev/${var.gcp_project_id}/${google_artifact_registry_repository.npm_packages.repository_id}"
-}
-
-output "artifact_registry_docker_url" {
-  description = "Artifact Registry URL for Docker images"
-  value       = "${google_artifact_registry_repository.docker_images.location}-docker.pkg.dev/${var.gcp_project_id}/${google_artifact_registry_repository.docker_images.repository_id}"
-}
-
 output "github_wif_provider" {
   description = "Workload Identity Federation provider resource name (for GitHub Actions auth)"
   value       = module.github_wif.workload_identity_provider
@@ -65,4 +55,26 @@ output "gateway_ip" {
 output "cloudflare_dns_hostnames" {
   description = "Map of DNS record key to FQDN"
   value       = module.cloudflare.dns_record_hostnames
+}
+
+output "stytch_project_slug" {
+  description = "Stytch project slug used by this environment"
+  value       = local.stytch_enabled ? local.stytch_project_slug : null
+}
+
+output "stytch_environment_slug" {
+  description = "Stytch environment slug used by this environment"
+  value       = local.stytch_enabled ? local.stytch_environment_slug : null
+}
+
+output "stytch_project_id" {
+  description = "Stytch project ID used for backend API authentication"
+  value       = local.stytch_project_id != "" ? local.stytch_project_id : null
+  sensitive   = true
+}
+
+output "stytch_public_token" {
+  description = "Stytch public token used by frontend SDKs"
+  value       = local.stytch_enabled ? stytch_public_token.sdk[0].public_token : null
+  sensitive   = true
 }

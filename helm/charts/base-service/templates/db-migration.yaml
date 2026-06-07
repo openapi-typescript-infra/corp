@@ -37,7 +37,7 @@ spec:
       containers:
         - name: {{ .Values.name }}
           imagePullPolicy: IfNotPresent
-          image: "{{ .Values.image.registry }}/{{ .Values.gcp.project }}/{{ .Values.image.repository }}/{{ .Values.name }}:{{ .Values.tag }}"
+          image: "{{ .Values.image.registry }}/{{ default .Values.gcp.project .Values.image.project }}/{{ .Values.image.repository }}/{{ .Values.name }}:{{ .Values.tag }}"
           env:
             - name: GOOGLE_CLOUD_PROJECT
               value: {{ .Values.gcp.project | quote }}

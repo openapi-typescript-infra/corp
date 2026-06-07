@@ -80,6 +80,13 @@ Supported member types: `USER` (default), `GROUP`.
 
 ## Setup
 
-1. Create a GCP service account with domain-wide delegation for the Google Workspace Admin SDK
-2. Set `terraform.tfvars` with your workspace customer ID, admin email, and domain
-3. Run `make init` to initialize the backend
+1. Bootstrap the canonical Terraform state bucket from `terraform/bootstrap` if it does not already exist:
+
+   ```bash
+   cd ../bootstrap
+   make apply ORGANIZATION_ID=<org-id> BILLING_ACCOUNT_ID=<billing-account-id>
+   ```
+
+2. Create a GCP service account with domain-wide delegation for the Google Workspace Admin SDK.
+3. Set `terraform.tfvars` with your workspace customer ID, admin email, and domain.
+4. Run `make init` to initialize the backend.

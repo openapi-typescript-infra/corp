@@ -1,4 +1,4 @@
-import { AuthPrincipal, type AuthPrincipalRole } from '@justtellme/auth-token';
+import { AuthPrincipal } from '@justtellme/auth-token';
 import { fromExternalID } from '@justtellme/external-id';
 import type { JTMConfigurationSchema, JTMServiceLocals } from '@justtellme/service';
 import type { ServiceExpress } from '@openapi-typescript-infra/service';

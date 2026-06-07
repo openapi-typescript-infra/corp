@@ -22,7 +22,7 @@ The local deploy target mirrors the CI/CD flow:
 
 1. Builds the target service and its workspace dependencies with Turbo.
 2. Builds a `linux/amd64` Docker image with an immutable tag like `dev-20260601-161444`.
-3. Pushes the image to Artifact Registry.
+3. Pushes the image to the shared platform Artifact Registry.
 4. Fetches GKE credentials.
 5. Runs `helm upgrade --install` for `ops/<service>`.
 6. Waits for the Deployment rollout.
@@ -33,4 +33,5 @@ Useful overrides:
 make deploy-dev DEPLOY_TAG=dev-my-test
 make deploy-dev GCP_PROJECT=justtellme-dev GKE_CLUSTER=development-cluster K8S_NAMESPACE=app
 make deploy-prod GCP_PROJECT=justtellme-prod GKE_CLUSTER=production-cluster
+make deploy-dev ARTIFACT_REGISTRY_PROJECT=justtellme-platform
 ```

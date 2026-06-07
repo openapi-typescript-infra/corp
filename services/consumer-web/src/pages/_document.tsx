@@ -7,7 +7,7 @@ const readEnv = (name: string, fallback = ''): string => {
   return env[name] ?? fallback;
 };
 
-const getClientSideVariables = (includeStytchAdminToken: boolean) => {
+const getClientSideVariables = (_includeStytchAdminToken: boolean) => {
   const appEnv = getNodeEnv();
 
   return {

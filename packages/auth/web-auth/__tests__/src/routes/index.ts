@@ -4,7 +4,7 @@ import type { ServiceExpress, ServiceHandler } from '@openapi-typescript-infra/s
 import type { TestServiceLocals } from '../index.ts';
 
 export function route(router: JTMServiceRouter, app: ServiceExpress<TestServiceLocals>) {
-  const helloJson: ServiceHandler = (req, res) => {
+  const helloJson: ServiceHandler = (_req, res) => {
     res.json({ message: 'Hello, world!' });
   };
 

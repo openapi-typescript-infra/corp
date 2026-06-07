@@ -3,17 +3,21 @@
 ENV            ?= development
 GCP_PROJECT_PREFIX ?= justtellme
 GCP_PROJECT_ID ?= $(GCP_PROJECT_PREFIX)-$(if $(filter production,$(ENV)),prod,dev)
+PLATFORM_PROJECT_ID ?= $(GCP_PROJECT_PREFIX)-platform
 GCP_REGION     ?= us-central1
 GCLOUD         ?= gcloud
 SUSPENDED      ?= false
 
 TF_DIR         := .
-BOOTSTRAP_DIR  := ./bootstrap
+BOOTSTRAP_DIR  := ../bootstrap
 ENVS_DIR       := ./envs
-STATE_BUCKET   := $(GCP_PROJECT_ID)-terraform-state
-BOOTSTRAP_STATE := terraform.$(GCP_PROJECT_ID).tfstate
+STATE_BUCKET   := $(GCP_PROJECT_PREFIX)-platform-terraform-state
+STATE_PREFIX   := infra/$(ENV)
+BOOTSTRAP_STATE := terraform.bootstrap.tfstate
 TFVARS         := $(ENVS_DIR)/$(ENV).tfvars
 CLOUDFLARE_API_TOKEN_SECRET ?= cloudflare_api_token
+STYTCH_WORKSPACE_KEY_ID_SECRET ?= stytch_workspace_key_id
+STYTCH_WORKSPACE_KEY_SECRET ?= stytch_workspace_key_secret
 SQL_INSTANCE_PREFIX ?= $(ENV)-
 
 # --- Validation ---
@@ -31,12 +35,22 @@ define check_env
 	fi
 endef
 
-define terraform_with_cloudflare_token
+define terraform_with_provider_credentials
 	cd $(TF_DIR) && \
 	if [ -z "$$TF_VAR_cloudflare_api_token" ]; then \
 		echo "Loading Cloudflare API token from Secret Manager secret $(CLOUDFLARE_API_TOKEN_SECRET) in $(GCP_PROJECT_ID)"; \
 		cloudflare_api_token="$$( $(GCLOUD) secrets versions access latest --secret="$(CLOUDFLARE_API_TOKEN_SECRET)" --project="$(GCP_PROJECT_ID)" )" || exit 1; \
 		export TF_VAR_cloudflare_api_token="$$cloudflare_api_token"; \
+	fi; \
+	if [ -z "$$TF_VAR_stytch_workspace_key_id" ]; then \
+		echo "Loading Stytch workspace key ID from Secret Manager secret $(STYTCH_WORKSPACE_KEY_ID_SECRET) in $(GCP_PROJECT_ID)"; \
+		stytch_workspace_key_id="$$( $(GCLOUD) secrets versions access latest --secret="$(STYTCH_WORKSPACE_KEY_ID_SECRET)" --project="$(GCP_PROJECT_ID)" )" || exit 1; \
+		export TF_VAR_stytch_workspace_key_id="$$stytch_workspace_key_id"; \
+	fi; \
+	if [ -z "$$TF_VAR_stytch_workspace_key_secret" ]; then \
+		echo "Loading Stytch workspace key secret from Secret Manager secret $(STYTCH_WORKSPACE_KEY_SECRET) in $(GCP_PROJECT_ID)"; \
+		stytch_workspace_key_secret="$$( $(GCLOUD) secrets versions access latest --secret="$(STYTCH_WORKSPACE_KEY_SECRET)" --project="$(GCP_PROJECT_ID)" )" || exit 1; \
+		export TF_VAR_stytch_workspace_key_secret="$$stytch_workspace_key_secret"; \
 	fi; \
 	terraform $(1) \
 		-var-file="$(TFVARS)" \
@@ -45,36 +59,36 @@ endef
 
 # --- Core targets ---
 
-.PHONY: init plan apply destroy refresh resume-cloudsql output console fmt validate clean help
+.PHONY: init init-upgrade plan apply destroy refresh resume-cloudsql output console fmt validate clean help
 
 init: ## Initialize Terraform for ENV (downloads providers, configures backend)
 	$(check_env)
-	cd $(TF_DIR) && terraform init \
+	cd $(TF_DIR) && terraform init -reconfigure \
 		-backend-config="bucket=$(STATE_BUCKET)" \
-		-backend-config="prefix=$(ENV)"
+		-backend-config="prefix=$(STATE_PREFIX)"
 
 init-upgrade: ## Re-initialize and upgrade provider versions
 	$(check_env)
-	cd $(TF_DIR) && terraform init \
+	cd $(TF_DIR) && terraform init -reconfigure \
 		-backend-config="bucket=$(STATE_BUCKET)" \
-		-backend-config="prefix=$(ENV)" \
+		-backend-config="prefix=$(STATE_PREFIX)" \
 		-upgrade
 
 plan: ## Show execution plan for ENV
 	$(check_env)
-	$(call terraform_with_cloudflare_token,plan)
+	$(call terraform_with_provider_credentials,plan)
 
 apply: ## Apply changes for ENV (requires confirmation)
 	$(check_env)
-	$(call terraform_with_cloudflare_token,apply)
+	$(call terraform_with_provider_credentials,apply)
 
 destroy: ## Destroy all resources for ENV (requires confirmation)
 	$(check_env)
-	$(call terraform_with_cloudflare_token,destroy)
+	$(call terraform_with_provider_credentials,destroy)
 
 refresh: ## Refresh state for ENV without modifying resources
 	$(check_env)
-	$(call terraform_with_cloudflare_token,apply -refresh-only)
+	$(call terraform_with_provider_credentials,apply -refresh-only)
 
 resume-cloudsql: ## Wake Cloud SQL instances before Terraform refreshes users/databases
 	$(check_env)
@@ -116,7 +130,7 @@ output: ## Show outputs for ENV
 
 console: ## Open Terraform console for ENV
 	$(check_env)
-	$(call terraform_with_cloudflare_token,console)
+	$(call terraform_with_provider_credentials,console)
 
 # --- Formatting & validation ---
 
@@ -141,16 +155,18 @@ bootstrap-init: ## Initialize the bootstrap directory (local state)
 		-backend-config="path=$(BOOTSTRAP_STATE)"
 
 bootstrap-plan: ## Plan the state bucket creation
-	@$(MAKE) bootstrap-init GCP_PROJECT_ID=$(GCP_PROJECT_ID) GCP_REGION=$(GCP_REGION)
+	@$(MAKE) bootstrap-init GCP_PROJECT_ID=$(PLATFORM_PROJECT_ID) GCP_REGION=$(GCP_REGION)
 	cd $(BOOTSTRAP_DIR) && terraform plan \
-		-var="gcp_project_id=$(GCP_PROJECT_ID)" \
-		-var="gcp_region=$(GCP_REGION)"
+		-var="gcp_project_id=$(PLATFORM_PROJECT_ID)" \
+		-var="gcp_region=$(GCP_REGION)" \
+		-var="state_bucket_name=$(STATE_BUCKET)"
 
 bootstrap-apply: ## Create the GCS state bucket
-	@$(MAKE) bootstrap-init GCP_PROJECT_ID=$(GCP_PROJECT_ID) GCP_REGION=$(GCP_REGION)
+	@$(MAKE) bootstrap-init GCP_PROJECT_ID=$(PLATFORM_PROJECT_ID) GCP_REGION=$(GCP_REGION)
 	cd $(BOOTSTRAP_DIR) && terraform apply \
-		-var="gcp_project_id=$(GCP_PROJECT_ID)" \
-		-var="gcp_region=$(GCP_REGION)"
+		-var="gcp_project_id=$(PLATFORM_PROJECT_ID)" \
+		-var="gcp_region=$(GCP_REGION)" \
+		-var="state_bucket_name=$(STATE_BUCKET)"
 
 # --- Environment shortcuts ---
 

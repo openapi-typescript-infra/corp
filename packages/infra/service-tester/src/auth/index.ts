@@ -3,7 +3,7 @@ import { AuthPrincipal } from '@justtellme/auth-token';
 import type { JTMExpress } from '@justtellme/service';
 
 export async function getTokenForPrincipal(
-  app: JTMExpress,
+  _app: JTMExpress,
   {
     uuid,
     options,

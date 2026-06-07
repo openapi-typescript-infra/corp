@@ -93,7 +93,7 @@ export async function getMiddleware<RequestDocumentFactory extends typeof getReq
   }
 
   if (config.auth?.enabled) {
-    justtellmeMiddleware = async (req, res, next) => {
+    justtellmeMiddleware = async (req, _res, next) => {
       try {
         const user = await getPrincipal(req);
         if (user) {

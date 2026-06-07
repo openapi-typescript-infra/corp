@@ -2,7 +2,6 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { StytchProvider } from '@stytch/react-native';
 import Constants from 'expo-constants';
 import { PostHogProvider } from 'posthog-react-native';
-import React from 'react';
 import { useColorScheme } from 'react-native';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';

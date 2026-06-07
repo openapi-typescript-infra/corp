@@ -30,5 +30,9 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = "~> 4.0"
     }
+    stytch = {
+      source  = "stytchauth/stytch"
+      version = "~> 3.3"
+    }
   }
 }

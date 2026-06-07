@@ -105,6 +105,68 @@ variable "cloudflare_api_token" {
   sensitive   = true
 }
 
+variable "stytch_workspace_key_id" {
+  description = "Stytch workspace management key ID used by Terraform. Prefer TF_VAR_stytch_workspace_key_id or the Makefile-loaded GSM secret."
+  type        = string
+  default     = null
+  sensitive   = true
+}
+
+variable "stytch_workspace_key_secret" {
+  description = "Stytch workspace management key secret used by Terraform. Prefer TF_VAR_stytch_workspace_key_secret or the Makefile-loaded GSM secret."
+  type        = string
+  default     = null
+  sensitive   = true
+}
+
+variable "stytch_project" {
+  description = "Optional Stytch project managed by Terraform. If null, Stytch project/environment resources are skipped."
+  type = object({
+    name         = string
+    project_slug = optional(string)
+    vertical     = optional(string, "CONSUMER")
+    live_environment = optional(object({
+      name             = string
+      environment_slug = optional(string, "production")
+    }))
+  })
+  default = null
+}
+
+variable "stytch_environment" {
+  description = "Stytch environment to manage in this Terraform environment. For production, use the live environment on stytch_project; for non-production, use a TEST environment."
+  type = object({
+    name             = string
+    environment_slug = string
+    type             = optional(string, "TEST")
+  })
+  default = null
+}
+
+variable "stytch_project_slug" {
+  description = "Existing Stytch project slug to use when stytch_project is not managed by Terraform."
+  type        = string
+  default     = ""
+}
+
+variable "stytch_environment_slug" {
+  description = "Existing Stytch environment slug to use when stytch_environment is not managed by Terraform."
+  type        = string
+  default     = ""
+}
+
+variable "stytch_redirect_urls" {
+  description = "Stytch redirect URLs to manage for this environment."
+  type = map(object({
+    url = string
+    valid_types = set(object({
+      type       = string
+      is_default = optional(bool, false)
+    }))
+  }))
+  default = {}
+}
+
 variable "dev_secret_accessor_member" {
   description = "Optional IAM member granted Secret Manager access in development, for example group:developers@example.com."
   type        = string

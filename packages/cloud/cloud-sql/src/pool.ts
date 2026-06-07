@@ -10,8 +10,6 @@ function defaultUsername(app: JTMExpress, env: ReturnType<typeof getNodeEnv>) {
     case 'production':
     case 'staging':
       return `${app.locals.name}-sa@${app.locals.gcpProjectId}.iam`;
-    case 'development':
-    case 'test':
     default:
       return process.env.JTM_DB_USER || app.locals.name;
   }

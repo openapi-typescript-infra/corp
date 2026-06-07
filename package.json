@@ -20,7 +20,7 @@
     "ios": "yarn workspace @just-tell-me/mobile-app run ios",
     "android": "yarn workspace mobile-app run android",
     "lint": "turbo run lint",
-    "lint:fix": "turbo run lint:fix",
+    "lint:fix": "node scripts/lint-fix-workspaces.mjs",
     "new": "./packages/infra/create/src/index.ts",
     "postinstall": "yarn run cpconfig",
     "prepare": "husky",

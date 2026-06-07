@@ -72,7 +72,7 @@ function getAdditionalTypes(
     if (args.pick && !args.pick.includes(field.name.value)) {
       return;
     }
-    if (args.omit && args.omit.includes(field.name.value)) {
+    if (args.omit?.includes(field.name.value)) {
       return;
     }
     const typeName = extractTypeName(field.type);

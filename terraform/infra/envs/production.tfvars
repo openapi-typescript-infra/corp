@@ -20,6 +20,7 @@ postgres_instances = {
 secrets = [
   "session_secret",
   "stytch_project_id",
+  "stytch_public_key",
   "stytch_secret",
 ]
 
@@ -46,3 +47,33 @@ envoy_gateway_config = {
 
 cloudflare_waf_enabled        = true
 cloudflare_waf_rate_limit_rps = 500
+
+stytch_project = {
+  name         = "Just Tell Me Production"
+  project_slug = "justtellme-production"
+
+  live_environment = {
+    name             = "Production"
+    environment_slug = "production"
+  }
+}
+
+stytch_environment = {
+  name             = "Production"
+  environment_slug = "production"
+  type             = "LIVE"
+}
+
+stytch_redirect_urls = {
+  consumer_web_authenticate_return_url = {
+    url = "https://consumer.justtellme.com/authenticate?return_url={}"
+    valid_types = [
+      {
+        type = "LOGIN"
+      },
+      {
+        type = "SIGNUP"
+      },
+    ]
+  }
+}

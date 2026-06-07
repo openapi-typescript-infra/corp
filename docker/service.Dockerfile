@@ -12,6 +12,7 @@ FROM busybox:1.37.0-uclibc AS busybox
 FROM node:24-bookworm AS build
 ARG BUILD_NODE_ENV=production
 ARG BUILD_VERSION=0.0.0
+ARG NPM_REGISTRY_SERVER=https://us-central1-npm.pkg.dev/justtellme-platform/npm-packages/
 WORKDIR /nodejs/monorepo
 
 # Copy monorepo root files for yarn workspace resolution
@@ -53,7 +54,7 @@ RUN --mount=type=secret,id=google_packages_token \
     GOOGLE_PACKAGES_TOKEN="$(cat /run/secrets/google_packages_token)" \
     && npm run prepack --if-present \
     && (yarn plugin remove @yarnpkg/plugin-gcp-auth || true) \
-    && yarn config set npmScopes.justtellme.npmRegistryServer "https://us-central1-npm.pkg.dev/justtellme-dev/npm-packages/" \
+    && yarn config set npmScopes.justtellme.npmRegistryServer "$NPM_REGISTRY_SERVER" \
     && yarn config set npmScopes.justtellme.npmAlwaysAuth true \
     && yarn config set npmScopes.justtellme.npmAuthToken "$GOOGLE_PACKAGES_TOKEN" > /dev/null 2>&1 \
     && if [ -f .env ]; then set -a; . ./.env; set +a; fi \

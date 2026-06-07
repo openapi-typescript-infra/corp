@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
 import type { ExpressionBuilder } from 'kysely';
 import { sql } from 'kysely';
