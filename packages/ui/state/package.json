@@ -35,7 +35,7 @@
     "cpconfig": "@justtellme/cpconfig"
   },
   "dependencies": {
-    "@legendapp/state": "^3.0.0-beta.46"
+    "@legendapp/state": "^3.0.0-beta.47"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.10",
