@@ -33,19 +33,19 @@
     "express"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^2.4.10",
+    "@biomejs/biome": "^2.4.16",
     "@openapi-typescript-infra/service-tester": "^7.1.2",
     "@typescript/native-preview": "^7.0.0-dev.20260418.1",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.8"
   },
   "dependencies": {
     "@justtellme/cpconfig": "workspace:^",
     "@justtellme/rest-api-client": "workspace:^",
     "@justtellme/service-with-auth": "workspace:^",
-    "@openapi-typescript-infra/service": "^6.13.1",
-    "@temporalio/client": "^1.15.0",
-    "kysely": "^0.28.15",
-    "pg": "^8.20.0"
+    "@openapi-typescript-infra/service": "^6.14.1",
+    "@temporalio/client": "^1.18.0",
+    "kysely": "^0.29.2",
+    "pg": "^8.21.0"
   }
 }
