@@ -40,10 +40,10 @@
     "express"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^2.4.10",
+    "@biomejs/biome": "^2.4.16",
     "@openapi-typescript-infra/service-tester": "^7.1.2",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.8"
   },
   "dependencies": {
     "@justtellme/cpconfig": "workspace:^",
@@ -53,11 +53,11 @@
     "@justtellme/ui-kit": "workspace:^",
     "@justtellme/web-service": "workspace:^",
     "@legendapp/state": "^3.0.0-beta.46",
-    "@openapi-typescript-infra/service": "^6.13.1",
-    "@stytch/nextjs": "^22.0.5",
-    "next": "^16.2.4",
+    "@openapi-typescript-infra/service": "^6.14.1",
+    "@stytch/nextjs": "^22.0.9",
+    "next": "^16.2.7",
     "next-urql": "^5.0.2",
-    "posthog-js": "^1.369.3",
-    "urql": "^5.0.1"
+    "posthog-js": "^1.383.1",
+    "urql": "^5.0.2"
   }
 }
