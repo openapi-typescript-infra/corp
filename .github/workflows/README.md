@@ -36,9 +36,7 @@ gh workflow run deploy --ref main -f force_all=true
 - Repository var `DEPLOYS_ENABLED=true` to turn this on. Leave it unset while there is no GCP environment.
 - Repository vars: `GCP_PROJECT_ID` and `GCP_PROJECT_NUMBER`.
 - `terraform/infra` applied so `github-actions-ci` can authenticate through
-  Workload Identity, push images, read generated DB password secrets, and
-  deploy to GKE.
-- Database services use Secret Manager secrets named
-  `<database gcpId>-db-credentials`; Terraform mirrors generated Cloud SQL
-  passwords there and the deploy workflow syncs them to Kubernetes before
-  Helm runs migrations.
+  Workload Identity, push images, and deploy to GKE.
+- Database services expect the Kubernetes secret named
+  `<database gcpId>-db-credentials` to already exist in the target namespace.
+  Helm migrations read that secret directly.

@@ -136,6 +136,8 @@ module "envoy_gateway" {
   gcp_region           = var.gcp_region
   environment          = var.environment
   envoy_gateway_config = var.envoy_gateway_config
+  public_tls_config    = var.public_tls_config
+  cloudflare_api_token = var.cloudflare_api_token
 
   depends_on = [module.gke]
 }

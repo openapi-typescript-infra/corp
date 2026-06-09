@@ -184,6 +184,21 @@ variable "cloudflare_dns_records" {
   default = {}
 }
 
+variable "public_tls_config" {
+  description = "Optional public ACME TLS configuration for Envoy Gateway. Intended for DNS-only development hosts."
+  type = object({
+    enabled                 = optional(bool, false)
+    cert_manager_version    = optional(string, "v1.16.3")
+    acme_email              = optional(string)
+    acme_server             = optional(string, "https://acme-v02.api.letsencrypt.org/directory")
+    certificate_secret_name = optional(string, "public-gateway-tls")
+    dns_names               = optional(list(string), [])
+  })
+  default = {
+    enabled = false
+  }
+}
+
 variable "cloudflare_waf_enabled" {
   description = "Enable Cloudflare WAF rate limiting"
   type        = bool

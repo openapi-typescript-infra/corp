@@ -34,14 +34,26 @@ cloudflare_zone_id = "1ab92e0aa6efb0e7e00594eaa800530f"
 
 cloudflare_dns_records = {
   api = {
-    name = "api.development"
+    name    = "api.dev"
+    proxied = false
   }
-  app = {
-    name = "app.development"
+  consumer = {
+    name    = "consumer.dev"
+    proxied = false
   }
 }
 
 envoy_gateway_config = {}
+
+public_tls_config = {
+  enabled                 = true
+  acme_email              = "max@justtellme.com"
+  certificate_secret_name = "development-public-gateway-tls"
+  dns_names = [
+    "dev.justtellme.com",
+    "*.dev.justtellme.com",
+  ]
+}
 
 cloudflare_waf_enabled = false
 

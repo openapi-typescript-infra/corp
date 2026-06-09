@@ -16,10 +16,12 @@ terraform {
 }
 
 locals {
-  namespace          = "envoy-gateway-system"
-  gateway_class_name = "envoy-gateway"
-  gateway_name       = "${var.environment}-gateway"
-  envoy_proxy_name   = "${var.environment}-envoy-proxy"
+  namespace              = "envoy-gateway-system"
+  cert_manager_namespace = "cert-manager"
+  gateway_class_name     = "envoy-gateway"
+  gateway_name           = "${var.environment}-gateway"
+  envoy_proxy_name       = "${var.environment}-envoy-proxy"
+  public_tls_enabled     = var.public_tls_config.enabled
 
   envoy_gateway_crd_names = [
     "backendtlspolicies.gateway.networking.k8s.io",
@@ -64,6 +66,49 @@ resource "kubernetes_namespace" "envoy_gateway" {
   metadata {
     name = local.namespace
   }
+}
+
+resource "kubernetes_namespace" "cert_manager" {
+  count = local.public_tls_enabled ? 1 : 0
+
+  metadata {
+    name = local.cert_manager_namespace
+  }
+}
+
+resource "kubernetes_secret" "cloudflare_dns01" {
+  count = local.public_tls_enabled ? 1 : 0
+
+  metadata {
+    name      = "cloudflare-dns01"
+    namespace = kubernetes_namespace.envoy_gateway.metadata[0].name
+  }
+
+  type                           = "Opaque"
+  wait_for_service_account_token = false
+
+  data = {
+    api-token = var.cloudflare_api_token
+  }
+}
+
+resource "helm_release" "cert_manager" {
+  count = local.public_tls_enabled ? 1 : 0
+
+  name             = "cert-manager"
+  repository       = "https://charts.jetstack.io"
+  chart            = "cert-manager"
+  version          = var.public_tls_config.cert_manager_version
+  namespace        = kubernetes_namespace.cert_manager[0].metadata[0].name
+  create_namespace = false
+  timeout          = 600
+
+  set {
+    name  = "crds.enabled"
+    value = "true"
+  }
+
+  depends_on = [kubernetes_namespace.cert_manager]
 }
 
 data "helm_template" "envoy_gateway_crds" {
@@ -172,7 +217,7 @@ resource "kubectl_manifest" "gateway" {
           name  = local.envoy_proxy_name
         }
       }
-      listeners = [
+      listeners = concat([
         {
           name     = "http"
           protocol = "HTTP"
@@ -183,12 +228,96 @@ resource "kubectl_manifest" "gateway" {
             }
           }
         }
-      ]
+        ],
+        local.public_tls_enabled ? [
+          {
+            name     = "https"
+            protocol = "HTTPS"
+            port     = 443
+            tls = {
+              mode = "Terminate"
+              certificateRefs = [
+                {
+                  name = var.public_tls_config.certificate_secret_name
+                }
+              ]
+            }
+            allowedRoutes = {
+              namespaces = {
+                from = "All"
+              }
+            }
+          }
+        ] : []
+      )
     }
   })
 
   depends_on = [
     kubectl_manifest.envoy_proxy,
     kubectl_manifest.gateway_class,
+    kubectl_manifest.public_tls_certificate,
   ]
+}
+
+resource "kubectl_manifest" "public_tls_issuer" {
+  count = local.public_tls_enabled ? 1 : 0
+
+  yaml_body = yamlencode({
+    apiVersion = "cert-manager.io/v1"
+    kind       = "Issuer"
+    metadata = {
+      name      = "letsencrypt-dns01"
+      namespace = kubernetes_namespace.envoy_gateway.metadata[0].name
+    }
+    spec = {
+      acme = {
+        email  = var.public_tls_config.acme_email
+        server = var.public_tls_config.acme_server
+        privateKeySecretRef = {
+          name = "letsencrypt-dns01-account-key"
+        }
+        solvers = [
+          {
+            dns01 = {
+              cloudflare = {
+                apiTokenSecretRef = {
+                  name = kubernetes_secret.cloudflare_dns01[0].metadata[0].name
+                  key  = "api-token"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  })
+
+  depends_on = [
+    helm_release.cert_manager,
+    kubernetes_secret.cloudflare_dns01,
+  ]
+}
+
+resource "kubectl_manifest" "public_tls_certificate" {
+  count = local.public_tls_enabled ? 1 : 0
+
+  yaml_body = yamlencode({
+    apiVersion = "cert-manager.io/v1"
+    kind       = "Certificate"
+    metadata = {
+      name      = "gateway-public-tls"
+      namespace = kubernetes_namespace.envoy_gateway.metadata[0].name
+    }
+    spec = {
+      secretName = var.public_tls_config.certificate_secret_name
+      issuerRef = {
+        name = "letsencrypt-dns01"
+        kind = "Issuer"
+      }
+      dnsNames = var.public_tls_config.dns_names
+    }
+  })
+
+  depends_on = [kubectl_manifest.public_tls_issuer]
 }

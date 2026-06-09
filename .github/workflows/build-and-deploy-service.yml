@@ -37,12 +37,6 @@ on:
         required: false
         type: string
         default: ""
-      db-secret-prefix:
-        description: Secret Manager prefix for database password secrets.
-        required: false
-        type: string
-        default: ""
-
 permissions:
   contents: read
   id-token: write
@@ -115,7 +109,6 @@ jobs:
       GKE_CLUSTER: ${{ inputs.gke-cluster }}
       GKE_REGION: ${{ inputs.gke-region }}
       NAMESPACE: ${{ inputs.namespace }}
-      DB_SECRET_PREFIX: ${{ inputs.db-secret-prefix }}
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
@@ -133,36 +126,6 @@ jobs:
         run: |
           gcloud container clusters get-credentials "$GKE_CLUSTER" \
             --region="$GKE_REGION" --project="$GCP_PROJECT"
-
-      - name: Detect database settings
-        id: dbcfg
-        run: |
-          set -euo pipefail
-          if grep -qE '^\s*gcpId:\s*[A-Za-z0-9_-]+' "$CHART_DIR/values.yaml"; then
-            DB_ID=$(awk '/^[[:space:]]*gcpId:[[:space:]]*/ {print $2; exit}' "$CHART_DIR/values.yaml")
-            SECRET_NAME="${DB_ID}-db-credentials"
-            if [ -n "$DB_SECRET_PREFIX" ]; then
-              SM_SECRET="${DB_SECRET_PREFIX}-${DB_ID}-db-credentials"
-            else
-              SM_SECRET="$SECRET_NAME"
-            fi
-            echo "has_db=true" >> "$GITHUB_OUTPUT"
-            echo "db_id=$DB_ID" >> "$GITHUB_OUTPUT"
-            echo "k8s_secret=$SECRET_NAME" >> "$GITHUB_OUTPUT"
-            echo "sm_secret=$SM_SECRET" >> "$GITHUB_OUTPUT"
-          else
-            echo "has_db=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Sync database password from Secret Manager
-        if: steps.dbcfg.outputs.has_db == 'true'
-        run: |
-          set -euo pipefail
-          PG_PASSWORD=$(gcloud secrets versions access latest \
-            --secret="${{ steps.dbcfg.outputs.sm_secret }}" --project="$GCP_PROJECT")
-          kubectl -n "$NAMESPACE" create secret generic "${{ steps.dbcfg.outputs.k8s_secret }}" \
-            --from-literal=password="$PG_PASSWORD" \
-            --dry-run=client -o yaml | kubectl apply -f -
 
       - name: helm dependency update
         run: helm dependency update "$CHART_DIR"
