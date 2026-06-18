@@ -1,12 +1,16 @@
 apiVersion: v2
 name: agent-internal
-description: AI agent harness using Temporal
 type: application
-version: 0.1.0
-appVersion: "0.1.0"
+
+# This is the version of the chart. Convention is to put the
+# base image version here.
+version: 1.0.0
+
+# This is the version number of the application being deployed.
+# It will be set automatically by the CI/CD pipeline
+appVersion: "1.0.0"
+
 dependencies:
-  - name: service
-    version: ">=0.0.0"
-    repository: "oci://us-docker.pkg.dev/justtellme/helm"
-    condition: service.enabled
-    alias: service
+  - name: base-service
+    version: 1.0.0
+    repository: 'file://../../../../helm/charts/base-service'
