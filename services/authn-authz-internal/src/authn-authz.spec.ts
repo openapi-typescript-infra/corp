@@ -70,6 +70,16 @@ describe('Basic test of authn-authz-internal', () => {
     expect(payload.sub).toBe(testUser.uuid);
   });
 
+  testWithApp('rejects an externally-supplied x-auth-token', async ({ app }) => {
+    // x-auth-token is internal-only; an external client supplying it must be
+    // rejected at the edge rather than trusted. The gateway forwards it to
+    // ext_authz (/envoy) precisely so this rejection can fire.
+    const response = await request(app)
+      .get('/envoy/token-check')
+      .set('x-auth-token', 'forged.identity.token');
+    expect(response.status).toBe(400);
+  });
+
   testWithApp('authenticate a user with Envoy', async ({ app }) => {
     const Cookie = `s_jwt_dev=${sJwt}; s_id_dev=${sId};`;
     request(app)

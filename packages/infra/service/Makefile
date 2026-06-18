@@ -7,8 +7,20 @@ TSC = tsgo
 _TSC_ALIAS := $(shell node --experimental-import-meta-resolve -e "import {createRequire} from 'module'; const r = createRequire(import.meta.url); console.log(r.resolve('tsc-alias/dist/bin/index.js'))")
 _TS_EXT_REPLACER := $(shell node --experimental-import-meta-resolve -e "import {createRequire} from 'module'; const r = createRequire(import.meta.url); console.log(r.resolve('@justtellme/cpconfig/ts-extension-replacer.cjs'))")
 
-# Filter out rules we redefine below: service generation and ts build
-include $(shell _tmp=$$(mktemp) && sed -e '/^src\/generated\/service\/index\.ts:/,/^$$/{d;}' -e '/^\$$(ts_build_stamp):/,/^$$/{d;}' -e '/^src\/generated\/database\.ts:/,/^$$/{d;}' $(SERVICE_MAKEFILE) > $$_tmp && echo $$_tmp)
+# Filter out rules we redefine below: service generation, ts build, and clean
+include $(shell _tmp=$$(mktemp) && sed -e '/^src\/generated\/service\/index\.ts:/,/^$$/{d;}' -e '/^\$$(ts_build_stamp):/,/^$$/{d;}' -e '/^src\/generated\/database\.ts:/,/^$$/{d;}' -e '/^clean:/,/^$$/{d;}' $(SERVICE_MAKEFILE) > $$_tmp && echo $$_tmp)
+
+clean_build_dir := $(if $(filter src,$(build_dir)),,$(build_dir))
+
+# The upstream clean target derives build_dir from package.json exports. Services
+# that export ./src/index.ts resolve build_dir=src, so deleting ./$(build_dir)
+# removes the source tree. Only delete the build dir when it is not src.
+clean:
+ifdef clean_build_dir
+	yarn dlx rimraf ./$(clean_build_dir) src/generated tsconfig.build.tsbuildinfo
+else
+	yarn dlx rimraf src/generated tsconfig.build.tsbuildinfo
+endif
 
 # Override ts build to handle #src/ subpath imports with .ts extensions:
 # 1. Type-check via tsconfig.json (no rewriteRelativeImportExtensions => no TS2877)

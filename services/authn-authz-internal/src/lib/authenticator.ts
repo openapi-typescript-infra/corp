@@ -31,21 +31,29 @@ export async function authenticate(
   let status: number | undefined;
 
   try {
-    // Cloudflare and Envoy stop this, but... defense in depth.
-    if (!options.internal && disallowedExternalHeaders.some((header) => req.headers[header])) {
+    // x-auth-token is an internal-only identity header that this service mints
+    // and Envoy injects downstream. An external client supplying it is either a
+    // misconfiguration or a forgery attempt, so reject the whole request at the
+    // edge. This is the primary edge enforcement for non-proxied environments
+    // (e.g. dev, where the Cloudflare WAF rule does not apply); Cloudflare
+    // blocks it independently for proxied production traffic. The gateway
+    // SecurityPolicy must forward x-auth-token to ext_authz (headersToExtAuth)
+    // so this check can see and reject it.
+    const presentDisallowed = !options.internal
+      ? disallowedExternalHeaders.filter((header) => req.headers[header] != null)
+      : [];
+    if (presentDisallowed.length > 0) {
       app.locals.logger.error(
         {
-          headers: JSON.stringify(
-            disallowedExternalHeaders.filter((header) => req.headers[header]),
-          ),
+          headers: JSON.stringify(presentDisallowed),
           host: req.headers.host || 'none',
           ua: req.headers['user-agent'],
           url: req.url,
         },
-        'Received disallowed header',
+        'Rejected request carrying internal-only header from external surface',
       );
       status = 400;
-      res.sendStatus(400);
+      res.status(400).json({ code: 'DISALLOWED_HEADER', message: 'Disallowed request header' });
       return {
         handled: true,
       };
