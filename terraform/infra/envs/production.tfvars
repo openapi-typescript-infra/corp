@@ -54,6 +54,23 @@ envoy_gateway_config = {
 cloudflare_waf_enabled        = true
 cloudflare_waf_rate_limit_rps = 500
 
+monitoring_config = {
+  enabled            = true
+  notification_email = "max@justtellme.com"
+  workload_names     = ["consumer-web", "graphql-api", "rest-api"]
+  uptime_targets = {
+    api = {
+      dns_record_key      = "api"
+      path                = "/graphql"
+      request_method      = "POST"
+      content_type        = "USER_PROVIDED"
+      custom_content_type = "application/json"
+      body                = "{\"query\":\"query Uptime { __typename }\"}"
+      expected_content    = "\"__typename\":\"Query\""
+    }
+  }
+}
+
 stytch_project = {
   name         = "Just Tell Me Production"
   project_slug = "justtellme-production"

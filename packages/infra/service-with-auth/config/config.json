@@ -12,10 +12,10 @@
     "saveUninitialized": false,
     "store": {
       "socket": {
-        "host": "env:REDIS_HOST|u",
-        "port": "env:REDIS_PORT|ud"
+        "host": "env:SHARED_REDIS_HOST|u",
+        "port": "env:SHARED_REDIS_PORT|ud"
       },
-      "password": "env:REDIS_PASSWORD|u"
+      "password": "env:SHARED_REDIS_PASSWORD|u"
     }
   },
   "routing": {

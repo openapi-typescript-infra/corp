@@ -9,6 +9,7 @@
       "logResponses": true
     }
   },
-  "secret": "gsm:redis_general_purpose_port|d",
+  "secret": "gsm:service_fixture_number|d",
+  "secret_label": "gsm:service_fixture_label|u",
   "gcp_identity": "gcp:email"
 }

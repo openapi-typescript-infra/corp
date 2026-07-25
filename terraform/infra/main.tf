@@ -4,6 +4,14 @@ provider "google" {
   zone    = var.gcp_zone
 }
 
+provider "google-beta" {
+  project               = var.gcp_project_id
+  billing_project       = var.gcp_project_id
+  region                = var.gcp_region
+  user_project_override = true
+  zone                  = var.gcp_zone
+}
+
 provider "cloudflare" {
   api_token = var.cloudflare_api_token
 }
@@ -154,6 +162,9 @@ module "cloud_sql" {
   suspended          = var.suspended
   postgres_instances = var.postgres_instances
   network_id         = module.networking.network_id
+  datastream_instance_keys = toset([
+    for source in local.datastream_sources : source.instance_key
+  ])
 
   depends_on = [module.networking]
 }

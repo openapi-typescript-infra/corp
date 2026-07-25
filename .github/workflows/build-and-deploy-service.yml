@@ -67,7 +67,15 @@ jobs:
         run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
 
       - name: Setup mise (tools + env)
-        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+        uses: jdx/mise-action@dad1bfd3df957f44999b559dd69dc1671cb4e9ea # v4.2.1
+        with:
+          version: 2026.5.18
+          cache: false
+
+      - name: Enable Corepack package managers
+        run: |
+          corepack enable
+          mise reshim
 
       - name: Cache yarn fetch
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -82,7 +90,7 @@ jobs:
         run: yarn workspaces focus just-tell-me "@justtellme/${SERVICE}"
 
       - name: Turbo remote cache (GitHub-backed)
-        uses: rharkor/caching-for-turbo@5d14fba18e450c09393333cfd4242e8b3cb455a6 # v2.4.2
+        uses: rharkor/caching-for-turbo@75f8ebf4a43d2c60b23bc2a27082cfea94ffdad9 # v2.5.0
 
       - name: Build target service's workspace deps
         run: |
@@ -118,7 +126,7 @@ jobs:
           workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-actions/providers/github-oidc
           service_account: github-actions-ci@${{ env.GCP_PROJECT }}.iam.gserviceaccount.com
 
-      - uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5.0.0
+      - uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
         with:
           version: v3.16.4
 
