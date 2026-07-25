@@ -5,3 +5,8 @@ base-service:
   database:
     gcpId: main
     name: identity
+  env:
+    IDENTITY_PUBSUB_ENABLED: "true"
+    IDENTITY_PUBSUB_ACCOUNT_DELETION_REQUESTED_TOPIC: "{{ .Values.gcp.env }}_account_deletion_requested"
+    IDENTITY_PUBSUB_ACCOUNT_DELETED_TOPIC: "{{ .Values.gcp.env }}_account_deleted"
+    TEMPORAL_WORKER: "true"

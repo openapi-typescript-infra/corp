@@ -3,7 +3,10 @@ import { PubSub } from '@google-cloud/pubsub';
 
 // Topics are defined inline here for now. When a shared topic registry is added
 // (e.g. a `data-formats` package exporting `Topics`), import from there instead.
-const Topics = {};
+const Topics = {
+  account_deleted: {},
+  account_deletion_requested: {},
+};
 
 const projectId = process.env.PUBSUB_PROJECT_ID;
 if (!projectId) {

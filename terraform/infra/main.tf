@@ -125,8 +125,11 @@ module "identity_internal" {
   cloudsql_instances = [
     "pg-main",
   ]
+  extra_project_roles = [
+    "roles/pubsub.publisher",
+  ]
 
-  depends_on = [module.gke, module.cloud_sql, kubernetes_namespace.app]
+  depends_on = [module.gke, module.cloud_sql, module.pubsub, kubernetes_namespace.app]
 }
 
 module "envoy_gateway" {

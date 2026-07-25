@@ -25,6 +25,12 @@ secrets = [
 ]
 
 pubsub_topics = {
+  account_deleted = {
+    subscriptions = []
+  }
+  account_deletion_requested = {
+    subscriptions = []
+  }
   individual_created = {
     subscriptions = ["crm-sync-internal"]
   }

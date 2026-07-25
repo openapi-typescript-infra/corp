@@ -48,6 +48,12 @@ spec:
           env:
             - name: GCP_REGION
               value: {{ .Values.gcp.region | default "us-central1" }}
+            - name: GCP_PROJECT_ID
+              value: {{ .Values.gcp.project | quote }}
+            - name: GCP_PROJECT
+              value: {{ .Values.gcp.project | quote }}
+            - name: GOOGLE_CLOUD_PROJECT
+              value: {{ .Values.gcp.project | quote }}
             - name: NODE_ENV
               value: production
             - name: APP_ENV
