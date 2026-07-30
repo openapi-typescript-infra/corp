@@ -1,15 +1,9 @@
 type: object
-description: Conversation header details without turns or messages
 required:
   - conversation_id
+  - turns
 properties:
   conversation_id:
-    type: string
-  owners:
-    type: array
-    items:
-      type: string
-  agent_id:
     type: string
   status:
     type: string
@@ -19,18 +13,13 @@ properties:
       - failed
   error:
     type: string
-  model:
-    type: string
-  client:
-    type: string
-  client_version:
-    type: string
   created_at:
     type: string
     format: date-time
   updated_at:
     type: string
     format: date-time
-  extra_data:
-    type: object
-    additionalProperties: true
+  turns:
+    type: array
+    items:
+      $ref: ../../agent-internal/schemas/Turn.yaml

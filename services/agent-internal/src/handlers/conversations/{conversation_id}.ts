@@ -18,8 +18,14 @@ import {
 import type { AgentInternal, AgentInternalApi } from '#src/types/index.js';
 
 function getConversationIdParam(req: AgentInternal['Request']): string {
-  const id = getConversationIdParam(req);
+  const id = req.params.conversation_id;
   return Array.isArray(id) ? id[0] : id;
+}
+
+function getOwnersParam(req: AgentInternal['Request']): string[] | undefined {
+  const owners = req.query.owners;
+  if (!owners) return undefined;
+  return Array.isArray(owners) ? owners.map(String) : [String(owners)];
 }
 
 function waitForTurnResultUntilClose(
@@ -145,6 +151,7 @@ export const get: AgentInternalApi['getConversation'] = async (req, res) => {
   const apiConversation = await getApiConversation(req.app, getConversationIdParam(req), {
     metadata,
     turnId,
+    owners: getOwnersParam(req),
   });
   if (!apiConversation) {
     throw new ServiceError(req.app, `Conversation not found: ${getConversationIdParam(req)}`, {
@@ -214,7 +221,11 @@ export const put: AgentInternalApi['conversationTurn'] = async (req, res) => {
   const responseMode: ResponseMode = body.response ?? 'complete';
   const identityToken = body.identity_token;
 
-  const conversation = await getRequiredConversation(req.app, getConversationIdParam(req));
+  const conversation = await getRequiredConversation(
+    req.app,
+    getConversationIdParam(req),
+    getOwnersParam(req),
+  );
   await ensureConversationWorkflow(req.app, conversation.conversationId);
 
   const inflightTurn =

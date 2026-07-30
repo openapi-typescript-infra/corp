@@ -4708,6 +4708,8 @@ __metadata:
   resolution: "@justtellme/rest-api@workspace:services/rest-api"
   dependencies:
     "@biomejs/biome": "npm:^2.4.10"
+    "@justtellme/agent-internal-client": "workspace:^"
+    "@justtellme/auth-token": "workspace:^"
     "@justtellme/cpconfig": "workspace:^"
     "@justtellme/rest-api-client": "workspace:^"
     "@justtellme/service-with-auth": "workspace:^"
@@ -4820,7 +4822,10 @@ __metadata:
   dependencies:
     "@biomejs/biome": "npm:^2.4.10"
     "@justtellme/cpconfig": "workspace:^"
+    "@justtellme/external-id": "workspace:^"
+    "@justtellme/rest-api-client": "workspace:^"
     "@legendapp/state": "npm:^3.0.0-beta.46"
+    openapi-fetch: "npm:^0.17.0"
     typescript: "npm:^6.0.3"
     vitest: "npm:^4.1.2"
   languageName: unknown
@@ -18664,7 +18669,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openapi-fetch@npm:0.17.0":
+"openapi-fetch@npm:0.17.0, openapi-fetch@npm:^0.17.0":
   version: 0.17.0
   resolution: "openapi-fetch@npm:0.17.0"
   dependencies:

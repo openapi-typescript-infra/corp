@@ -87,7 +87,7 @@ export function useJTMServiceWithAuth<
       await base?.onRequest?.(req, res);
       res.locals.getForwardHeaders = async () => {
         const user = await getPrincipal(req);
-        if (!user?.userUuid) {
+        if (!user?.userUuid && !user?.clientId) {
           return undefined;
         }
         const headers: Record<string, string> = {};

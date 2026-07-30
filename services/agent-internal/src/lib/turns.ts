@@ -202,10 +202,10 @@ export async function getApiTurn(
 export async function getApiConversation(
   app: AgentInternal['App'],
   conversationId: string,
-  options?: { metadata?: boolean; turnId?: string },
+  options?: { metadata?: boolean; turnId?: string; owners?: string[] },
 ): Promise<components['schemas']['ConversationDetails'] | null> {
   const conversationUuid = getConversationUuid(conversationId);
-  const conversation = await getConversation(app, conversationUuid);
+  const conversation = await getConversation(app, conversationUuid, options?.owners);
   if (!conversation) return null;
 
   let turns = await getConversationTurns(app, conversationUuid);
@@ -230,6 +230,7 @@ export async function getApiConversation(
 
   return {
     conversation_id: getConversationId(conversation.conversationId),
+    owners: conversation.owners,
     status: toApiConversationStatus(conversation.status),
     error:
       typeof conversation.extraData?.error === 'string' ? conversation.extraData.error : undefined,

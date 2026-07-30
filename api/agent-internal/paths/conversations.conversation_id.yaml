@@ -15,6 +15,14 @@ get:
       description: If true, include server-side execution metadata on each turn
       schema:
         type: boolean
+    - name: owners
+      in: query
+      required: false
+      description: Require at least one matching conversation owner
+      schema:
+        type: array
+        items:
+          type: string
   responses:
     '200':
       description: Conversation retrieved successfully
@@ -47,6 +55,15 @@ post:
             type: string
 put:
   operationId: conversationTurn
+  parameters:
+    - name: owners
+      in: query
+      required: false
+      description: Require at least one matching conversation owner
+      schema:
+        type: array
+        items:
+          type: string
   requestBody:
     content:
       application/json:
@@ -67,6 +84,9 @@ put:
               $ref: ../schemas/ClientInfo.yaml
             turn:
               $ref: ../schemas/TurnInput.yaml
+            identity_token:
+              type: string
+              description: End-user identity token forwarded by a trusted API gateway
   responses:
     '200':
       description: Turn executed successfully

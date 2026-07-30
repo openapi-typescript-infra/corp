@@ -2,10 +2,15 @@ type: object
 description: A conversation with all stored turns and messages
 required:
   - conversation_id
+  - owners
   - turns
 properties:
   conversation_id:
     type: string
+  owners:
+    type: array
+    items:
+      type: string
   status:
     type: string
     enum:

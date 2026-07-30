@@ -40,6 +40,8 @@
     "vitest": "^4.1.2"
   },
   "dependencies": {
+    "@justtellme/agent-internal-client": "workspace:^",
+    "@justtellme/auth-token": "workspace:^",
     "@justtellme/cpconfig": "workspace:^",
     "@justtellme/rest-api-client": "workspace:^",
     "@justtellme/service-with-auth": "workspace:^",
