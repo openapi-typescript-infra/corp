@@ -15,6 +15,9 @@ env:
   # truth for tool versions and env vars; CI-specific values live in
   # `mise.ci.toml`.
   MISE_ENV: ci
+  CI_REDIS_PORT: "36379"
+  SHARED_REDIS_HOST: localhost
+  SHARED_REDIS_PORT: "36379"
 
 jobs:
   build-check-test:
@@ -26,7 +29,15 @@ jobs:
           fetch-depth: 0
 
       - name: 🧰 Setup mise (tools + env)
-        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+        uses: jdx/mise-action@dad1bfd3df957f44999b559dd69dc1671cb4e9ea # v4.2.1
+        with:
+          version: 2026.5.18
+          cache: false
+
+      - name: Enable Corepack package managers
+        run: |
+          corepack enable
+          mise reshim
 
       - name: 🐘 Start CI Postgres
         run: |
@@ -43,6 +54,22 @@ jobs:
             fi
             sleep 1
           done
+
+      - name: Start CI Redis
+        run: |
+          docker run -d --name ci-redis-${{ github.run_id }} \
+            -p "127.0.0.1:${CI_REDIS_PORT}:6379" \
+            redis:8-alpine
+          for _ in $(seq 1 30); do
+            if docker exec ci-redis-${{ github.run_id }} redis-cli ping 2>/dev/null | grep -q PONG; then
+              echo "Redis is ready"
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs ci-redis-${{ github.run_id }}
+          echo "::error::Redis did not become ready"
+          exit 1
 
       - id: auth
         if: vars.GCP_PROJECT_NUMBER != '' && vars.GCP_PROJECT_ID != ''
@@ -64,11 +91,11 @@ jobs:
         run: yarn install --immutable
 
       - name: ♻️ Turbo remote cache (GitHub-backed)
-        uses: rharkor/caching-for-turbo@56219402aacc0d06b650d898c222996dbc1191ec # v2.3.14
+        uses: rharkor/caching-for-turbo@75f8ebf4a43d2c60b23bc2a27082cfea94ffdad9 # v2.5.0
 
       - name: 🏗️ Build, typecheck, lint
         run: |
-          yarn workspaces foreach -pt run ci-setup
+          yarn workspaces foreach -Apt run ci-setup
           yarn turbo run build typecheck lint
 
       - name: 📦 Check bundle sizes
@@ -79,3 +106,7 @@ jobs:
       - name: 🧹 Cleanup CI Postgres
         if: always()
         run: docker rm -f ci-postgres-${{ github.run_id }} || true
+
+      - name: Cleanup CI Redis
+        if: always()
+        run: docker rm -f ci-redis-${{ github.run_id }} || true

@@ -15,6 +15,15 @@ resource "google_sql_database_instance" "instances" {
       value = "on"
     }
 
+    dynamic "database_flags" {
+      for_each = contains(var.datastream_instance_keys, each.key) ? [1] : []
+
+      content {
+        name  = "cloudsql.logical_decoding"
+        value = "on"
+      }
+    }
+
     ip_configuration {
       ipv4_enabled                                  = false
       private_network                               = var.network_id
@@ -57,4 +66,20 @@ resource "random_password" "db_passwords" {
 
   length  = 32
   special = false
+}
+
+resource "random_password" "datastream_db_passwords" {
+  for_each = var.datastream_instance_keys
+
+  length  = 32
+  special = false
+}
+
+resource "google_sql_user" "datastream" {
+  for_each = var.datastream_instance_keys
+
+  name     = "${var.environment}_datastream"
+  project  = var.gcp_project_id
+  instance = google_sql_database_instance.instances[each.key].name
+  password = random_password.datastream_db_passwords[each.key].result
 }

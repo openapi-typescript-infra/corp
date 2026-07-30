@@ -57,6 +57,20 @@ output "cloudflare_dns_hostnames" {
   value       = module.cloudflare.dns_record_hostnames
 }
 
+output "reporting_datastream" {
+  description = "BigQuery reporting datasets and Datastream stream IDs when reporting CDC is enabled."
+  value = local.datastream_enabled ? {
+    reporting_dataset = google_bigquery_dataset.reporting[0].id
+    staging_dataset   = google_bigquery_dataset.reporting_staging[0].id
+    raw_datasets = {
+      for key, dataset in google_bigquery_dataset.reporting_raw : key => dataset.id
+    }
+    streams = {
+      for key, stream in google_datastream_stream.reporting : key => stream.id
+    }
+  } : null
+}
+
 output "stytch_project_slug" {
   description = "Stytch project slug used by this environment"
   value       = local.stytch_enabled ? local.stytch_project_slug : null

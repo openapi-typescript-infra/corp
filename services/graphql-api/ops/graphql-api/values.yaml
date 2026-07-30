@@ -6,8 +6,8 @@ base-service:
     create: false
 
   env:
-    REDIS_HOST: redis
-    REDIS_PORT: "6379"
+    SHARED_REDIS_HOST: redis
+    SHARED_REDIS_PORT: "6379"
 
   startupProbe:
     enabled: true

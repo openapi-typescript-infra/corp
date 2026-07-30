@@ -78,6 +78,38 @@ Some provider credentials must exist before Terraform can plan the full stack.
 
 For Cloudflare, create a scoped API token for the application's Cloudflare zone and store it manually in each GCP project as a Secret Manager secret named `cloudflare_api_token`.
 
+## Monitoring
+
+`monitoring_config` adds public HTTPS uptime checks plus Kubernetes error-log and restart alerts.
+It is disabled by default. Uptime targets reference keys from `cloudflare_dns_records`, while
+`workload_names` selects container names in the application namespace. Set
+`notification_email` to attach an email notification channel to every policy.
+
+## Datastream reporting
+
+`datastream_config` optionally replicates selected private Cloud SQL PostgreSQL databases into
+separate raw BigQuery datasets and creates staging/reporting datasets for modeled views. It is
+disabled by default. Before enabling it, use Datastream's validate-only flow to identify the PSC
+producer project IDs and supply them through `psc_producer_projects`.
+
+Each source names a configured `postgres_instances` key and one of that instance's databases. The
+stack enables logical decoding, creates a dedicated replication user, bootstraps the publication
+and replication slot inside GKE, and grants the GitHub Actions service account access to build
+reporting models. For example:
+
+```hcl
+datastream_config = {
+  enabled               = true
+  psc_producer_projects = ["example-producer-project"]
+  sources = {
+    identity = {
+      instance_key = "pg-main"
+      database     = "identity"
+    }
+  }
+}
+```
+
 The token must be scoped to the application's zone and needs these zone permissions:
 
 - `Zone:Read`

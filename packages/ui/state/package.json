@@ -16,7 +16,7 @@
   "types": "./src/index.ts",
   "author": "Max Metral <max@pyralis.com>",
   "license": "UNLICENSED",
-  "packageManager": "yarn@3.8.7",
+  "packageManager": "yarn@4.17.1",
   "imports": {
     "#src/*": "./src/*"
   },
