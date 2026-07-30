@@ -82,7 +82,7 @@ DEPLOY_TAG ?= $(DEPLOY_TAG_PREFIX)-$(shell date -u +%Y%m%d-%H%M%S)
 SERVICE_PACKAGE ?= $(shell node -p "require('./package.json').name")
 HELM_VALUES_ROOT ?= $(shell awk '/^[[:space:]]*- name:/ { print $$3; exit }' ops/$(SERVICE_NAME)/Chart.yaml 2>/dev/null || echo base-service)
 HELM_VALUES_ROOT := $(or $(HELM_VALUES_ROOT),base-service)
-export GOOGLE_PACKAGES_TOKEN ?= $(shell if [ -f ./.npmrc ]; then sed -n 's/.*_authToken=\(.*\)/\1/gp' ./.npmrc; else sed -n 's/.*_authToken=\(.*\)/\1/gp' ~/.npmrc; fi | tail -n 1)
+export GOOGLE_PACKAGES_TOKEN ?= $(shell if [ -f ./.npmrc ]; then sed -n 's/.*_authToken=\(.*\)/\1/gp' ./.npmrc; elif [ -f ~/.npmrc ]; then sed -n 's/.*_authToken=\(.*\)/\1/gp' ~/.npmrc; fi | tail -n 1)
 
 # Build a docker image suitable for deployment
 # Requires GITHUB_SHA and RUN_NUMBER
