@@ -1,0 +1,29 @@
+type: object
+required:
+  - client
+  - type
+properties:
+  client:
+    $ref: ../../agent-internal/schemas/ClientInfo.yaml
+  type:
+    type: string
+    description: Conversation definition registered by the application
+  options:
+    type: object
+    additionalProperties: true
+  context:
+    type: string
+  model:
+    type: string
+  starting_tools:
+    type: array
+    items:
+      type: string
+  response:
+    type: string
+    enum:
+      - none
+      - stream
+      - complete
+  turn:
+    $ref: ../../agent-internal/schemas/TurnInput.yaml

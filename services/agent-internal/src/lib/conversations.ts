@@ -253,6 +253,12 @@ export async function ensureConversation(
   const conversationUuid = getConversationUuid(conversationId);
   const existing = await getConversation(app, conversationUuid);
   if (existing) {
+    if (
+      requestBody.owners?.length &&
+      !requestBody.owners.some((owner) => existing.owners.includes(owner))
+    ) {
+      throw new ServiceError(app, `Conversation not found: ${conversationId}`, { status: 404 });
+    }
     return existing;
   }
 
@@ -272,7 +278,8 @@ export async function ensureConversation(
     conversationId: conversationUuid,
     agentId: conversationUuid,
     client: requestBody.client,
-    model: resolveDefaultModelName(app),
+    model: requestBody.model ?? resolveDefaultModelName(app),
+    owners: requestBody.owners,
     systemPrompt: initialPrompt.systemPrompt,
     startingTools: initialConversation.startingTools,
     initialMessages: initialPrompt.messages,
@@ -339,8 +346,12 @@ export async function processDeferredToolResponses(
   return checkToolResponseDeferrals(session, relevant, allToolCalls);
 }
 
-export async function getRequiredConversation(app: AgentInternal['App'], conversationId: string) {
-  const conversation = await getConversation(app, getConversationUuid(conversationId));
+export async function getRequiredConversation(
+  app: AgentInternal['App'],
+  conversationId: string,
+  owners?: string[],
+) {
+  const conversation = await getConversation(app, getConversationUuid(conversationId), owners);
   if (!conversation) {
     throw new ServiceError(app, `Conversation not found: ${conversationId}`, { status: 404 });
   }

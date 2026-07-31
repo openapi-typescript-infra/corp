@@ -23,3 +23,20 @@ properties:
     items:
       type: string
     description: Additional tools to make available from the start
+  owners:
+    type: array
+    items:
+      type: string
+    description: Principals allowed to access the conversation
+  response:
+    type: string
+    description: Controls whether to wait for the agent response, stream it, or return immediately
+    enum:
+      - none
+      - stream
+      - complete
+  turn:
+    $ref: TurnInput.yaml
+  identity_token:
+    type: string
+    description: End-user identity token forwarded by a trusted API gateway

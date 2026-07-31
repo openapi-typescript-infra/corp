@@ -95,7 +95,7 @@ jobs:
 
       - name: 🏗️ Build, typecheck, lint
         run: |
-          yarn workspaces foreach -Apt run ci-setup
+          yarn workspaces foreach -At run ci-setup
           yarn turbo run build typecheck lint
 
       - name: 📦 Check bundle sizes

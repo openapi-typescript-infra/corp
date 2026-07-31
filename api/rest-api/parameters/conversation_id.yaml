@@ -1,0 +1,6 @@
+name: conversation_id
+in: path
+required: true
+description: The external ID of the agent conversation
+schema:
+  type: string
