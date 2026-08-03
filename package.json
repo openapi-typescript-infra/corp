@@ -30,22 +30,22 @@
     "typecheck": "turbo run typecheck"
   },
   "dependencies": {
-    "@typescript/native-preview": "^7.0.0-dev.20260418.1",
+    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "cpconfig": "^1.5.1",
-    "expo-dev-client": "~55.0.22",
+    "expo-dev-client": "~57.0.10",
     "run-pg-sql": "^1.2.0",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.10"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.10",
+    "@biomejs/biome": "^2.5.6",
     "@justtellme/cpconfig": "workspace:^",
-    "@openapi-typescript-infra/cluster-proxy": "^1.8.0",
+    "@openapi-typescript-infra/cluster-proxy": "^1.14.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.4.0",
-    "node-gyp": "^12.3.0",
+    "lint-staged": "^17.3.0",
+    "node-gyp": "^13.0.1",
     "nodemon": "^3.1.14",
-    "tsc-alias": "^1.8.16",
-    "turbo": "^2.9.3"
+    "tsc-alias": "^1.9.1",
+    "turbo": "^2.10.8"
   }
 }
