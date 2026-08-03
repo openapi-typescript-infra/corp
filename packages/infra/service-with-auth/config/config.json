@@ -23,7 +23,7 @@
   },
   "auth": {
     "enabled": true,
-    "token": "decode",
+    "authToken": "decode",
     "cookie": "s_jwt_dev",
     "stytch": {
       "consumer": {

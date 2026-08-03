@@ -29,6 +29,7 @@ export interface JTMGraphQLContext<
     code: string;
     extensions?: GraphQLErrorExtensions;
   }): GraphQLError;
+  principal(): Promise<AuthPrincipal | undefined>;
   xAuthTokenHeader(): Promise<string | undefined>;
 
   headers: IncomingHttpHeaders;
@@ -75,17 +76,11 @@ abstract class BaseContextClass<
   }
 
   async xAuthTokenHeader() {
-    if (this.headers['x-auth-token']) {
-      return this.headers['x-auth-token'] as string;
-    }
-    if (this.user) {
-      return this.user.encodeJwt();
-    }
-    const user = await getPrincipal(this);
-    this.user = user;
+    const user = await this.principal();
     return user?.encodeJwt();
   }
 
+  abstract principal(): Promise<AuthPrincipal | undefined>;
   abstract get headers(): IncomingHttpHeaders;
   abstract get user(): AuthPrincipal | undefined;
   abstract set user(user: AuthPrincipal | undefined);
@@ -99,18 +94,60 @@ export class WsJTMGraphQLContext<
   wsContext: Context;
   user: AuthPrincipal | undefined;
   headers: IncomingHttpHeaders;
+  private readonly parsedCookies: Record<string, string>;
 
-  constructor(app: ServiceExpress<SLocals>, wsContext: Context) {
+  constructor(
+    app: ServiceExpress<SLocals>,
+    wsContext: Context,
+    trustedConnectionHeaders: IncomingHttpHeaders = {},
+  ) {
     super(app);
     this.wsContext = wsContext;
-    this.headers = wrapAsCaseInsensitiveMap(
-      (wsContext.connectionParams?.headers as Record<string, string>) ?? {},
-    );
+    const upgradeHeaders =
+      (
+        wsContext.extra as {
+          request?: { headers?: IncomingHttpHeaders };
+        }
+      ).request?.headers ?? {};
+    this.headers = wrapAsCaseInsensitiveMap({
+      ...upgradeHeaders,
+      ...trustedConnectionHeaders,
+    } as Record<string, string>);
+    this.parsedCookies = parseCookieHeader(this.headers.cookie);
   }
 
   get cookies(): Record<string, string> {
+    return this.parsedCookies;
+  }
+
+  async principal(): Promise<AuthPrincipal | undefined> {
+    if (!this.user) {
+      this.user = await getPrincipal(this);
+    }
+    return this.user;
+  }
+}
+
+function parseCookieHeader(value: string | undefined): Record<string, string> {
+  if (!value) {
     return {};
   }
+  return Object.fromEntries(
+    value
+      .split(';')
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .map((part) => {
+        const separator = part.indexOf('=');
+        const key = separator < 0 ? part : part.slice(0, separator);
+        const raw = separator < 0 ? '' : part.slice(separator + 1);
+        try {
+          return [key, decodeURIComponent(raw)];
+        } catch {
+          return [key, raw];
+        }
+      }),
+  );
 }
 
 export class HttpJTMGraphQLContext<
@@ -144,5 +181,9 @@ export class HttpJTMGraphQLContext<
 
   get cookies(): Record<string, string> {
     return this.req.cookies;
+  }
+
+  async principal(): Promise<AuthPrincipal | undefined> {
+    return this.user;
   }
 }

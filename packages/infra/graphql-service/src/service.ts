@@ -114,6 +114,7 @@ export function useJTMGraphQLService<
               origin: devAllowedOrigins,
               credentials: true,
             }),
+        app.locals.withAuthAndSession,
         // Give this function a useful name in OTLP
         function apolloServer(req, res, next) {
           return apolloMiddleware(req, res, next);

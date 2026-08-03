@@ -1,3 +1,4 @@
+import type { IncomingHttpHeaders } from 'node:http';
 import type { JTMGraphQLContext } from '@justtellme/graphql-service';
 import { HttpJTMGraphQLContext, WsJTMGraphQLContext } from '@justtellme/graphql-service';
 import type { Context } from 'graphql-ws';
@@ -37,8 +38,12 @@ export class GraphQLHttpApiContext extends HttpJTMGraphQLContext<
 export class GraphQLApiWsContext extends WsJTMGraphQLContext<GraphqlApiLocals> {
   loaders: ReturnType<typeof dataloaders>;
 
-  constructor(app: GraphqlApi['App'], context: Context) {
-    super(app, context);
+  constructor(
+    app: GraphqlApi['App'],
+    context: Context,
+    trustedConnectionHeaders: IncomingHttpHeaders = {},
+  ) {
+    super(app, context, trustedConnectionHeaders);
     // Can't measure cost in WS yet.
     this.loaders = dataloaders(this, () => {});
   }
