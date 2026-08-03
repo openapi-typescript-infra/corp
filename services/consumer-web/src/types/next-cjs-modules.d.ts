@@ -18,8 +18,8 @@ declare module 'next/head.js' {
 }
 
 declare module 'next/document.js' {
-  export * from 'next/document';
   export type { DocumentProps } from 'next/document';
+  export * from 'next/document';
   export { default, Head, Html, Main, NextScript } from 'next/document';
 }
 

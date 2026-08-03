@@ -116,5 +116,5 @@ export function getCsrf<
 >(req: RequestWithApp<SLocals>) {
   const conf = req.app.locals.config.csrf;
   const cookie = req.cookies?.[conf.headerAndCookieName || DEFAULT_COOKIE_NAME];
-  return cookie || (req.res?.locals as ResLocalsWithCookie)[RES_COOKIE_PROP];
+  return cookie || (req.res?.locals as ResLocalsWithCookie | undefined)?.[RES_COOKIE_PROP];
 }

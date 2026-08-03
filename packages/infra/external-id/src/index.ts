@@ -17,6 +17,7 @@ export const {
   parseExternalID,
   parseUnknownExternalID,
   getUuidFromString,
+  getUuidFromStringOrThrow,
   toBareShortUuid,
   fromBaseShortUuid,
 } = externalIds(externalIDTypes);
