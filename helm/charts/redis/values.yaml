@@ -1,0 +1,22 @@
+fullnameOverride: redis
+
+replicas: 1
+
+image:
+  repository: redis
+  tag: ""
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    memory: 512Mi
+
+storage:
+  size: 2Gi
+
+service:
+  type: ClusterIP
+  port: 6379

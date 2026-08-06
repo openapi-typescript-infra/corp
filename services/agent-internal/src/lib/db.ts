@@ -1,5 +1,5 @@
 import type { ModelMessage } from 'ai';
-import type { Insertable, Selectable, Updateable } from 'kysely';
+import { type Insertable, type Selectable, sql, type Updateable } from 'kysely';
 
 import type {
   Clients,
@@ -32,6 +32,7 @@ export interface CreateConversationInput {
     version: Insertable<Conversations>['client_version'];
   };
   model?: Selectable<Models>['name'];
+  owners?: string[];
   systemPrompt?: Selectable<Conversations>['system_prompt'];
   startingTools?: string[];
   initialMessages?: ModelMessage[];
@@ -51,6 +52,7 @@ export async function createConversation(
     agent_id: input.agentId,
     client_id: clientId,
     client_version: input.client.version,
+    owners: input.owners ?? [],
     system_prompt: input.systemPrompt ?? null,
     forked_after_ordinal: input.forkedAfterOrdinal ?? null,
     starting_tools: normalizeToolNames(input.startingTools),
@@ -147,13 +149,22 @@ export async function listConversations(app: AgentInternal['App'], input: ListCo
   };
 }
 
-export async function getConversation(app: AgentInternal['App'], conversationUuid: string) {
-  const row = await app.locals.roDb
+export async function getConversation(
+  app: AgentInternal['App'],
+  conversationUuid: string,
+  owners?: string[],
+) {
+  let query = app.locals.roDb
     .selectFrom('conversations')
     .selectAll()
     .where('conversation_uuid', '=', conversationUuid)
-    .where('deleted_at', 'is', null)
-    .executeTakeFirst();
+    .where('deleted_at', 'is', null);
+
+  if (owners?.length) {
+    query = query.where(sql<boolean>`owners && ${owners}::text[]`);
+  }
+
+  const row = await query.executeTakeFirst();
 
   if (!row) {
     return null;
@@ -556,6 +567,7 @@ async function toConversation(app: AgentInternal['App'], row: ConversationRow) {
     client,
     clientVersion: row.client_version,
     model,
+    owners: row.owners,
     startingTools: normalizeToolNames(row.starting_tools),
     systemPrompt: row.system_prompt ?? undefined,
     forkedFromConversationId: row.forked_from_conversation_id

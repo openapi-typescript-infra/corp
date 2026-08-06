@@ -1,18 +1,17 @@
-import path from 'path';
-
-import * as redisMock from 'redis-mock';
 import {
   clearReusableApp,
   getReusableApp,
   request,
 } from '@openapi-typescript-infra/service-tester';
+import path from 'path';
+import * as redisMock from 'redis-mock';
 import { expect, test, vi } from 'vitest';
 
-import { hsWeb } from './sample-web/src/index.ts';
+import { JTMWeb } from './sample-web/src/index.ts';
 
 test('Webs should serv', async () => {
   const app = await getReusableApp({
-    service: hsWeb,
+    service: JTMWeb,
     rootDirectory: path.resolve(__dirname, 'sample-web'),
     codepath: 'src',
     name: 'justtellme-web',

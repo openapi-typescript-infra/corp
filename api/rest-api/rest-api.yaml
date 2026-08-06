@@ -8,19 +8,5 @@ info:
 servers:
   - url: http://rest-api.default.svc.cluster.local
 paths:
-  /customer-support:
-    post:
-      operationId: customerSupport
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: ../agent-internal/schemas/CustomerSupportConversationRequest.yaml
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: ../agent-internal/schemas/ConversationDetails.yaml
+  /agent/{conversation_id}:
+    $ref: ./paths/agent.conversation_id.yaml

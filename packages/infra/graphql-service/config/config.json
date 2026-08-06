@@ -5,7 +5,7 @@
   },
   "auth": {
     "enabled": true,
-    "token": "decode"
+    "authToken": "decode"
   },
   "routing": {
     "openapi": false,

@@ -18,13 +18,12 @@ export function service(): JTMGraphQLService<GraphqlApiLocals, GraphqlApiRequest
       });
     },
     async getWsContext(app, context) {
-      const incomingHeaders = context.connectionParams?.headers as Record<string, string>;
-      const additionalHeaders = await getTranslatedAuthHeaders(
-        app,
-        (context.connectionParams?.headers as Record<string, string>)?.Authorization as string,
-      );
-      Object.assign(incomingHeaders, additionalHeaders);
-      return new GraphQLApiWsContext(app, context);
+      const incomingHeaders = (context.connectionParams?.headers ?? {}) as Record<string, string>;
+      const authorization = incomingHeaders.Authorization ?? incomingHeaders.authorization;
+      const trustedConnectionHeaders = authorization
+        ? await getTranslatedAuthHeaders(app, authorization)
+        : {};
+      return new GraphQLApiWsContext(app, context, trustedConnectionHeaders);
     },
     async getContext({ req, res }) {
       return new GraphQLHttpApiContext(req as GraphqlApi['Request'], res as GraphqlApi['Response']);

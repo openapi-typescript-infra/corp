@@ -4,7 +4,7 @@ info:
   description: A service to store and validate identities of individuals and groups of individuals
   version: 1.0.0
 servers:
-  - url: http://identity-internal.hs.svc.cluster.local
+  - url: http://identity-internal.jtm.svc.cluster.local
     description: Within Kubernetes cluster only
 paths:
   /identity/access:

@@ -1,5 +1,9 @@
-import type { paths as IdentityInternal } from '@justtellme/api/identity-internal';
-import type { DatasourcesType, JTMConfigurationSchema, JTMServiceLocals } from '@justtellme/service';
+import type { paths as IdentityInternal } from '@justtellme/identity-internal-client';
+import type {
+  DatasourcesType,
+  JTMConfigurationSchema,
+  JTMServiceLocals,
+} from '@justtellme/service';
 import { createDatasourceClients } from '@justtellme/service';
 import type { ServiceExpress } from '@openapi-typescript-infra/service';
 

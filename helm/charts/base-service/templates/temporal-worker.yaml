@@ -29,7 +29,7 @@ spec:
       containers:
         - name: {{ .Values.name }}
           imagePullPolicy: IfNotPresent
-          image: "us-docker.pkg.dev/justtellme-dev/app-images/{{ .Values.name }}:{{ .Values.tag }}"
+          image: "{{ .Values.image.registry }}/{{ default .Values.gcp.project .Values.image.project }}/{{ .Values.image.repository }}/{{ .Values.name }}:{{ .Values.tag }}"
           resources:
             requests:
             {{- if default .Values.resources.cpu.requests .Values.temporal.resources.cpu.requests }}
@@ -48,6 +48,12 @@ spec:
           env:
             - name: GCP_REGION
               value: {{ .Values.gcp.region | default "us-central1" }}
+            - name: GCP_PROJECT_ID
+              value: {{ .Values.gcp.project | quote }}
+            - name: GCP_PROJECT
+              value: {{ .Values.gcp.project | quote }}
+            - name: GOOGLE_CLOUD_PROJECT
+              value: {{ .Values.gcp.project | quote }}
             - name: NODE_ENV
               value: production
             - name: APP_ENV
@@ -56,7 +62,7 @@ spec:
               value: "true"
             {{- if .Values.database.gcpId }}
             - name: DATABASE_ID
-              value: "{{ .Values.gcp.project }}:{{ default "us-central1" .Values.database.region }}:pg-{{- ternary "dev-" "" (eq .Values.gcp.env "development") -}}{{ .Values.database.gcpId }}"
+              value: "{{ .Values.gcp.project }}:{{ default "us-central1" .Values.database.region }}:{{ default (printf "%s-pg-%s" .Values.gcp.env .Values.database.gcpId) .Values.database.instance }}"
             {{- end }}
             {{- include "base-service.env" . | trimSuffix "\n" | indent 12 }}
             {{- include "base-service.worker-env" . | trimSuffix "\n" | indent 12 }}

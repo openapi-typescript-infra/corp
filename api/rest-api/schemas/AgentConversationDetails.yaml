@@ -1,0 +1,25 @@
+type: object
+required:
+  - conversation_id
+  - turns
+properties:
+  conversation_id:
+    type: string
+  status:
+    type: string
+    enum:
+      - running
+      - completed
+      - failed
+  error:
+    type: string
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time
+  turns:
+    type: array
+    items:
+      $ref: ../../agent-internal/schemas/Turn.yaml

@@ -1,21 +1,20 @@
-import path from 'path';
-
 import {
   clearReusableApp,
   getReusableApp,
   request,
 } from '@openapi-typescript-infra/service-tester';
+import path from 'path';
 import { expect, test } from 'vitest';
 
-import { service } from './just-tell-me-api/src/index.ts';
+import { service } from './holistic-sound-api/src/index.ts';
 
 test('Sessions should work', async () => {
   const __dirname = path.dirname(new URL(import.meta.url).pathname);
   const app = await getReusableApp({
     service,
-    rootDirectory: path.resolve(__dirname, 'justtellme-api'),
+    rootDirectory: path.resolve(__dirname, 'holistic-sound-api'),
     codepath: 'src',
-    name: 'justtellme-api',
+    name: 'holistic-sound-api',
     version: '1.0.0',
   });
 

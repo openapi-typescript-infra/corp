@@ -19,8 +19,7 @@
     "repl": "NODE_OPTIONS='--import tsx/esm' start-service --repl",
     "lint": "biome check .",
     "build:next": "next build",
-    "check-bundles": "node src/scripts/check-bundle-size.ts",
-    "postinstall": "cpconfig"
+    "check-bundles": "node src/scripts/check-bundle-size.ts"
   },
   "config": {
     "cpconfig": "@justtellme/cpconfig"
@@ -41,24 +40,24 @@
     "express"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^2.4.10",
-    "@openapi-typescript-infra/service-tester": "^7.1.2",
-    "cpconfig": "^1.5.0",
+    "@biomejs/biome": "^2.5.6",
+    "@openapi-typescript-infra/service-tester": "^7.2.0",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.10"
   },
   "dependencies": {
     "@justtellme/cpconfig": "workspace:^",
+    "@justtellme/identity-internal-client": "workspace:^",
     "@justtellme/service": "workspace:^",
     "@justtellme/state": "workspace:^",
     "@justtellme/ui-kit": "workspace:^",
     "@justtellme/web-service": "workspace:^",
-    "@legendapp/state": "^3.0.0-beta.46",
-    "@openapi-typescript-infra/service": "^6.13.1",
-    "@stytch/nextjs": "^22.0.5",
-    "next": "^16.2.4",
+    "@legendapp/state": "^3.0.0-beta.48",
+    "@openapi-typescript-infra/service": "^6.15.0",
+    "@stytch/nextjs": "^22.1.0",
+    "next": "^16.2.12",
     "next-urql": "^5.0.2",
-    "posthog-js": "^1.369.3",
-    "urql": "^5.0.1"
+    "posthog-js": "^1.409.5",
+    "urql": "^5.0.3"
   }
 }

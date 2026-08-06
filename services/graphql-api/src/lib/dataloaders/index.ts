@@ -1,4 +1,4 @@
-import type { components as IdentityInternal } from '@justtellme/api/identity-internal';
+import type { components as IdentityInternal } from '@justtellme/identity-internal-client';
 import { ServiceError } from '@openapi-typescript-infra/service';
 import DataLoader from 'dataloader';
 

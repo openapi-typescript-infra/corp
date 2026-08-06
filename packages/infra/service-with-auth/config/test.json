@@ -1,7 +1,7 @@
 {
-  "$schema": "tsschema://src/config.ts#HSAuthConfigurationSchema",
+  "$schema": "tsschema://src/config.ts#JTMAuthConfigurationSchema",
   "session": {
-    "cookieName": "hssession-dev",
+    "cookieName": "JTMSession-dev",
     "cookieDomain": "",
     "secureCookie": false,
     "store": {

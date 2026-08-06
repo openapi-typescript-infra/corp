@@ -17,8 +17,7 @@
     "clean": "make clean",
     "start": "start-service",
     "repl": "start-service --repl",
-    "lint": "biome check .",
-    "postinstall": "cpconfig"
+    "lint": "biome check ."
   },
   "config": {
     "cpconfig": "@justtellme/cpconfig"
@@ -34,19 +33,21 @@
     "express"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^2.4.10",
-    "@openapi-typescript-infra/service-tester": "^7.1.2",
-    "@typescript/native-preview": "^7.0.0-dev.20260418.1",
-    "cpconfig": "^1.5.0",
+    "@biomejs/biome": "^2.5.6",
+    "@openapi-typescript-infra/service-tester": "^7.2.0",
+    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.10"
   },
   "dependencies": {
+    "@justtellme/agent-internal-client": "workspace:^",
+    "@justtellme/auth-token": "workspace:^",
     "@justtellme/cpconfig": "workspace:^",
+    "@justtellme/rest-api-client": "workspace:^",
     "@justtellme/service-with-auth": "workspace:^",
-    "@openapi-typescript-infra/service": "^6.13.1",
-    "@temporalio/client": "^1.15.0",
-    "kysely": "^0.28.15",
-    "pg": "^8.20.0"
+    "@openapi-typescript-infra/service": "^6.15.0",
+    "@temporalio/client": "^1.21.1",
+    "kysely": "^0.29.4",
+    "pg": "^8.22.0"
   }
 }

@@ -13,15 +13,33 @@ variable "environment" {
   type        = string
 }
 
+variable "suspended" {
+  description = "Stop Cloud SQL instances for idle environments."
+  type        = bool
+  default     = false
+}
+
 variable "postgres_instances" {
   description = "Map of Postgres instance configurations"
   type = map(object({
-    tier      = string
-    databases = list(string)
+    tier              = string
+    activation_policy = optional(string, "ALWAYS")
+    databases         = list(string)
   }))
 }
 
 variable "network_id" {
   description = "VPC network ID for private IP connectivity"
   type        = string
+}
+
+variable "datastream_instance_keys" {
+  description = "Cloud SQL instance keys that require logical decoding and a dedicated Datastream user."
+  type        = set(string)
+  default     = []
+
+  validation {
+    condition     = alltrue([for key in var.datastream_instance_keys : contains(keys(var.postgres_instances), key)])
+    error_message = "Every Datastream instance key must exist in postgres_instances."
+  }
 }

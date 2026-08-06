@@ -1,7 +1,7 @@
 // biome-ignore-all lint/security/noDangerouslySetInnerHtml: serializes trusted server-side environment into the hydration bootstrap.
 import { getNodeEnv } from '@openapi-typescript-infra/service';
 
-export interface HSClientSideVariables {
+export interface JTMClientSideVariables {
   APP_ENV: 'development' | 'production' | 'staging' | 'test';
   GRAPHQL_ENDPOINT: string;
   WHOAMI: string;
@@ -11,7 +11,7 @@ export interface HSClientSideVariables {
   POSTHOG_HOST: string;
 }
 
-export function getClientSideVariables(): HSClientSideVariables {
+export function getClientSideVariables(): JTMClientSideVariables {
   const env = getNodeEnv();
   if (!env) {
     throw new Error('APP_ENV is not defined');

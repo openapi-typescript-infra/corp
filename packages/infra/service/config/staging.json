@@ -1,4 +1,4 @@
 {
-  "$schema": "tsschema://src/config#JTMConfigurationSchema",
-  "DEFAULT_TEMPORAL_CLUSTER": "temporal-frontend.hs.svc.cluster.local:7233"
+  "$schema": "tsschema://../src/types/config.ts#JTMConfigurationSchema",
+  "DEFAULT_TEMPORAL_CLUSTER": "temporal-frontend.jtm.svc.cluster.local:7233"
 }

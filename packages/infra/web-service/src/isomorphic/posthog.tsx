@@ -31,7 +31,7 @@ function initPostHog() {
   initialized = true;
 }
 
-export function HSPostHogProvider({ children }: { children: React.ReactNode }) {
+export function AppPostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     initPostHog();
   }, []);

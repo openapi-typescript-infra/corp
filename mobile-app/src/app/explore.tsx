@@ -1,7 +1,7 @@
 import { app$ } from '@justtellme/state';
 import { useValue } from '@legendapp/state/react';
 import { StytchUI, useStytch } from '@stytch/react-native';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 

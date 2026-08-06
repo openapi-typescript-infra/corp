@@ -1,4 +1,4 @@
-import type { HSRequestLocals, JTMServiceLocals } from '@justtellme/service';
+import type { JTMRequestLocals, JTMServiceLocals } from '@justtellme/service';
 import type { ServiceTypes } from '@openapi-typescript-infra/service';
 import type { Client as StytchClient } from 'stytch';
 import type { Metrics } from '#src/lib/metrics.ts';
@@ -12,7 +12,7 @@ export interface AuthnAuthzInternalLocals extends JTMServiceLocals<AuthnAuthzInt
   stytch: StytchClient;
 }
 
-export type AuthnAuthzInternalRequestLocals = HSRequestLocals;
+export type AuthnAuthzInternalRequestLocals = JTMRequestLocals;
 
 export type AuthnAuthzInternal = ServiceTypes<
   AuthnAuthzInternalLocals,

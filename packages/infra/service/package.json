@@ -12,10 +12,9 @@
   "types": "./src/index.ts",
   "type": "module",
   "scripts": {
-    "build": "tsgo -p tsconfig.build.json",
+    "build": "yarn -T run build-package",
     "test": "vitest",
     "lint": "biome check src",
-    "postinstall": "cpconfig",
     "typecheck": "tsgo --noEmit -p tsconfig.json"
   },
   "files": [
@@ -39,22 +38,21 @@
     "justtellme"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^2.4.10",
-    "@openapi-typescript-infra/service-tester": "^7.1.2",
-    "@types/node": "^25.5.2",
-    "@typescript/native-preview": "^7.0.0-dev.20260418.1",
+    "@biomejs/biome": "^2.5.6",
+    "@openapi-typescript-infra/service-tester": "^7.2.0",
+    "@types/node": "^26.1.2",
+    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "run-pg-sql": "^1.2.0",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.10"
   },
   "dependencies": {
-    "@google-cloud/secret-manager": "^6.1.1",
-    "@justtellme/api": "workspace:^",
+    "@google-cloud/secret-manager": "^6.3.0",
     "@justtellme/cpconfig": "workspace:^",
-    "@openapi-typescript-infra/service": "^6.13.1",
-    "cpconfig": "^1.5.0",
+    "@justtellme/identity-internal-client": "workspace:^",
+    "@openapi-typescript-infra/service": "^6.15.0",
     "fetch-to-curl-ts": "^1.0.2",
     "openapi-fetch": "0.17.0",
-    "tsc-alias": "^1.8.16"
+    "tsc-alias": "^1.9.1"
   }
 }

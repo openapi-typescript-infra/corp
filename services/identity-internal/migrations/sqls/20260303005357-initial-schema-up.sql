@@ -18,6 +18,14 @@ BEGIN
 END
 $do$;
 
+DO $do$
+BEGIN
+  EXECUTE format('GRANT CONNECT ON DATABASE %I TO %I', current_database(), 'identity-manager');
+END
+$do$;
+
+GRANT USAGE ON SCHEMA public TO "identity-manager";
+
 CREATE TYPE biological_sex_enum AS ENUM('female', 'male', 'other');
 
 -- Table Definition
@@ -992,3 +1000,25 @@ CREATE FUNCTION create_address (
     RETURN _address_map_uuid;
   END;
   $$;
+
+GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public TO "identity-manager";
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+  GRANT SELECT, INSERT, UPDATE ON TABLES TO "identity-manager";
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+  GRANT USAGE, SELECT, UPDATE ON SEQUENCES TO "identity-manager";
+
+DO $do$
+DECLARE
+  runtime_role text;
+BEGIN
+  FOR runtime_role IN
+    SELECT rolname
+    FROM pg_roles
+    WHERE rolname LIKE 'identity-internal-sa@%.iam'
+  LOOP
+    EXECUTE format('GRANT %I TO %I', 'identity-manager', runtime_role);
+  END LOOP;
+END
+$do$;

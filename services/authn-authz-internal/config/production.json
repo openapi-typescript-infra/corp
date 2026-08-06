@@ -1,7 +1,7 @@
 {
   "$schema": "tsschema://src/types/config.ts#AuthnAuthzInternalConfigSchema",
   "session": {
-    "cookieName": "hssession",
+    "cookieName": "JTMSession",
     "cookieDomain": ".justtellme.com"
   },
   "auth": {

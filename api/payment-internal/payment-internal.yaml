@@ -4,7 +4,7 @@ info:
   description: A service to store and validate movement of funds between accounts in our financial domain
   version: 1.0.0
 servers:
-  - url: http://payment-internal.hs.svc.cluster.local
+  - url: http://payment-internal.jtm.svc.cluster.local
     description: Within Kubernetes cluster only
 paths:
   /payment/transactions:

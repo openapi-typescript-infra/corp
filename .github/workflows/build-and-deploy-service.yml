@@ -1,0 +1,160 @@
+name: build-and-deploy-service
+
+on:
+  workflow_call:
+    inputs:
+      service:
+        description: Service id, matching services/<service> and ops/<service>.
+        required: true
+        type: string
+      environment:
+        description: Target environment.
+        required: false
+        type: string
+        default: development
+      gcp-project:
+        description: GCP project id for the target environment. Defaults to vars.GCP_PROJECT_ID.
+        required: false
+        type: string
+        default: ""
+      gke-cluster:
+        description: GKE cluster name.
+        required: false
+        type: string
+        default: development-cluster
+      gke-region:
+        description: GKE cluster region.
+        required: false
+        type: string
+        default: us-central1
+      namespace:
+        description: Kubernetes namespace for the release.
+        required: false
+        type: string
+        default: app
+      registry:
+        description: Container registry root. Defaults to the target GCP project's docker-images repo.
+        required: false
+        type: string
+        default: ""
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build-and-push:
+    runs-on: self-hosted
+    concurrency:
+      group: deploy-${{ inputs.service }}-${{ inputs.environment }}
+      cancel-in-progress: false
+    env:
+      MISE_ENV: ci
+      SERVICE: ${{ inputs.service }}
+      SERVICE_DIR: services/${{ inputs.service }}
+      GCP_PROJECT: ${{ inputs.gcp-project != '' && inputs.gcp-project || vars.GCP_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+
+      - name: Authenticate to GCP via Workload Identity
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-actions/providers/github-oidc
+          service_account: github-actions-ci@${{ env.GCP_PROJECT }}.iam.gserviceaccount.com
+
+      - name: Configure docker auth for Artifact Registry
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+
+      - name: Setup mise (tools + env)
+        uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
+        with:
+          version: 2026.5.18
+          cache: false
+
+      - name: Enable Corepack package managers
+        run: |
+          corepack enable
+          mise reshim
+
+      - name: Cache yarn fetch
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            .yarn/cache
+            .yarn/install-state.gz
+          key: yarn-${{ runner.os }}-${{ hashFiles('yarn.lock', '.yarnrc.yml') }}
+          restore-keys: yarn-${{ runner.os }}-
+
+      - name: Install dependencies for target workspace
+        run: yarn workspaces focus just-tell-me "@justtellme/${SERVICE}"
+
+      - name: Turbo remote cache (GitHub-backed)
+        uses: rharkor/caching-for-turbo@2238fae6eb9a9936f92356f54cb3660200d105e7 # v2.5.1
+
+      - name: Build target service's workspace deps
+        run: |
+          PKG=$(node -p "require('./${SERVICE_DIR}/package.json').name")
+          yarn turbo run build build:next --filter="${PKG}..."
+
+      - name: Build and push container
+        uses: ./.github/actions/build-container
+        with:
+          service: ${{ inputs.service }}
+          registry: ${{ inputs.registry }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: self-hosted
+    concurrency:
+      group: deploy-${{ inputs.service }}-${{ inputs.environment }}
+      cancel-in-progress: false
+    env:
+      SERVICE: ${{ inputs.service }}
+      CHART_DIR: services/${{ inputs.service }}/ops/${{ inputs.service }}
+      ENVIRONMENT: ${{ inputs.environment }}
+      GCP_PROJECT: ${{ inputs.gcp-project != '' && inputs.gcp-project || vars.GCP_PROJECT_ID }}
+      GKE_CLUSTER: ${{ inputs.gke-cluster }}
+      GKE_REGION: ${{ inputs.gke-region }}
+      NAMESPACE: ${{ inputs.namespace }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - name: Authenticate to GCP via Workload Identity
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-actions/providers/github-oidc
+          service_account: github-actions-ci@${{ env.GCP_PROJECT }}.iam.gserviceaccount.com
+
+      - uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
+        with:
+          version: v3.16.4
+
+      - name: Get GKE credentials
+        run: |
+          gcloud container clusters get-credentials "$GKE_CLUSTER" \
+            --region="$GKE_REGION" --project="$GCP_PROJECT"
+
+      - name: helm dependency update
+        run: helm dependency update "$CHART_DIR"
+
+      - name: helm upgrade --install
+        run: |
+          set -euo pipefail
+          CHANGE_CAUSE=$(git show -s --format='%H %ai %s' | tr ',' ' ')
+
+          helm upgrade --install "$SERVICE" "$CHART_DIR" \
+            --namespace "$NAMESPACE" \
+            --set "base-service.gcp.project=$GCP_PROJECT" \
+            --set "base-service.gcp.env=$ENVIRONMENT" \
+            --set "base-service.gcp.region=$GKE_REGION" \
+            --set "base-service.tag=${{ github.sha }}" \
+            --set-string "base-service.changeCause=$CHANGE_CAUSE" \
+            --wait --timeout=5m
+
+      - name: Verify rollout
+        run: |
+          kubectl -n "$NAMESPACE" rollout status \
+            deployment/"$SERVICE" --timeout=5m
+          kubectl -n "$NAMESPACE" get pods,svc \
+            -l app="$SERVICE"

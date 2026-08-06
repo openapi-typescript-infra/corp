@@ -2,13 +2,13 @@ import type { JTMServiceLocals } from '@justtellme/service';
 import type { ServiceExpress } from '@openapi-typescript-infra/service';
 import session from 'express-session';
 
-import type { HSSessionConfiguration } from '../types.ts';
+import type { JTMSessionConfiguration } from '../types.ts';
 
 import { getSessionStorage } from './storage.ts';
 
 export const createSessionMiddleware = async (
   app: ServiceExpress<JTMServiceLocals>,
-  options: HSSessionConfiguration['session'],
+  options: JTMSessionConfiguration['session'],
 ) => {
   const {
     secret,

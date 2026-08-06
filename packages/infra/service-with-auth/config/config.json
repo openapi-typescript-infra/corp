@@ -1,9 +1,9 @@
 {
-  "$schema": "tsschema://src/config.ts#HSAuthConfigurationSchema",
+  "$schema": "tsschema://src/config.ts#JTMAuthConfigurationSchema",
   "session": {
     "enabled": true,
     "secret": "change-me",
-    "cookieName": "hssession-dev",
+    "cookieName": "JTMSession-dev",
     "cookieDomain": ".dev.justtellme.com",
     "secureCookie": true,
     "proxy": true,
@@ -12,10 +12,10 @@
     "saveUninitialized": false,
     "store": {
       "socket": {
-        "host": "env:REDIS_HOST|u",
-        "port": "env:REDIS_PORT|ud"
+        "host": "env:SHARED_REDIS_HOST|u",
+        "port": "env:SHARED_REDIS_PORT|ud"
       },
-      "password": "env:REDIS_PASSWORD|u"
+      "password": "env:SHARED_REDIS_PASSWORD|u"
     }
   },
   "routing": {
@@ -23,7 +23,7 @@
   },
   "auth": {
     "enabled": true,
-    "token": "decode",
+    "authToken": "decode",
     "cookie": "s_jwt_dev",
     "stytch": {
       "consumer": {

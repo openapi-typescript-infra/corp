@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { getMiddleware, AuthPrincipal } from '#src/index.ts';
+import { AuthPrincipal, getMiddleware } from '#src/index.ts';
 
 describe('module export', () => {
   test('should export something', () => {

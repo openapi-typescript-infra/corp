@@ -1,14 +1,14 @@
-import type { HSRequestLocals, JTMService, JTMServiceLocals } from '@justtellme/service';
+import type { JTMRequestLocals, JTMService, JTMServiceLocals } from '@justtellme/service';
 import type { AuthDatasources, getMiddleware } from '@justtellme/web-auth';
 import type { RequestLike, RequestWithApp, ServiceRouter } from '@openapi-typescript-infra/service';
 import type { NextFunction, Request, Response } from 'express';
 
-import type { HSAuthConfigurationSchema } from './config.ts';
+import type { JTMAuthConfigurationSchema } from './config.ts';
 
 type SessionMiddlewareInfo = Awaited<ReturnType<typeof getMiddleware>>;
 
-export interface HSAuthServiceLocals<
-  Config extends HSAuthConfigurationSchema = HSAuthConfigurationSchema,
+export interface JTMAuthServiceLocals<
+  Config extends JTMAuthConfigurationSchema = JTMAuthConfigurationSchema,
 > extends JTMServiceLocals<Config>,
     AuthDatasources {
   /**
@@ -40,7 +40,7 @@ export interface HSAuthServiceLocals<
   redis: SessionMiddlewareInfo['redis'];
 }
 
-export interface HSAuthRequestLocals extends HSRequestLocals {
+export interface JTMAuthRequestLocals extends JTMRequestLocals {
   /**
    * Get the HTTP headers required to forward authentication to a downstream service (possibly doing legacy authz).
    * Note that this is more than just forwarding inbound headers, because the user may have been set in the context
@@ -49,28 +49,28 @@ export interface HSAuthRequestLocals extends HSRequestLocals {
   getForwardHeaders(): Promise<Record<string, string> | undefined>;
 }
 
-export type HSAuthService<
+export type JTMAuthService<
   ServiceLocals extends
-    JTMServiceLocals<HSAuthConfigurationSchema> = HSAuthServiceLocals<HSAuthConfigurationSchema>,
-  RequestLocals extends HSAuthRequestLocals = HSAuthRequestLocals,
+    JTMServiceLocals<JTMAuthConfigurationSchema> = JTMAuthServiceLocals<JTMAuthConfigurationSchema>,
+  RequestLocals extends JTMAuthRequestLocals = JTMAuthRequestLocals,
 > = JTMService<ServiceLocals, RequestLocals>;
 
 /**
  * Convenience types for the basic request and response
  */
-export type HSAuthServiceRequest<
+export type JTMAuthServiceRequest<
   ServiceLocals extends
-    JTMServiceLocals<HSAuthConfigurationSchema> = HSAuthServiceLocals<HSAuthConfigurationSchema>,
+    JTMServiceLocals<JTMAuthConfigurationSchema> = JTMAuthServiceLocals<JTMAuthConfigurationSchema>,
 > = RequestWithApp<ServiceLocals>;
 
-export type HSAuthServiceResponse<
+export type JTMAuthServiceResponse<
   ResBody = object,
   ServiceLocals extends
-    JTMServiceLocals<HSAuthConfigurationSchema> = HSAuthServiceLocals<HSAuthConfigurationSchema>,
+    JTMServiceLocals<JTMAuthConfigurationSchema> = JTMAuthServiceLocals<JTMAuthConfigurationSchema>,
 > = Response<ResBody, ServiceLocals>;
-export type HSAuthServiceRouter<
-  SLocals extends HSAuthServiceLocals = HSAuthServiceLocals,
-  RLocals extends HSAuthRequestLocals = HSAuthRequestLocals,
+export type JTMAuthServiceRouter<
+  SLocals extends JTMAuthServiceLocals = JTMAuthServiceLocals,
+  RLocals extends JTMAuthRequestLocals = JTMAuthRequestLocals,
 > = ServiceRouter<SLocals, RLocals>;
 
 /**
@@ -81,8 +81,8 @@ export type HSAuthServiceRouter<
  * like query strings or body or similar. Most often, you want the
  * logger.
  */
-export type HSAuthRequestLike<
+export type JTMAuthRequestLike<
   SLocals extends
-    JTMServiceLocals<HSAuthConfigurationSchema> = HSAuthServiceLocals<HSAuthConfigurationSchema>,
-  RLocals extends HSAuthRequestLocals = HSAuthRequestLocals,
+    JTMServiceLocals<JTMAuthConfigurationSchema> = JTMAuthServiceLocals<JTMAuthConfigurationSchema>,
+  RLocals extends JTMAuthRequestLocals = JTMAuthRequestLocals,
 > = RequestLike<SLocals, RLocals>;

@@ -1,4 +1,5 @@
 import { getNodeEnv } from '@openapi-typescript-infra/service';
+import type { DocumentProps } from 'next/document.js';
 import Document, { Head, Html, Main, NextScript } from 'next/document.js';
 
 const readEnv = (name: string, fallback = ''): string => {
@@ -6,7 +7,7 @@ const readEnv = (name: string, fallback = ''): string => {
   return env[name] ?? fallback;
 };
 
-const getClientSideVariables = (includeStytchAdminToken: boolean) => {
+const getClientSideVariables = (_includeStytchAdminToken: boolean) => {
   const appEnv = getNodeEnv();
 
   return {
@@ -18,12 +19,13 @@ const getClientSideVariables = (includeStytchAdminToken: boolean) => {
         : 'https://api.dev.justtellme.com/graphql'),
     WHOAMI: readEnv('WHOAMI', '/'),
     COOKIE_DOMAIN: readEnv('COOKIE_DOMAIN'),
-    STYTCH_CONSUMER: readEnv('STYTCH_CONSUMER'),
-    STYTCH_ADMIN: includeStytchAdminToken ? readEnv('STYTCH_ADMIN') : '',
+    STYTCH_TOKEN: readEnv('STYTCH_TOKEN'),
   };
 };
 
-class HSDocument extends Document {
+class AppDocument extends Document {
+  declare props: Readonly<DocumentProps>;
+
   render() {
     const page = this.props.__NEXT_DATA__.page;
     const includeStytchAdminToken = page !== '/404' && page !== '/_error';
@@ -34,7 +36,7 @@ class HSDocument extends Document {
           <link rel="stylesheet" href="/theme.css" />
           <script
             dangerouslySetInnerHTML={{
-              __html: `window.hs = ${JSON.stringify(
+              __html: `window.jtm = ${JSON.stringify(
                 getClientSideVariables(includeStytchAdminToken),
               )}`,
             }}
@@ -49,4 +51,4 @@ class HSDocument extends Document {
   }
 }
 
-export default HSDocument;
+export default AppDocument;

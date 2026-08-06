@@ -7,7 +7,6 @@ import {
   type TabTriggerSlotProps,
 } from 'expo-router/ui';
 import { SymbolView } from 'expo-symbols';
-import React from 'react';
 import { Pressable, StyleSheet, useColorScheme, View } from 'react-native';
 import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
 import { ExternalLink } from './external-link';

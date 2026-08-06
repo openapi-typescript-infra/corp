@@ -18,3 +18,16 @@ output "connection_info" {
   }
   sensitive = true
 }
+
+output "datastream_connection_info" {
+  description = "Dedicated Datastream Postgres connection info per enabled instance."
+  value = {
+    for key in var.datastream_instance_keys : key => {
+      host     = google_sql_database_instance.instances[key].private_ip_address
+      port     = 5432
+      username = google_sql_user.datastream[key].name
+      password = random_password.datastream_db_passwords[key].result
+    }
+  }
+  sensitive = true
+}

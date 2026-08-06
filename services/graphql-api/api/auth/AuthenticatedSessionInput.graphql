@@ -1,6 +1,4 @@
-"""
-Information required to establish an authenticated session.
-"""
+"Information required to establish an authenticated session."
 input AuthenticatedSessionInput {
   "The identifier of the individual to authenticate - typically an email address. Can be blank if the identifier is in the token"
   identifier: String

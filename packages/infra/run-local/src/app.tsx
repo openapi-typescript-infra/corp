@@ -1,7 +1,7 @@
-import { execSync, spawn } from 'child_process';
-import fs from 'fs';
+import { execSync, spawn } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
 import { Box, Text, useApp, useInput, useStdout } from 'ink';
-import path from 'path';
 import React, { useEffect, useMemo, useState } from 'react';
 
 const MAX_LOG_LINES = 1200;
@@ -53,7 +53,7 @@ function getDescendantPids(pid: number): number[] {
     const children = output
       .split('\n')
       .map((line) => parseInt(line, 10))
-      .filter((n) => !isNaN(n));
+      .filter((n) => !Number.isNaN(n));
 
     const descendants: number[] = [];
     for (const child of children) {

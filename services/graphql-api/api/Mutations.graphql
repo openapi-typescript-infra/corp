@@ -1,10 +1,6 @@
 "All mutations for the Just Tell Me GraphQL API"
 type Mutation {
-  """
-  Create an authenticated session with a token capable
-  of performing authenticated requests on behalf of the specified
-  individual.
-  """
+  "Create an authenticated session for the specified individual."
   authenticatedSessionCreate(
     "The identifier and credentials for the session"
     identification: AuthenticatedSessionInput!

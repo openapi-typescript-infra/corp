@@ -1,27 +1,28 @@
 {
   "name": "just-tell-me",
   "private": true,
-  "packageManager": "yarn@3.8.7",
+  "packageManager": "yarn@4.17.1",
   "workspaces": [
     "packages/*/*",
     "services/*",
-    "api",
+    "api/*",
     "mobile-app"
   ],
   "engines": {
     "node": ">24.0.0"
   },
   "scripts": {
-    "api": "turbo run build --filter=@justtellme/api",
+    "api": "turbo run build --filter='@justtellme/*-client' --filter='@justtellme/api-common'",
     "build": "turbo run build",
     "clean": "turbo run clean",
-    "cpconfig": "yarn workspaces foreach -Apv exec cpconfig",
+    "cpconfig": "yarn workspaces foreach -Apv --exclude just-tell-me --exclude '@just-tell-me/mobile-app' --exclude '@justtellme/*-client' --exclude '@justtellme/api-common' exec cpconfig",
     "db:clean": "yarn workspaces foreach -Av --exclude just-tell-me run db:clean",
     "ios": "yarn workspace @just-tell-me/mobile-app run ios",
     "android": "yarn workspace mobile-app run android",
     "lint": "turbo run lint",
-    "lint:fix": "turbo run lint:fix",
+    "lint:fix": "node scripts/lint-fix-workspaces.mjs",
     "new": "./packages/infra/create/src/index.ts",
+    "postinstall": "yarn run cpconfig",
     "prepare": "husky",
     "proxy": "sudo yarn dlx @openapi-typescript-infra/cluster-proxy --config proxy.json",
     "run-local": "yarn workspace @justtellme/run-local start",
@@ -29,20 +30,22 @@
     "typecheck": "turbo run typecheck"
   },
   "dependencies": {
-    "@typescript/native-preview": "^7.0.0-dev.20260418.1",
+    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "cpconfig": "^1.5.1",
-    "expo-dev-client": "~55.0.22",
+    "expo-dev-client": "~57.0.10",
     "run-pg-sql": "^1.2.0",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.10"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.10",
-    "@openapi-typescript-infra/cluster-proxy": "^1.8.0",
+    "@biomejs/biome": "^2.5.6",
+    "@justtellme/cpconfig": "workspace:^",
+    "@openapi-typescript-infra/cluster-proxy": "^1.14.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.4.0",
+    "lint-staged": "^17.3.0",
+    "node-gyp": "^13.0.1",
     "nodemon": "^3.1.14",
-    "tsc-alias": "^1.8.16",
-    "turbo": "^2.9.3"
+    "tsc-alias": "^1.9.1",
+    "turbo": "^2.10.8"
   }
 }

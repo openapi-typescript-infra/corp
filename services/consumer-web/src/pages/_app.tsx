@@ -12,9 +12,9 @@ import { LazyPostHog } from '#src/components/LazyPostHog.js';
 import { StytchStateBridge } from '#src/components/StytchStateBridge.js';
 import { getSingletonStytchHeadlessClient } from '#src/lib/stytch.js';
 import { getUrqlClientOptions } from '#src/lib/urql.js';
-import type { HSAppProps } from '#src/types/NextPage.js';
+import type { JTMAppProps } from '#src/types/NextPage.js';
 
-const HSAppComponent = ({ Component, pageProps }: HSAppProps) => {
+const JTMAppComponent = ({ Component, pageProps }: JTMAppProps) => {
   const router = useRouter();
 
   // Handle error pages differently
@@ -43,7 +43,7 @@ const HSAppComponent = ({ Component, pageProps }: HSAppProps) => {
   );
 };
 
-export default withUrqlClient(getUrqlClientOptions)(HSAppComponent);
+export default withUrqlClient(getUrqlClientOptions)(JTMAppComponent);
 
 const AppLoadingOverlay = () => {
   const loaded = useValue(app$.loaded);

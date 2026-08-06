@@ -1,5 +1,5 @@
-import type { JTMServiceRequest } from '@justtellme/service';
 import type { AuthPrincipal } from '@justtellme/auth-token';
+import type { JTMServiceRequest } from '@justtellme/service';
 import type { JTMServiceWithSessionLocals } from '../types.ts';
 
 export interface EndUserData<

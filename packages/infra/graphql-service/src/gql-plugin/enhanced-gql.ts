@@ -2,9 +2,10 @@
  * A GraphQL codegen plugin to simplify SDL authoring
  */
 
+import fs from 'node:fs';
+import path from 'node:path';
 import type { PluginFunction, Types } from '@graphql-codegen/plugin-helpers';
 import { printSchemaWithDirectives } from '@graphql-tools/utils';
-import fs from 'fs';
 import type {
   ASTVisitor,
   DocumentNode,
@@ -14,7 +15,6 @@ import type {
   ObjectTypeDefinitionNode,
 } from 'graphql';
 import { Kind, parse, print, visit } from 'graphql';
-import path from 'path';
 import type { IncludesArguments } from './includes.ts';
 import { addIncludedFields, INCLUDE_DIRECTIVE, readInclude } from './includes.ts';
 import type { AsInputArguments } from './input-types.ts';
@@ -86,10 +86,7 @@ function transformSchema(schemaAST: DocumentNode): DocumentNode {
       };
     },
     FieldDefinition(node) {
-      if (
-        node.directives &&
-        node.directives.some((directive) => directive.name.value === 'paginated')
-      ) {
+      if (node.directives?.some((directive) => directive.name.value === 'paginated')) {
         const typeName = extractTypeName(node.type);
 
         const newNode: FieldDefinitionNode = {

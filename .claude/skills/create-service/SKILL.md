@@ -17,7 +17,7 @@ Ask the user for:
 ## Architecture Context
 
 - **Internal services** (most common): use `@justtellme/service` (`useJTMService`). They sit behind Envoy and receive pre-authenticated requests via `x-auth-token` headers. No Stytch, no sessions.
-- **Auth gateway services** (rare, like `authn-authz-internal`): use `@justtellme/service` BUT also depend on `@justtellme/web-auth` and `stytch` directly. They validate Stytch tokens and issue `x-auth-token` headers for downstream services. Config extends `HSAuthConfiguration` and `HSSessionConfiguration`.
+- **Auth gateway services** (rare, like `authn-authz-internal`): use `@justtellme/service` BUT also depend on `@justtellme/web-auth` and `stytch` directly. They validate Stytch tokens and issue `x-auth-token` headers for downstream services. Config extends `JTMAuthConfiguration` and `JTMSessionConfiguration`.
 
 ## Directory Structure
 
@@ -187,7 +187,7 @@ export function service(): <PascalName>['Service'] {
 For an auth gateway service, the pattern is the same (`useJTMService`) but you additionally:
 - Initialize the Stytch client in `start()`
 - Add `stytch` to `app.locals`
-- Extend config with `HSAuthConfiguration` and `HSSessionConfiguration`
+- Extend config with `JTMAuthConfiguration` and `JTMSessionConfiguration`
 
 ```typescript
 import { Client } from 'stytch';
@@ -208,7 +208,7 @@ Object.assign(app.locals, {
 
 ```typescript
 import type { ServiceTypes } from '@openapi-typescript-infra/service';
-import type { HSRequestLocals, JTMServiceLocals } from '@justtellme/service';
+import type { JTMRequestLocals, JTMServiceLocals } from '@justtellme/service';
 
 import type { operationHandlers } from '../generated/service/index.ts';
 
@@ -218,7 +218,7 @@ export interface <PascalName>Locals extends JTMServiceLocals<<PascalName>ConfigS
   // Add service-wide resources here
 }
 
-export type <PascalName>RequestLocals = HSRequestLocals;
+export type <PascalName>RequestLocals = JTMRequestLocals;
 
 export type <PascalName> = ServiceTypes<<PascalName>Locals, <PascalName>RequestLocals>;
 
@@ -239,10 +239,10 @@ export interface <PascalName>ConfigSchema extends JTMConfigurationSchema {
 
 ```typescript
 import type { JTMConfigurationSchema } from '@justtellme/service';
-import type { HSAuthConfiguration, HSSessionConfiguration } from '@justtellme/web-auth';
+import type { JTMAuthConfiguration, JTMSessionConfiguration } from '@justtellme/web-auth';
 
 export interface <PascalName>ConfigSchema
-  extends JTMConfigurationSchema, HSAuthConfiguration, HSSessionConfiguration {
+  extends JTMConfigurationSchema, JTMAuthConfiguration, JTMSessionConfiguration {
   // Add service-specific config here
 }
 ```
@@ -309,7 +309,7 @@ For auth gateway services, also include session/auth config:
   "$schema": "tsschema://src/types/config#<PascalName>ConfigSchema",
   "session": {
     "secret": "gsm:session_secret",
-    "cookieName": "hssession",
+    "cookieName": "JTMSession",
     "cookieDomain": ".dev.justtellme.com",
     "maxAge": 604800000
   },

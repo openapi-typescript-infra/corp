@@ -3,11 +3,11 @@ import type { Service } from '@openapi-typescript-infra/service';
 import { insertConfigurationBefore, useService } from '@openapi-typescript-infra/service';
 import type { JTMConfigurationSchema } from './config.ts';
 import { addShortstopHandlers, getGcpProjectId } from './shortstops/index.ts';
-import type { AnyJTMServiceLocals, HSRequestLocals, JTMServiceLocals } from './types.ts';
+import type { AnyJTMServiceLocals, JTMRequestLocals, JTMServiceLocals } from './types.ts';
 
 export function useJTMService<
   SLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
-  RLocals extends HSRequestLocals = HSRequestLocals,
+  RLocals extends JTMRequestLocals = JTMRequestLocals,
 >(baseService?: Service<SLocals, RLocals>): Service<SLocals, RLocals> {
   const base = useService(baseService);
   return {

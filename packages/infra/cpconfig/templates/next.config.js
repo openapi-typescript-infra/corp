@@ -71,18 +71,16 @@ function workspaceExportAliases() {
       const dev = exportValue.default;
       if (prod && dev && prod !== dev) {
         const fullExport = exportPath === '.' ? dep : `${dep}/${exportPath.replace(/^\.\//, '')}`;
-        aliases[fullExport] = path.resolve(
-          path.dirname(
-            (() => {
-              const requireFn =
-                typeof require !== 'undefined' ? require : createRequire(import.meta.url);
-              return requireFn.resolve(`${dep}/package.json`, {
-                paths: [process.cwd()],
-              });
-            })(),
-          ),
-          dev,
+        const requireFn = typeof require !== 'undefined' ? require : createRequire(import.meta.url);
+        const depDir = path.dirname(
+          requireFn.resolve(`${dep}/package.json`, { paths: [process.cwd()] }),
         );
+        const absolutePath = path.resolve(depDir, dev);
+        // Turbopack treats absolute paths starting with `/` as server-relative
+        // imports and fails to resolve them. Convert to a path relative to the
+        // Next.js project root so it resolves as a normal filesystem path.
+        const relativePath = path.relative(process.cwd(), absolutePath);
+        aliases[fullExport] = relativePath.startsWith('.') ? relativePath : `./${relativePath}`;
         if (!transpile.includes(dep)) {
           transpile.push(dep);
         }

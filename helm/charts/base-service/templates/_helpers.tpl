@@ -9,27 +9,30 @@
 {{- end -}}
 
 {{- define "base-service.env-value" -}}
-{{- if eq (kindOf .) "string" -}}
-value: {{ . | quote }}
+{{- $value := .value -}}
+{{- if eq (kindOf $value) "string" -}}
+value: {{ tpl $value .root | quote }}
 {{- else -}}
 valueFrom:
   secretKeyRef:
-    name: {{ .name | quote }}
-    key: {{ default "secret" .key | quote }}
+    name: {{ $value.name | quote }}
+    key: {{ default "secret" $value.key | quote }}
 {{- end -}}
 {{- end -}}
 
 {{- define "base-service.env" -}}
+{{- $root := . -}}
 {{- range $key, $value := .Values.env }}
 - name: {{ $key }}
-{{ include "base-service.env-value" $value | indent 2 }}
+{{ include "base-service.env-value" (dict "value" $value "root" $root) | indent 2 }}
 {{- end -}}
 {{- end -}}
 
 {{- define "base-service.worker-env" -}}
+{{- $root := . -}}
 {{- range $key, $value := .Values.temporal.env }}
 - name: {{ $key }}
-{{ include "base-service.env-value" $value | indent 2 }}
+{{ include "base-service.env-value" (dict "value" $value "root" $root) | indent 2 }}
 {{- end -}}
 {{- end -}}
 

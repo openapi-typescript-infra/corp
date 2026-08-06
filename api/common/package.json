@@ -1,0 +1,12 @@
+{
+  "name": "@justtellme/api-common",
+  "version": "0.0.0",
+  "description": "Shared OpenAPI schemas referenced via $ref by per-service specs",
+  "type": "module",
+  "private": true,
+  "files": [
+    "*.yaml"
+  ],
+  "author": "Just Tell Me Developers <developers@justtellme.com>",
+  "license": "UNLICENSED"
+}

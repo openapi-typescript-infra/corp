@@ -27,15 +27,15 @@ export type AnyJTMServiceLocals = JTMServiceLocals<any>;
  * also hangs res off req, so we can use a single argument
  * to get both locals when necessary
  */
-export type HSRequestLocals = RequestLocals;
+export type JTMRequestLocals = RequestLocals;
 
-export type HSExpress<
+export type JTMExpress<
   ServiceLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
 > = ServiceExpress<ServiceLocals>;
 
 export type JTMService<
   ServiceLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
-  RequestLocals extends HSRequestLocals = HSRequestLocals,
+  RequestLocals extends JTMRequestLocals = JTMRequestLocals,
 > = Service<ServiceLocals, RequestLocals>;
 
 /**
@@ -45,10 +45,10 @@ export type JTMServiceRequest<
   SLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
 > = RequestWithApp<SLocals>;
 
-export type JTMServiceResponse<ResBody = object> = Response<ResBody, HSRequestLocals>;
+export type JTMServiceResponse<ResBody = object> = Response<ResBody, JTMRequestLocals>;
 export type JTMServiceRouter<
   SLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
-  RLocals extends HSRequestLocals = HSRequestLocals,
+  RLocals extends JTMRequestLocals = JTMRequestLocals,
 > = ServiceRouter<SLocals, RLocals>;
 
 /**
@@ -59,7 +59,7 @@ export type JTMServiceRouter<
  * like query strings or body or similar. Most often, you want the
  * logger.
  */
-export type HSRequestLike<
+export type JTMRequestLike<
   SLocals extends AnyJTMServiceLocals = JTMServiceLocals<JTMConfigurationSchema>,
-  RLocals extends HSRequestLocals = HSRequestLocals,
+  RLocals extends JTMRequestLocals = JTMRequestLocals,
 > = RequestLike<SLocals, RLocals>;

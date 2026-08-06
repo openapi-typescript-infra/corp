@@ -1,0 +1,100 @@
+name: Build and push service container
+description: |
+  Build a Just Tell Me service container from the monorepo and push it to Artifact
+  Registry tagged with the git SHA and `latest`.
+
+inputs:
+  service:
+    description: Service id, matching the directory under services/ and the image name.
+    required: true
+  service-dir:
+    description: Service directory relative to repo root. Defaults to services/<service>.
+    required: false
+  registry:
+    description: Container registry root. Push target is `<registry>/<service>`.
+    required: false
+    default: ""
+  npm-registry-server:
+    description: Artifact Registry npm registry URL used during the image build.
+    required: false
+    default: https://us-central1-npm.pkg.dev/justtellme-platform/npm-packages/
+  push:
+    description: Whether to push the image. Set to "false" to validate the build only.
+    required: false
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - name: Resolve service directory
+      id: dirs
+      shell: bash
+      run: |
+        set -euo pipefail
+        SERVICE_DIR='${{ inputs.service-dir }}'
+        if [ -z "$SERVICE_DIR" ]; then
+          SERVICE_DIR="services/${{ inputs.service }}"
+        fi
+        if [ ! -f "$SERVICE_DIR/package.json" ]; then
+          echo "::error::No package.json at $SERVICE_DIR; is the service-dir input correct?"
+          exit 1
+        fi
+        echo "service_dir=$SERVICE_DIR" >> "$GITHUB_OUTPUT"
+
+    - name: Ensure expected optional build-context paths exist
+      shell: bash
+      run: |
+        set -euo pipefail
+        cd "${{ steps.dirs.outputs.service_dir }}"
+        mkdir -p config migrations api public private src/config
+        touch README.md cpconfig.placeholder next.config.placeholder
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v4
+
+    - name: Mint NPM auth token for @justtellme scope
+      id: npm-auth
+      shell: bash
+      run: |
+        set -euo pipefail
+        TOKEN=$(gcloud auth print-access-token)
+        echo "::add-mask::$TOKEN"
+        echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
+
+    - name: Build and push image
+      shell: bash
+      env:
+        GOOGLE_PACKAGES_TOKEN: ${{ steps.npm-auth.outputs.token }}
+      run: |
+        set -euo pipefail
+        SERVICE='${{ inputs.service }}'
+        SERVICE_DIR='${{ steps.dirs.outputs.service_dir }}'
+        REGISTRY='${{ inputs.registry }}'
+        if [ -z "$REGISTRY" ]; then
+          REGISTRY="us-central1-docker.pkg.dev/${GCP_PROJECT}/docker-images"
+        fi
+        IMAGE_REF="$REGISTRY/$SERVICE"
+        CACHE_REF="$IMAGE_REF:buildcache"
+
+        BUILD_VERSION=$(node -p "const p=require('./${SERVICE_DIR}/package.json'); const v=p.version.split('.'); v[2]=process.argv[1]; v.join('.')" ${{ github.run_number }})
+
+        CACHE_FROM_FLAGS=(--cache-from "type=registry,ref=$CACHE_REF")
+        CACHE_TO_FLAGS=()
+        OUTPUT_FLAGS=()
+        if [[ "${{ inputs.push }}" == "true" ]]; then
+          CACHE_TO_FLAGS=(--cache-to "type=registry,ref=$CACHE_REF,mode=max,image-manifest=true,oci-mediatypes=true")
+          OUTPUT_FLAGS=(--push)
+        fi
+
+        docker buildx build \
+          --build-context monorepo=. \
+          --secret id=google_packages_token,env=GOOGLE_PACKAGES_TOKEN \
+          --build-arg BUILD_VERSION="$BUILD_VERSION" \
+          --build-arg NPM_REGISTRY_SERVER='${{ inputs.npm-registry-server }}' \
+          "${CACHE_FROM_FLAGS[@]}" \
+          "${CACHE_TO_FLAGS[@]}" \
+          "${OUTPUT_FLAGS[@]}" \
+          --tag "$IMAGE_REF:${{ github.sha }}" \
+          --tag "$IMAGE_REF:latest" \
+          -f docker/service.Dockerfile \
+          "$SERVICE_DIR"

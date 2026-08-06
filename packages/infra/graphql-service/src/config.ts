@@ -1,6 +1,6 @@
-import type { HSAuthConfigurationSchema } from '@justtellme/service-with-auth';
+import type { JTMAuthConfigurationSchema } from '@justtellme/service-with-auth';
 
-export interface JTMGraphQLConfigurationSchema extends HSAuthConfigurationSchema {
+export interface JTMGraphQLConfigurationSchema extends JTMAuthConfigurationSchema {
   graphql: {
     ws?: boolean;
     introspection: boolean;

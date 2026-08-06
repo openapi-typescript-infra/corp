@@ -1,7 +1,8 @@
 # --- Configuration ---
 
 GCP_PROJECT_ID ?= justtellme-dev
-STATE_BUCKET   := $(GCP_PROJECT_ID)-terraform-workspace-state
+STATE_BUCKET   ?= justtellme-platform-terraform-state
+STATE_PREFIX   ?= corp
 
 # --- Core targets ---
 
@@ -17,9 +18,9 @@ validate: ## Validate configuration (requires init)
 	terraform validate
 
 init: ## Initialize Terraform (downloads providers, configures backend)
-	terraform init -upgrade -input=false \
+	terraform init -reconfigure -upgrade -input=false \
 		-backend-config="bucket=$(STATE_BUCKET)" \
-		-backend-config="prefix=terraform/state"
+		-backend-config="prefix=$(STATE_PREFIX)"
 
 plan: ## Show execution plan
 	terraform plan -out=tfplan

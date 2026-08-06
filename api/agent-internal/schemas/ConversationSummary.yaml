@@ -5,6 +5,10 @@ required:
 properties:
   conversation_id:
     type: string
+  owners:
+    type: array
+    items:
+      type: string
   agent_id:
     type: string
   status:

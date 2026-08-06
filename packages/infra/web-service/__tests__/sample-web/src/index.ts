@@ -1,5 +1,5 @@
-import { useHSWebService } from '../../../src/index.ts';
+import { useJTMWebService } from '../../../src/index.ts';
 
-export function hsWeb() {
-  return useHSWebService();
+export function JTMWeb() {
+  return useJTMWebService();
 }

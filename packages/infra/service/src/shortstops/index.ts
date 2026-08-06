@@ -49,13 +49,15 @@ function getGsmHandler(secretmanagerClient: SecretManagerServiceClient, shouldTh
     if (process.env[localOverride]) {
       return filter(process.env[localOverride]);
     }
+    const secretVersionName = `projects/${getGcpProjectId()}/secrets/${secretName}/versions/latest`;
     return secretmanagerClient
       .accessSecretVersion({
-        name: `projects/${getGcpProjectId()}/secrets/${secretName}/versions/latest`,
+        name: secretVersionName,
       })
       .then(([version]) => filter(version.payload?.data?.toString()))
       .catch((err) => {
         if (shouldThrow) {
+          err.message = `Failed to access Secret Manager secret ${secretVersionName}: ${err.message}`;
           throw err;
         }
         return undefined;
@@ -124,9 +126,9 @@ export function addShortstopHandlers(handlers: ServiceOptions['shortstopHandlers
   const secretmanagerClient = new SecretManagerServiceClient();
   const modified = { ...handlers };
 
-  modified['gsm'] = getGsmHandler(secretmanagerClient, true);
-  modified['gsm_optional'] = getGsmHandler(secretmanagerClient, false);
-  modified['gcp'] = getGcpIdentity;
+  modified.gsm = getGsmHandler(secretmanagerClient, true);
+  modified.gsm_optional = getGsmHandler(secretmanagerClient, false);
+  modified.gcp = getGcpIdentity;
 
   return modified;
 }

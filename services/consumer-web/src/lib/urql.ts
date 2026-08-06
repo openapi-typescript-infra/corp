@@ -17,7 +17,7 @@ export const getHeaders = (
     return;
   }
 
-  const cookie = ctx?.req?.headers?.['cookie'];
+  const cookie = ctx?.req?.headers?.cookie;
 
   if (!cookie) {
     return;

@@ -42,11 +42,13 @@ The manifests are applied by running `helm template` and applied to GKE. You can
 | gcp.project | **required** | deployment | The name of the Google Cloud Project, either justtellme-dev or justtellme-prod. Managed by github-actions |
 | gcp.env | none | unused | development or production. Managed by github actions |
 | gcp.region | us-central1 | deployment | The region in which the service is running. Managed by github actions |
+| image.project | gcp.project | deployment, db-migration | Optional Google Cloud project that owns the Docker image repository. Set to the platform project for shared Artifact Registry. |
 | database | none | deployment | Details about the database being used, if any (this is a map). |
 | database.region | us-central1 | deployment | The region in which the database is running |
-| database.gcpId | **required** | deployment | The GCP id of the database such as identity (which becomes pg-dev-identity in dev and pg-identity in prod). Only required if you have a database |
+| database.gcpId | **required** | deployment | The Cloud SQL instance suffix such as main (which becomes development-pg-main in development and production-pg-main in production). Only required if you have a database |
+| database.instance | derived from database.gcpId | deployment, db-migration | Optional Cloud SQL instance name override when the Terraform resource name does not follow the standard environment-pg-id convention |
 | database.username | svc@env.iam | deployment | Usually don't need to override |
-| database.migrate | true | db-migration | Whether to automatically run database migration on deploys |
+| database.migrate | true | db-migration | Whether to automatically run database migration on deploys. Migration jobs are named `<service-name>-migration-<timestamp>` |
 | resources | [variables](base-service/values.yaml) | deployment | cpu and memory requests and limits |
 | monitoring.enabled | true | PodMonitoring | Enables google monitoring of the deployment |
 | mappings | none | mappings | Maps API endpoints to service endpoints |

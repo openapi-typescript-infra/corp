@@ -20,17 +20,22 @@ postgres_instances = {
 secrets = [
   "session_secret",
   "stytch_project_id",
+  "stytch_public_key",
   "stytch_secret",
-  "cloudflare_api_token",
 ]
 
 pubsub_topics = {
+  account_deleted = {
+    subscriptions = []
+  }
+  account_deletion_requested = {
+    subscriptions = []
+  }
   individual_created = {
     subscriptions = ["crm-sync-internal"]
   }
 }
 
-# Cloudflare — api_token read from Secret Manager at plan/apply time
 cloudflare_zone_id = "1ab92e0aa6efb0e7e00594eaa800530f"
 
 cloudflare_dns_records = {
@@ -48,3 +53,50 @@ envoy_gateway_config = {
 
 cloudflare_waf_enabled        = true
 cloudflare_waf_rate_limit_rps = 500
+
+monitoring_config = {
+  enabled            = true
+  notification_email = "max@justtellme.com"
+  workload_names     = ["consumer-web", "graphql-api", "rest-api"]
+  uptime_targets = {
+    api = {
+      dns_record_key      = "api"
+      path                = "/graphql"
+      request_method      = "POST"
+      content_type        = "USER_PROVIDED"
+      custom_content_type = "application/json"
+      body                = "{\"query\":\"query Uptime { __typename }\"}"
+      expected_content    = "\"__typename\":\"Query\""
+    }
+  }
+}
+
+stytch_project = {
+  name         = "Just Tell Me Production"
+  project_slug = "justtellme-production"
+
+  live_environment = {
+    name             = "Production"
+    environment_slug = "production"
+  }
+}
+
+stytch_environment = {
+  name             = "Production"
+  environment_slug = "production"
+  type             = "LIVE"
+}
+
+stytch_redirect_urls = {
+  consumer_web_authenticate_return_url = {
+    url = "https://consumer.justtellme.com/authenticate?return_url={}"
+    valid_types = [
+      {
+        type = "LOGIN"
+      },
+      {
+        type = "SIGNUP"
+      },
+    ]
+  }
+}

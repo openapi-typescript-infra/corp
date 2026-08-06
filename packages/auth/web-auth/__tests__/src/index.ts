@@ -1,13 +1,13 @@
-import type { paths as IdentityInternal } from '@justtellme/api/identity-internal';
+import type { paths as IdentityInternal } from '@justtellme/identity-internal-client';
 import type { JTMConfigurationSchema, JTMService, JTMServiceLocals } from '@justtellme/service';
 import { getDatasourceConfiguration, useJTMService } from '@justtellme/service';
 import createClient from 'openapi-fetch';
 import type { createClient as createRedisClient } from 'redis';
-import type { AuthDatasources, HSAuthConfiguration, HSSessionConfiguration } from '#src/types.ts';
+import type { AuthDatasources, JTMAuthConfiguration, JTMSessionConfiguration } from '#src/types.ts';
 import type { TraditionalMiddleware } from '../../src/middleware.ts';
 import { getMiddleware } from '../../src/middleware.ts';
 
-export type TestConfig = JTMConfigurationSchema & HSSessionConfiguration & HSAuthConfiguration;
+export type TestConfig = JTMConfigurationSchema & JTMSessionConfiguration & JTMAuthConfiguration;
 export type TestServiceLocals = JTMServiceLocals<TestConfig> &
   AuthDatasources & {
     withAuthorization: (

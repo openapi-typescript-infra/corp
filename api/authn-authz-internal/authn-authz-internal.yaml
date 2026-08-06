@@ -6,7 +6,7 @@ info:
     name: MIT
   version: 1.0.0
 servers:
-  - url: http://authn-authz-internal.hs.svc.cluster.local
+  - url: http://authn-authz-internal.jtm.svc.cluster.local
 paths:
   /authentication:
     get:

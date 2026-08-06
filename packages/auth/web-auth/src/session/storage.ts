@@ -33,8 +33,7 @@ export async function getSessionStorage(
     async set(
       sid: string,
       sess: session.SessionData,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cb?: ((_err?: unknown, _data?: any) => void) | undefined,
+      cb?: Parameters<session.Store['set']>[2],
     ): Promise<void> {
       const ret = super.set(sid, sess, cb);
       this.emit('set', sid, sess);

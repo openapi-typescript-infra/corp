@@ -1,4 +1,4 @@
-import ApiSpec from '@justtellme/api/specs/authn-authz-internal' with { type: 'json' };
+import ApiSpec from '@justtellme/authn-authz-internal-client/spec' with { type: 'json' };
 import { useJTMService } from '@justtellme/service';
 import { Client } from 'stytch';
 import { Metrics } from './lib/metrics.ts';

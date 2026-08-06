@@ -1,5 +1,5 @@
-import ApiSpec from '@justtellme/api/specs/identity-internal' with { type: 'json' };
 import { createTableCache, getPgPool } from '@justtellme/cloud-sql';
+import ApiSpec from '@justtellme/identity-internal-client/spec' with { type: 'json' };
 import { useJTMService } from '@justtellme/service';
 import { Kysely, PostgresDialect } from 'kysely';
 import { createClient } from 'redis';

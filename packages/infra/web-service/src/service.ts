@@ -3,20 +3,20 @@ import { useJTMServiceWithAuth } from '@justtellme/service-with-auth';
 import type { Service } from '@openapi-typescript-infra/service';
 import { getNodeEnv, insertConfigurationBefore, isDev } from '@openapi-typescript-infra/service';
 import next from 'next';
-import type { HSWebConfigurationSchema } from './config.ts';
+import type { JTMWebConfigurationSchema } from './config.ts';
 import { validateCsrf } from './csrf.ts';
-import type { HSWebRequestLocals, HSWebServiceLocals } from './types.ts';
+import type { JTMWebRequestLocals, JTMWebServiceLocals } from './types.ts';
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
-export function useHSWebService<
+export function useJTMWebService<
   SLocals extends
-    HSWebServiceLocals<HSWebConfigurationSchema> = HSWebServiceLocals<HSWebConfigurationSchema>,
-  RLocals extends HSWebRequestLocals = HSWebRequestLocals,
+    JTMWebServiceLocals<JTMWebConfigurationSchema> = JTMWebServiceLocals<JTMWebConfigurationSchema>,
+  RLocals extends JTMWebRequestLocals = JTMWebRequestLocals,
 >(baseService?: Service<SLocals, RLocals>): Service<SLocals, RLocals> {
   const base = useJTMServiceWithAuth(baseService);
   let rootDirectory: string;
-  let csrfConfig: HSWebConfigurationSchema['csrf'];
+  let csrfConfig: JTMWebConfigurationSchema['csrf'];
 
   return {
     ...base,
@@ -67,7 +67,11 @@ export function useHSWebService<
       // eslint-disable-next-line @typescript-eslint/consistent-type-imports
       const nextApp = (next as unknown as typeof import('next').default)({
         dev,
-        quiet: !dev,
+        // Don't set `quiet: !dev`. Next's BaseServer.logError() does
+        // `if (this.quiet) return;` before logging, which silently
+        // drops every render error in production — turns 500s into
+        // unresearchable mysteries. The compile-time chatter that
+        // quiet was meant to suppress only fires in dev mode anyway.
         customServer: true,
         dir: rootDirectory,
         port: serverConfig.port,
@@ -77,8 +81,23 @@ export function useHSWebService<
       const handler = nextApp.getRequestHandler();
       await nextApp.prepare();
       app.locals.next = nextApp;
-      app.all(/.*/, async (req, res) => {
-        await handler(req, res);
+      app.all(/.*/, async (req, res, nextMiddleware) => {
+        try {
+          await handler(req, res);
+        } catch (err) {
+          // Without this catch, the rejection bubbles to Express's
+          // default error handler, which writes "Internal Server Error"
+          // and logs nothing — so every 500 from Next.js is invisible.
+          // Log with full stack + url, then hand off so the response
+          // path still completes (Next may have partially written).
+          req.app.locals.logger.error(
+            { err, url: req.url, method: req.method },
+            'Next.js request handler threw',
+          );
+          if (!res.headersSent) {
+            nextMiddleware(err);
+          }
+        }
       });
     },
     async stop(app) {

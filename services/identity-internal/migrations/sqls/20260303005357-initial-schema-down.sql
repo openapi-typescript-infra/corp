@@ -38,4 +38,17 @@ DROP TABLE IF EXISTS addresses;
 DROP EXTENSION IF EXISTS ltree;
 DROP EXTENSION IF EXISTS plv8;
 DROP EXTENSION IF EXISTS postgis;
+DO $do$
+DECLARE
+  runtime_role text;
+BEGIN
+  FOR runtime_role IN
+    SELECT rolname
+    FROM pg_roles
+    WHERE rolname LIKE 'identity-internal-sa@%.iam'
+  LOOP
+    EXECUTE format('REVOKE %I FROM %I', 'identity-manager', runtime_role);
+  END LOOP;
+END
+$do$;
 DROP ROLE IF EXISTS "identity-manager";

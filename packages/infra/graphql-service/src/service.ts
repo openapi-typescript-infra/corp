@@ -1,3 +1,6 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@as-integrations/express5';
 import { makeExecutableSchema } from '@graphql-tools/schema';
@@ -10,12 +13,9 @@ import {
 } from '@openapi-typescript-infra/service';
 import type { Gauge } from '@opentelemetry/api';
 import cors from 'cors';
-import fs from 'fs';
 import type { ExecutionArgs, GraphQLSchema } from 'graphql';
 import type { SubscribeMessage } from 'graphql-ws';
 import { useServer } from 'graphql-ws/use/ws';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { WebSocketServer } from 'ws';
 import type { JTMGraphQLContext } from './Context.ts';
 import { HttpJTMGraphQLContext, WsJTMGraphQLContext } from './Context.ts';
@@ -114,6 +114,7 @@ export function useJTMGraphQLService<
               origin: devAllowedOrigins,
               credentials: true,
             }),
+        app.locals.withAuthAndSession,
         // Give this function a useful name in OTLP
         function apolloServer(req, res, next) {
           return apolloMiddleware(req, res, next);

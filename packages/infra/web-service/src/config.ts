@@ -1,7 +1,7 @@
-import type { HSAuthConfigurationSchema } from '@justtellme/service-with-auth';
+import type { JTMAuthConfigurationSchema } from '@justtellme/service-with-auth';
 import type { CookieOptions } from 'express-serve-static-core';
 
-export interface HSWebConfigurationSchema extends HSAuthConfigurationSchema {
+export interface JTMWebConfigurationSchema extends JTMAuthConfigurationSchema {
   csrf: {
     action?: 'block' | 'warn'; // Empty means "ignore CSRF protection"
     // List of include/exclude paths for CSRF protection

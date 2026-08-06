@@ -4,22 +4,30 @@ provider "google" {
   zone    = var.gcp_zone
 }
 
-# --- Cloudflare credentials from Secret Manager ---
-
-data "google_secret_manager_secret_version" "cloudflare_api_token" {
-  secret  = "cloudflare_api_token"
-  project = var.gcp_project_id
-
-  depends_on = [module.secrets]
+provider "google-beta" {
+  project               = var.gcp_project_id
+  billing_project       = var.gcp_project_id
+  region                = var.gcp_region
+  user_project_override = true
+  zone                  = var.gcp_zone
 }
 
 provider "cloudflare" {
-  api_token = data.google_secret_manager_secret_version.cloudflare_api_token.secret_data
+  api_token = var.cloudflare_api_token
+}
+
+provider "stytch" {
+  workspace_key_id     = var.stytch_workspace_key_id
+  workspace_key_secret = var.stytch_workspace_key_secret
 }
 
 # --- Kubernetes and Helm providers (GKE-backed) ---
 
 data "google_client_config" "default" {}
+
+data "google_project" "current" {
+  project_id = var.gcp_project_id
+}
 
 provider "kubernetes" {
   host                   = "https://${module.gke.cluster_endpoint}"
@@ -33,6 +41,13 @@ provider "helm" {
     token                  = data.google_client_config.default.access_token
     cluster_ca_certificate = base64decode(module.gke.cluster_ca_certificate)
   }
+}
+
+provider "kubectl" {
+  host                   = "https://${module.gke.cluster_endpoint}"
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(module.gke.cluster_ca_certificate)
+  load_config_file       = false
 }
 
 # --- Always-on modules (all environments) ---
@@ -60,26 +75,6 @@ module "pubsub" {
   gcp_project_id = var.gcp_project_id
   environment    = var.environment
   pubsub_topics  = var.pubsub_topics
-
-  depends_on = [module.gcp_project]
-}
-
-# --- Artifact Registry repositories ---
-
-resource "google_artifact_registry_repository" "npm_packages" {
-  repository_id = "npm-packages"
-  location      = var.gcp_region
-  format        = "NPM"
-  description   = "npm package registry for ${var.environment}"
-
-  depends_on = [module.gcp_project]
-}
-
-resource "google_artifact_registry_repository" "docker_images" {
-  repository_id = "docker-images"
-  location      = var.gcp_region
-  format        = "DOCKER"
-  description   = "Docker image registry for ${var.environment}"
 
   depends_on = [module.gcp_project]
 }
@@ -112,6 +107,7 @@ module "gke" {
   gcp_region     = var.gcp_region
   gcp_zone       = var.gcp_zone
   environment    = var.environment
+  suspended      = var.suspended
   gke_config     = var.gke_config
   network_id     = module.networking.network_id
   subnet_id      = module.networking.subnet_id
@@ -119,14 +115,29 @@ module "gke" {
   depends_on = [module.networking]
 }
 
-module "workload_identity" {
-  source = "./modules/workload_identity"
+resource "kubernetes_namespace" "app" {
+  metadata {
+    name = var.k8s_namespace
+  }
 
-  gcp_project_id      = var.gcp_project_id
-  service_accounts    = local.service_accounts
+  depends_on = [module.gke]
+}
+
+module "identity_internal" {
+  source = "./modules/app-services"
+
+  gcp_project_id          = var.gcp_project_id
+  service                 = "identity-internal"
+  k8s_namespace           = kubernetes_namespace.app.metadata[0].name
   cloudsql_instance_names = module.cloud_sql.instance_names
+  cloudsql_instances = [
+    "pg-main",
+  ]
+  extra_project_roles = [
+    "roles/pubsub.publisher",
+  ]
 
-  depends_on = [module.gke, module.cloud_sql]
+  depends_on = [module.gke, module.cloud_sql, module.pubsub, kubernetes_namespace.app]
 }
 
 module "envoy_gateway" {
@@ -136,6 +147,8 @@ module "envoy_gateway" {
   gcp_region           = var.gcp_region
   environment          = var.environment
   envoy_gateway_config = var.envoy_gateway_config
+  public_tls_config    = var.public_tls_config
+  cloudflare_api_token = var.cloudflare_api_token
 
   depends_on = [module.gke]
 }
@@ -146,8 +159,12 @@ module "cloud_sql" {
   gcp_project_id     = var.gcp_project_id
   gcp_region         = var.gcp_region
   environment        = var.environment
+  suspended          = var.suspended
   postgres_instances = var.postgres_instances
   network_id         = module.networking.network_id
+  datastream_instance_keys = toset([
+    for source in local.datastream_sources : source.instance_key
+  ])
 
   depends_on = [module.networking]
 }
@@ -168,8 +185,8 @@ module "cloudflare" {
 # --- Developer access (development only) ---
 
 resource "google_project_iam_member" "dev_secret_accessor" {
-  count   = local.is_development ? 1 : 0
+  count   = local.is_development && var.dev_secret_accessor_member != null ? 1 : 0
   project = var.gcp_project_id
   role    = "roles/secretmanager.secretAccessor"
-  member  = "group:developers@justtellme.live"
+  member  = var.dev_secret_accessor_member
 }

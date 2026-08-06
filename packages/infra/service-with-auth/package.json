@@ -11,12 +11,11 @@
   "types": "./src/index.ts",
   "type": "module",
   "scripts": {
-    "build": "tsgo -p tsconfig.build.json",
+    "build": "yarn -T run build-package",
     "test": "vitest",
     "typecheck": "tsgo --noEmit -p tsconfig.json",
     "clean": "yarn dlx rimraf ./build",
     "lint": "biome check src",
-    "postinstall": "cpconfig",
     "start": "yarn start-service --rootDirectory __tests__/justtellme-api --codepath src --packageDir __tests__/justtellme-api"
   },
   "engines": {
@@ -36,25 +35,24 @@
     "justtellme"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^2.4.10",
-    "@openapi-typescript-infra/service-tester": "^7.1.2",
+    "@biomejs/biome": "^2.5.6",
+    "@openapi-typescript-infra/service-tester": "^7.2.0",
     "@types/express-session": "^1.19.0",
-    "@types/lodash": "^4.17.24",
-    "@types/node": "^25.5.2",
+    "@types/lodash": "^4.17.25",
+    "@types/node": "^26.1.2",
     "pino-pretty": "^13.1.3",
     "supertest": "^7.2.2",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.10"
   },
   "dependencies": {
-    "@justtellme/api": "workspace:^",
     "@justtellme/cpconfig": "workspace:^",
+    "@justtellme/identity-internal-client": "workspace:^",
     "@justtellme/service": "workspace:^",
     "@justtellme/web-auth": "workspace:^",
-    "@openapi-typescript-infra/service": "^6.13.1",
-    "cpconfig": "^1.5.0",
+    "@openapi-typescript-infra/service": "^6.15.0",
     "lodash": "^4.18.1"
   },
-  "packageManager": "yarn@3.8.7"
+  "packageManager": "yarn@4.17.1"
 }

@@ -41,6 +41,7 @@ Database topology can evolve without restructuring the project.
 ## Terraform State & Secrets
 
 - Terraform remote state is stored in Google Cloud Storage.
+- The canonical state bucket is created by the top-level `terraform/bootstrap` root in the platform GCP project and shared by Terraform roots with separate backend prefixes.
 - Secrets are stored in Google Secret Manager.
 - Local development uses Application Default Credentials (ADC) to access GCP services.
 
@@ -49,6 +50,170 @@ This avoids:
 - Secret emulation
 - Local state drift
 - Vault-style overhead
+
+Bootstrap the projects and state bucket once:
+
+```sh
+cd terraform/bootstrap
+make apply ORGANIZATION_ID=<org-id> BILLING_ACCOUNT_ID=<billing-account-id>
+```
+
+Then initialize shared platform resources and runtime environments:
+
+```sh
+cd ../platform
+make init
+make plan
+
+cd ../infra
+make dev-init
+make prod-init
+```
+
+---
+
+## Bootstrap Secrets
+
+Some provider credentials must exist before Terraform can plan the full stack.
+
+For Cloudflare, create a scoped API token for the application's Cloudflare zone and store it manually in each GCP project as a Secret Manager secret named `cloudflare_api_token`.
+
+## Monitoring
+
+`monitoring_config` adds public HTTPS uptime checks plus Kubernetes error-log and restart alerts.
+It is disabled by default. Uptime targets reference keys from `cloudflare_dns_records`, while
+`workload_names` selects container names in the application namespace. Set
+`notification_email` to attach an email notification channel to every policy.
+
+## Datastream reporting
+
+`datastream_config` optionally replicates selected private Cloud SQL PostgreSQL databases into
+separate raw BigQuery datasets and creates staging/reporting datasets for modeled views. It is
+disabled by default. Before enabling it, use Datastream's validate-only flow to identify the PSC
+producer project IDs and supply them through `psc_producer_projects`.
+
+Each source names a configured `postgres_instances` key and one of that instance's databases. The
+stack enables logical decoding, creates a dedicated replication user, bootstraps the publication
+and replication slot inside GKE, and grants the GitHub Actions service account access to build
+reporting models. For example:
+
+```hcl
+datastream_config = {
+  enabled               = true
+  psc_producer_projects = ["example-producer-project"]
+  sources = {
+    identity = {
+      instance_key = "pg-main"
+      database     = "identity"
+    }
+  }
+}
+```
+
+The token must be scoped to the application's zone and needs these zone permissions:
+
+- `Zone:Read`
+- `DNS:Edit`
+- `Zone Settings:Edit`
+- `Rulesets:Edit`
+
+The Makefile loads this secret from the project implied by the environment shortcut before Terraform commands that need the Cloudflare provider:
+
+```sh
+make dev-plan
+make prod-plan
+```
+
+By default the project IDs are derived as `$(GCP_PROJECT_PREFIX)-dev` and `$(GCP_PROJECT_PREFIX)-prod`. Override `GCP_PROJECT_PREFIX` in the Makefile for a new repo.
+
+If `TF_VAR_cloudflare_api_token` is already set, the Makefile uses that value instead of reading Secret Manager.
+
+For Stytch, create a Workspace Management Key in the Stytch dashboard and store it manually in each GCP project as these Secret Manager secrets:
+
+- `stytch_workspace_key_id`
+- `stytch_workspace_key_secret`
+
+The Makefile loads those secrets into Terraform before plan/apply. If `TF_VAR_stytch_workspace_key_id` and `TF_VAR_stytch_workspace_key_secret` are already set, the Makefile uses those values instead of reading Secret Manager.
+
+Stytch projects, environments, public tokens, API secrets, and redirect URLs can be managed by Terraform through the official `stytchauth/stytch` provider. For a new app, define a managed project and environment in the env tfvars:
+
+```hcl
+stytch_project = {
+  name         = "My App Development"
+  project_slug = "my-app-development"
+}
+
+stytch_environment = {
+  name             = "Development"
+  environment_slug = "development"
+}
+
+stytch_redirect_urls = {
+  app_authenticate_return_url = {
+    url = "https://dev.example.com/authenticate?return_url={}"
+    valid_types = [
+      {
+        type = "LOGIN"
+      },
+      {
+        type = "SIGNUP"
+      },
+    ]
+  }
+}
+```
+
+Production normally uses the live environment created by `stytch_project`:
+
+```hcl
+stytch_project = {
+  name         = "My App Production"
+  project_slug = "my-app-production"
+
+  live_environment = {
+    name             = "Production"
+    environment_slug = "production"
+  }
+}
+
+stytch_environment = {
+  name             = "Production"
+  environment_slug = "production"
+  type             = "LIVE"
+}
+```
+
+When the `secrets` list includes `stytch_project_id`, `stytch_public_key`, and `stytch_secret`, Terraform writes the managed environment's project ID, public token, and API secret into Secret Manager. Existing dashboard-created Stytch projects, environments, public tokens, secrets, and redirect URLs must be imported before Terraform manages them. If an existing app should keep the dashboard-created project outside Terraform, set `stytch_project_slug` and `stytch_environment_slug` instead of `stytch_project`/`stytch_environment`.
+
+---
+
+## Suspend Development
+
+Development can be put into a lower-cost idle mode without destroying Terraform-managed resources.
+
+Suspended mode:
+
+- Scales the GKE development node pool to `0` nodes.
+- Sets Cloud SQL activation policy to `NEVER`, stopping database compute.
+- Keeps Terraform state, Secret Manager secrets, Artifact Registry repositories, VPC resources, Cloudflare DNS records, and other metadata resources in place.
+
+Plan and apply suspend mode:
+
+```sh
+make dev-suspend-plan
+make dev-suspend-apply
+```
+
+Resume development:
+
+```sh
+make dev-resume-plan
+make dev-resume-apply
+```
+
+Resume targets first wake any Cloud SQL instances whose names begin with the environment prefix, then run Terraform. This avoids Terraform failing while refreshing database users on a stopped instance.
+
+This is not true zero cost: storage, retained IP/gateway resources, registry contents, backups, and other non-compute resources may still bill. Use `destroy` only when the environment can be fully recreated.
 
 ---
 

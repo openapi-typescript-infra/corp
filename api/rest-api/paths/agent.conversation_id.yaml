@@ -1,0 +1,75 @@
+parameters:
+  - $ref: ../parameters/conversation_id.yaml
+get:
+  operationId: getAgentConversation
+  responses:
+    '200':
+      description: Conversation retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/AgentConversationDetails.yaml
+post:
+  operationId: createAgentConversation
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../schemas/CreateAgentConversationRequest.yaml
+  responses:
+    '200':
+      description: Conversation or completed turn
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: ../../agent-internal/schemas/Conversation.yaml
+              - $ref: ../../agent-internal/schemas/Turn.yaml
+    '202':
+      description: Streaming response
+      content:
+        text/event-stream:
+          schema:
+            type: string
+put:
+  operationId: agentConversationTurn
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - client
+            - turn
+          properties:
+            response:
+              type: string
+              enum:
+                - none
+                - stream
+                - complete
+            client:
+              $ref: ../../agent-internal/schemas/ClientInfo.yaml
+            turn:
+              $ref: ../../agent-internal/schemas/TurnInput.yaml
+  responses:
+    '200':
+      description: Completed turn
+      content:
+        application/json:
+          schema:
+            $ref: ../../agent-internal/schemas/Turn.yaml
+    '202':
+      description: Streaming response
+      content:
+        text/event-stream:
+          schema:
+            type: string
+    '206':
+      description: A tool response requires more client interaction
+      content:
+        application/json:
+          schema:
+            $ref: ../../agent-internal/schemas/DeferredToolResponse.yaml

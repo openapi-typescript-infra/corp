@@ -56,8 +56,8 @@ export function getDatasourceConfiguration<
   };
   const {
     baseUrl = registry?.useRegistry
-      ? `http://${kebabName}.hs`
-      : `http://${kebabName}.hs.svc.cluster.local`,
+      ? `http://${kebabName}.jtm`
+      : `http://${kebabName}.jtm.svc.cluster.local`,
     userAgent: configuredUserAgent,
     logRequests,
     logResponses,

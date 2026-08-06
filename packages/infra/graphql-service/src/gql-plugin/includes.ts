@@ -88,7 +88,7 @@ export function addIncludedFields(
                 if (includeDirective.pick && !includeDirective.pick.includes(f.name.value)) {
                   return false;
                 }
-                if (includeDirective.omit && includeDirective.omit.includes(f.name.value)) {
+                if (includeDirective.omit?.includes(f.name.value)) {
                   return false;
                 }
                 const targetType = extractTypeName(f.type);

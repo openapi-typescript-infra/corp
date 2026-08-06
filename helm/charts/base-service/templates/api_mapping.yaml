@@ -1,14 +1,29 @@
 {{- if and .Values.api.advertise (eq .Values.gcp.env "development") -}}
-apiVersion: getambassador.io/v2
-kind: Mapping
+{{- $gatewayName := default (printf "%s-gateway" .Values.gcp.env) .Values.gateway.name -}}
+{{- $gatewayNs := default "envoy-gateway-system" .Values.gateway.namespace -}}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
 metadata:
   name: {{ .Values.name }}-openapi
   namespace: {{ .Release.Namespace }}
 spec:
-  prefix: "/{{ .Values.name }}/v3/"
-  service: {{ .Values.name }}:3000
-  ambassador_id:
-  - ambassador-external
-  rewrite: "/"
-  host: swagger.dev.justtellme.com
+  parentRefs:
+    - name: {{ $gatewayName }}
+      namespace: {{ $gatewayNs }}
+  hostnames:
+    - swagger.dev.justtellme.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /{{ .Values.name }}/v3/
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+      backendRefs:
+        - name: {{ .Values.name }}
+          port: 3000
 {{- end -}}

@@ -6,28 +6,15 @@ type Consumer implements BaseIndividual {
 
 "Information required to create a new consumer account"
 input ConsumerCreateInput {
-  """
-  The version of the terms of service that the consumer has accepted
-  as a condition of creating an account.
-  """
+  "The version of the terms of service that the consumer has accepted."
   acceptedTerms: String
-  """
-  The identifier of the consumer to create - typically an email address.
-  If the token already contains this identifier, it does not need to be
-  passed twice.
-  """
+  "The identifier of the consumer to create - typically an email address."
   identifier: String
   "If a password will be used for identification, specify it here."
   password: String
-  """
-  If a session was established externally or previously,
-  include the token here to attach a new consumer to it.
-  This is most common for social auth.
-  """
+  "A previously established session token to attach a new consumer to."
   token: String
-  """
-  If an additional token is provided, it can be used to prefill data or validate other information
-  """
+  "An additional token used to prefill data or validate other information."
   providerToken: String
 }
 
