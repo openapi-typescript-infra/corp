@@ -1,0 +1,20 @@
+type: object
+required:
+  - group_id
+  - name
+  - group_type
+properties:
+  group_id:
+    type: string
+    format: uuid
+  parent_group_id:
+    type: string
+    format: uuid
+  name:
+    type: array
+    items:
+      type: string
+  group_type:
+    type: string
+  display_name:
+    type: string

@@ -1,0 +1,17 @@
+type: object
+required:
+  - identifier
+  - identifier_namespace
+  - is_unique
+properties:
+  identifier:
+    type: string
+  identifier_namespace:
+    type: string
+  display_identifier:
+    type: string
+  is_unique:
+    type: boolean
+  created_at:
+    type: string
+    format: date-time

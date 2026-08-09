@@ -2,7 +2,7 @@ in: query
 name: addresses
 required: false
 description: |
-  A list of addresses that should be retrieved for the individual.
+  A list of address types that should be retrieved for the entity.
 schema:
   type: array
   items:

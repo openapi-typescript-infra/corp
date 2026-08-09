@@ -19,6 +19,10 @@ paths:
     $ref: paths/groups.yaml
   /identity/groups/search:
     $ref: paths/groups.search.yaml
+  /identity/groups/{namespace}/{identifier}:
+    $ref: paths/groups.namespace.identifier.yaml
+  /identity/groups/{namespace}/{identifier}/consents:
+    $ref: paths/groups.namespace.identifier.consents.yaml
   /identity/addresses:
     $ref: paths/addresses.yaml
   /identity/addresses/search:

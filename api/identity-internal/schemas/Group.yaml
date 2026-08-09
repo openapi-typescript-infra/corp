@@ -3,6 +3,9 @@ required:
   - name
   - group_type
 properties:
+  parent_group_id:
+    type: string
+    format: uuid
   name:
     type: array
     items:
@@ -11,3 +14,29 @@ properties:
     type: string
   display_name:
     type: string
+  identifiers:
+    type: array
+    items:
+      oneOf:
+        - $ref: ./GroupIdentifierInput.yaml
+        - $ref: ./GroupIdentifier.yaml
+  profiles:
+    type: array
+    items:
+      $ref: ./ProfileEntry.yaml
+  addresses:
+    type: array
+    items:
+      $ref: ./IndividualAddress.yaml
+  consents:
+    type: array
+    items:
+      $ref: ./GroupConsent.yaml
+  parents:
+    type: array
+    items:
+      $ref: ./GroupSummary.yaml
+  children:
+    type: array
+    items:
+      $ref: ./GroupSummary.yaml

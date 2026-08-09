@@ -1,0 +1,60 @@
+parameters:
+  - name: namespace
+    in: path
+    required: true
+    schema:
+      type: string
+  - name: identifier
+    in: path
+    required: true
+    schema:
+      type: string
+put:
+  operationId: upsertGroupConsents
+  summary: Record consent decisions for a group
+  description: |
+    Records append-only group consent decisions. Repeating an unchanged decision
+    by the same actor for the same group, scope, type, and version does not create
+    another record. All decisions in one request must use the same scope.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - actor_individual_uuid
+            - consents
+          properties:
+            actor_individual_uuid:
+              type: string
+              format: uuid
+              description: The individual granting or denying these consents for the group.
+            consents:
+              type: array
+              minItems: 1
+              maxItems: 20
+              items:
+                $ref: ../schemas/IndividualConsent.yaml
+  responses:
+    200:
+      description: The group's current consent decisions for the affected consent types.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - group_id
+              - consents
+            properties:
+              group_id:
+                type: string
+                format: uuid
+              consents:
+                type: array
+                items:
+                  $ref: ../schemas/GroupConsent.yaml
+    404:
+      description: The group or actor does not exist.
+    400:
+      description: The consent request is invalid.

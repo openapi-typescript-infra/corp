@@ -1,0 +1,14 @@
+type: object
+required:
+  - identifier
+  - namespace
+properties:
+  identifier:
+    type: string
+  namespace:
+    type: string
+    description: The identifier namespace name.
+  display_identifier:
+    type: string
+  is_unique:
+    type: boolean

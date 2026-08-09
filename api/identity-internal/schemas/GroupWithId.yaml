@@ -4,3 +4,4 @@ allOf:
     properties:
       group_id:
         type: string
+        format: uuid

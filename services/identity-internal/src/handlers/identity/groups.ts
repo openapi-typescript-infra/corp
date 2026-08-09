@@ -1,6 +1,7 @@
 import { parseISO } from 'date-fns';
 
 import {
+  addGroupIdentifiers,
   addMemberToGroup,
   createGroup,
   escapeGroupName,
@@ -19,8 +20,14 @@ export const POST: IdentityInternalApi['createGroup'] = async (req, res) => {
     req.body.group_type,
     req.body.display_name,
   );
+  const identifiers = req.body.identifiers?.filter(
+    (value): value is typeof value & { namespace: string } => 'namespace' in value,
+  );
+  if (identifiers?.length) {
+    await addGroupIdentifiers(req.app, group.group_id, identifiers);
+  }
   res.status(group.inserted ? 201 : 409).json({
-    group_id: group.name,
+    group_id: group.group_uuid,
     name: req.body.name,
     group_type: req.body.group_type,
     display_name: req.body.display_name,
@@ -34,8 +41,8 @@ export const PATCH: IdentityInternalApi['modifyGroup'] = async (req, res) => {
   const ltreeName = escapeGroupName(name).join('.');
   const existing = await req.app.locals.db
     .selectFrom('groups')
-    .select(['group_id', 'name', 'display_name'])
-    .where('name', '=', ltreeName)
+    .select(['group_id', 'group_uuid', 'fully_qualified_name', 'display_name'])
+    .where('fully_qualified_name', '=', ltreeName)
     .executeTakeFirst();
 
   if (!existing) {
@@ -94,8 +101,8 @@ export const PATCH: IdentityInternalApi['modifyGroup'] = async (req, res) => {
   }
 
   res.json({
-    group_id: existing.name,
-    name: unescapeGroupName(existing.name.split('.')),
+    group_id: existing.group_uuid,
+    name: unescapeGroupName((existing.fully_qualified_name ?? '').split('.')),
     display_name: display_name ?? existing.display_name ?? undefined,
     members: memberResults,
   });

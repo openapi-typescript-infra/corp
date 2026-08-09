@@ -1,7 +1,9 @@
 import { ServiceError } from '@openapi-typescript-infra/service';
 import type { RawBuilder } from 'kysely';
 import { sql } from 'kysely';
+import type { components } from '#src/generated/service/index.ts';
 import type { IdentityInternal } from '#src/types/index.ts';
+import { canonicalize } from './namespaces.ts';
 import type { IndividualId, IndividualUuid, WithIndividualUuid } from './types.ts';
 
 export function escapeGroupName(value: string): string;
@@ -83,7 +85,14 @@ export async function getGroupsForIndividuals(
   const groups = await app.locals.db
     .selectFrom('individual_group_members as M')
     .innerJoin('groups as G', 'G.group_id', 'M.group_id')
-    .select(['M.individual_id', 'G.name', 'G.display_name', 'M.begins_at', 'M.ends_at'])
+    .select([
+      'M.individual_id',
+      'G.group_uuid',
+      'G.fully_qualified_name',
+      'G.display_name',
+      'M.begins_at',
+      'M.ends_at',
+    ])
     .where('M.individual_id', 'in', Object.keys(individualIdToUuidMap))
     .where('M.deleted_at', 'is', null)
     .where((eb) =>
@@ -109,9 +118,10 @@ export async function getGroupsForIndividuals(
     if (!result[uuid]) {
       result[uuid] = [];
     }
+    if (!group.fully_qualified_name) continue;
     result[uuid].push({
-      group_id: group.name,
-      name: unescapeGroupName(group.name.split('.')),
+      group_id: group.group_uuid,
+      name: unescapeGroupName(group.fully_qualified_name.split('.')),
       display_name: group.display_name || undefined,
       begins_at: group.begins_at?.toISOString() || undefined,
       ends_at: group.ends_at?.toISOString() || undefined,
@@ -129,40 +139,66 @@ export async function createGroup(
   displayName?: string,
 ) {
   const { db } = app.locals;
-  const ltreeName = escapeGroupName(name).join('.');
-  const group = await sql`
-  WITH existing as (
-    SELECT group_id, name, display_name
-    FROM groups G
-    WHERE G.name = ${ltreeName}
-  ), requested_group_type AS (
-    SELECT group_type_id
-    FROM group_types
-    WHERE name = ${groupType}
-  ), inserted as (
-    INSERT INTO groups (group_type_id, name, display_name)
-      SELECT requested_group_type.group_type_id, ${ltreeName}, ${displayName}
-      FROM requested_group_type
-      WHERE NOT EXISTS (SELECT 1 from existing)
-      RETURNING group_id, name, display_name, true as inserted
-  )
-  SELECT group_id, name, display_name, true as inserted FROM inserted
-  UNION ALL
-  SELECT group_id, name, display_name, false as inserted FROM existing
-  `.execute(db);
-
-  if (!group.rows[0]) {
+  const type = await db
+    .selectFrom('group_types')
+    .select('group_type_id')
+    .where('name', '=', groupType)
+    .executeTakeFirst();
+  if (!type) {
     throw new ServiceError(app, `Unknown group type: ${groupType}`, {
       status: 400,
     });
   }
+  if (!name.length || name.some((segment) => !segment)) {
+    throw new ServiceError(app, 'Group name is required', { status: 400 });
+  }
 
-  return group.rows[0] as {
-    inserted: boolean;
-    group_id: string;
-    name: string;
-    display_name: string;
-  };
+  return db.transaction().execute(async (trx) => {
+    let parentId: string | null = null;
+    let leaf:
+      | {
+          group_id: string;
+          group_uuid: string;
+          fully_qualified_name: string | null;
+          display_name: string | null;
+        }
+      | undefined;
+    let inserted = false;
+
+    for (const [index, segment] of name.entries()) {
+      const existing = await trx
+        .selectFrom('groups')
+        .select(['group_id', 'group_uuid', 'fully_qualified_name', 'display_name'])
+        .where('name', '=', segment)
+        .where((eb) =>
+          parentId === null
+            ? eb('parent_group_id', 'is', null)
+            : eb('parent_group_id', '=', parentId),
+        )
+        .executeTakeFirst();
+      if (existing) {
+        leaf = existing;
+        parentId = existing.group_id;
+        continue;
+      }
+
+      leaf = await trx
+        .insertInto('groups')
+        .values({
+          group_type_id: type.group_type_id,
+          parent_group_id: parentId,
+          name: segment,
+          display_name: index === name.length - 1 ? displayName : undefined,
+        })
+        .returning(['group_id', 'group_uuid', 'fully_qualified_name', 'display_name'])
+        .executeTakeFirstOrThrow();
+      parentId = leaf.group_id;
+      inserted = index === name.length - 1;
+    }
+
+    if (!leaf) throw new ServiceError(app, 'Group name is required', { status: 400 });
+    return { ...leaf, inserted };
+  });
 }
 
 export async function getGroups(
@@ -189,13 +225,15 @@ export async function getGroups(
     .selectFrom('groups as G')
     .select([
       'G.group_id',
+      'G.group_uuid',
       'G.name',
+      'G.fully_qualified_name',
       'G.display_name',
       sql<string>`(SELECT GT.name FROM group_types GT WHERE GT.group_type_id = G.group_type_id)`.as(
         'group_type',
       ),
     ])
-    .where('G.name', '~', query)
+    .where('G.fully_qualified_name', '~', query)
     .offset(offset)
     .limit(limit)
     .execute();
@@ -210,9 +248,325 @@ export async function updateGroupDisplayName(
   const result = await app.locals.db
     .updateTable('groups')
     .set({ display_name: displayName })
-    .where('name', '=', ltreeName)
+    .where('fully_qualified_name', '=', ltreeName)
     .executeTakeFirst();
   return Number(result.numUpdatedRows) > 0;
+}
+
+type GroupIdentifierInput = components['schemas']['GroupIdentifierInput'];
+type GroupIdentifier = components['schemas']['GroupIdentifier'];
+
+interface NamespaceDetail {
+  id: number;
+  name: string;
+  unique: boolean;
+  type: 'email' | 'phone' | 'opaque' | 'uuid' | 'individual_name';
+}
+
+async function getIdentifierNamespaces(app: IdentityInternal['App'], names: string[]) {
+  const uniqueNames = [...new Set(names)];
+  const rows = await app.locals.db
+    .selectFrom('identifier_namespaces')
+    .select(['identifier_namespace_id', 'name', 'identifier_namespace_type', 'is_unique'])
+    .where('name', 'in', uniqueNames)
+    .execute();
+  const byName = new Map<string, NamespaceDetail>(
+    rows.map((row) => [
+      row.name,
+      {
+        id: row.identifier_namespace_id,
+        name: row.name,
+        unique: row.is_unique,
+        type: row.identifier_namespace_type,
+      },
+    ]),
+  );
+  const missing = uniqueNames.filter((name) => !byName.has(name));
+  if (missing.length) {
+    throw new ServiceError(app, `Unknown identifier namespace(s): ${missing.join(', ')}`, {
+      status: 400,
+    });
+  }
+  return byName;
+}
+
+export async function getGroupByIdentifier(
+  app: IdentityInternal['App'],
+  namespaceName: string,
+  identifier: string,
+) {
+  if (namespaceName === 'group_uuid') {
+    return (
+      (await app.locals.db
+        .selectFrom('groups as G')
+        .innerJoin('group_types as GT', 'GT.group_type_id', 'G.group_type_id')
+        .leftJoin('groups as P', 'P.group_id', 'G.parent_group_id')
+        .select([
+          'G.group_id',
+          'G.group_uuid',
+          'P.group_uuid as parent_group_uuid',
+          'G.name',
+          'G.fully_qualified_name',
+          'G.display_name',
+          'GT.name as group_type',
+        ])
+        .where('G.group_uuid', '=', identifier.toLowerCase())
+        .executeTakeFirst()) ?? null
+    );
+  }
+
+  const namespace = await app.locals.db
+    .selectFrom('identifier_namespaces')
+    .select(['identifier_namespace_id', 'identifier_namespace_type'])
+    .where('name', '=', namespaceName)
+    .executeTakeFirst();
+  if (!namespace) return null;
+
+  const canonical = canonicalize(identifier, { type: namespace.identifier_namespace_type });
+  return (
+    (await app.locals.db
+      .selectFrom('group_identifiers as gi')
+      .innerJoin('groups as G', 'G.group_id', 'gi.group_id')
+      .innerJoin('group_types as GT', 'GT.group_type_id', 'G.group_type_id')
+      .leftJoin('groups as P', 'P.group_id', 'G.parent_group_id')
+      .select([
+        'G.group_id',
+        'G.group_uuid',
+        'P.group_uuid as parent_group_uuid',
+        'G.name',
+        'G.fully_qualified_name',
+        'G.display_name',
+        'GT.name as group_type',
+      ])
+      .where('gi.identifier_namespace_id', '=', namespace.identifier_namespace_id)
+      .where('gi.identifier', '=', canonical)
+      .where('gi.released_at', 'is', null)
+      .limit(1)
+      .executeTakeFirst()) ?? null
+  );
+}
+
+export type GroupSummary = {
+  group_uuid: string;
+  name: string;
+  fully_qualified_name: string | null;
+  display_name: string | null;
+  group_type: string;
+};
+
+export async function getGroupHierarchy(
+  app: IdentityInternal['App'],
+  groupInternalId: string,
+  options: { parents?: boolean; children?: boolean },
+): Promise<{ parents: GroupSummary[]; children: GroupSummary[] }> {
+  if (!options.parents && !options.children) return { parents: [], children: [] };
+
+  const target = app.locals.db
+    .selectFrom('groups')
+    .select('fully_qualified_name')
+    .where('group_id', '=', groupInternalId);
+  const fetchRelated = (direction: 'parents' | 'children') => {
+    let query = app.locals.db
+      .selectFrom('groups as g')
+      .innerJoin('group_types as gt', 'gt.group_type_id', 'g.group_type_id')
+      .select([
+        'g.group_uuid',
+        'g.name',
+        'g.fully_qualified_name',
+        'g.display_name',
+        'gt.name as group_type',
+      ])
+      .where('g.group_id', '!=', groupInternalId)
+      .where(
+        direction === 'parents'
+          ? sql<boolean>`g.fully_qualified_name @> (${target})`
+          : sql<boolean>`g.fully_qualified_name <@ (${target})`,
+      );
+    query = query.orderBy(sql<number>`nlevel(g.fully_qualified_name)`, 'asc');
+    return query.execute();
+  };
+
+  const [parents, children] = await Promise.all([
+    options.parents ? fetchRelated('parents') : Promise.resolve([]),
+    options.children ? fetchRelated('children') : Promise.resolve([]),
+  ]);
+  return { parents, children };
+}
+
+export async function updateGroupByInternalId(
+  app: IdentityInternal['App'],
+  groupInternalId: string,
+  updates: {
+    name?: string;
+    displayName?: string;
+    groupType?: string;
+    parentGroupUuid?: string | null;
+  },
+) {
+  if (updates.name === '') {
+    throw new ServiceError(app, 'Group name is required', { status: 400 });
+  }
+
+  const values: {
+    name?: string;
+    display_name?: string;
+    group_type_id?: number;
+    parent_group_id?: string | null;
+  } = {};
+  if (updates.name !== undefined) values.name = updates.name;
+  if (updates.displayName !== undefined) values.display_name = updates.displayName;
+
+  if (updates.groupType !== undefined) {
+    const type = await app.locals.db
+      .selectFrom('group_types')
+      .select('group_type_id')
+      .where('name', '=', updates.groupType)
+      .executeTakeFirst();
+    if (!type) {
+      throw new ServiceError(app, `Unknown group type: ${updates.groupType}`, { status: 400 });
+    }
+    values.group_type_id = type.group_type_id;
+  }
+
+  if (updates.parentGroupUuid !== undefined) {
+    if (updates.parentGroupUuid === null) {
+      values.parent_group_id = null;
+    } else {
+      const parent = await app.locals.db
+        .selectFrom('groups')
+        .select('group_id')
+        .where('group_uuid', '=', updates.parentGroupUuid)
+        .executeTakeFirst();
+      if (!parent) {
+        throw new ServiceError(app, `Parent group ${updates.parentGroupUuid} not found`, {
+          status: 404,
+        });
+      }
+      values.parent_group_id = parent.group_id;
+    }
+  }
+
+  try {
+    await app.locals.db
+      .updateTable('groups')
+      .set(values)
+      .where('group_id', '=', groupInternalId)
+      .execute();
+  } catch (error) {
+    const databaseError = error as Error & { code?: string };
+    if (databaseError.code === '23505' || databaseError.message.includes('Cannot move group')) {
+      throw new ServiceError(app, databaseError.message, { status: 409 });
+    }
+    throw error;
+  }
+
+  return app.locals.db
+    .selectFrom('groups as G')
+    .innerJoin('group_types as GT', 'GT.group_type_id', 'G.group_type_id')
+    .leftJoin('groups as P', 'P.group_id', 'G.parent_group_id')
+    .select([
+      'G.group_id',
+      'G.group_uuid',
+      'P.group_uuid as parent_group_uuid',
+      'G.name',
+      'G.fully_qualified_name',
+      'G.display_name',
+      'GT.name as group_type',
+    ])
+    .where('G.group_id', '=', groupInternalId)
+    .executeTakeFirstOrThrow();
+}
+
+export async function addGroupIdentifiers(
+  app: IdentityInternal['App'],
+  groupInternalId: string,
+  identifiers: GroupIdentifierInput[],
+) {
+  if (!identifiers.length) return;
+  const namespaces = await getIdentifierNamespaces(
+    app,
+    identifiers.map((identifier) => identifier.namespace),
+  );
+
+  for (const input of identifiers) {
+    const namespace = namespaces.get(input.namespace);
+    if (!namespace) continue;
+    const canonical = canonicalize(input.identifier, { type: namespace.type });
+    const existing = await app.locals.db
+      .selectFrom('group_identifiers')
+      .select('group_identifier_id')
+      .where('group_id', '=', groupInternalId)
+      .where('identifier_namespace_id', '=', namespace.id)
+      .where('identifier', '=', canonical)
+      .where('released_at', 'is', null)
+      .executeTakeFirst();
+    if (existing) continue;
+
+    try {
+      await app.locals.db
+        .insertInto('group_identifiers')
+        .values({
+          group_id: groupInternalId,
+          identifier_namespace_id: namespace.id,
+          identifier: canonical,
+          display_identifier: input.display_identifier ?? input.identifier,
+          is_unique: input.is_unique ?? namespace.unique,
+        })
+        .execute();
+    } catch (error) {
+      const databaseError = error as Error & { code?: string };
+      if (databaseError.code === '23505') {
+        throw new ServiceError(app, databaseError.message, { status: 409 });
+      }
+      throw error;
+    }
+  }
+}
+
+export async function getIdentifiersForGroups(
+  app: IdentityInternal['App'],
+  groupIdToUuidMap: Record<string, { group_uuid: string }>,
+  namespaceNames?: string[],
+): Promise<Record<string, GroupIdentifier[]>> {
+  const groupIds = Object.keys(groupIdToUuidMap);
+  if (!groupIds.length || !namespaceNames?.length) return {};
+
+  let query = app.locals.db
+    .selectFrom('group_identifiers as gi')
+    .innerJoin(
+      'identifier_namespaces as ns',
+      'ns.identifier_namespace_id',
+      'gi.identifier_namespace_id',
+    )
+    .select([
+      'gi.group_id',
+      'gi.identifier',
+      'gi.display_identifier',
+      'gi.is_unique',
+      'gi.created_at',
+      'ns.name as identifier_namespace',
+    ])
+    .where('gi.group_id', 'in', groupIds)
+    .where('gi.released_at', 'is', null)
+    .where('gi.deleted_at', 'is', null);
+  if (!namespaceNames.includes('*')) {
+    query = query.where('ns.name', 'in', namespaceNames);
+  }
+
+  const rows = await query.execute();
+  const result: Record<string, GroupIdentifier[]> = {};
+  for (const row of rows) {
+    const groupUuid = groupIdToUuidMap[row.group_id].group_uuid;
+    result[groupUuid] ??= [];
+    result[groupUuid].push({
+      identifier: row.identifier,
+      identifier_namespace: row.identifier_namespace,
+      display_identifier: row.display_identifier ?? undefined,
+      is_unique: Boolean(row.is_unique),
+      created_at: row.created_at.toISOString(),
+    });
+  }
+  return result;
 }
 
 export async function addMemberToGroup(
@@ -237,7 +591,7 @@ export async function addMemberToGroup(
     case 'existing':
       query = sql`
       WITH group_cte AS (
-        SELECT group_id FROM groups WHERE name = ${groupName}
+        SELECT group_id FROM groups WHERE fully_qualified_name = ${groupName}
       ),
       lock AS (
         SELECT pg_advisory_xact_lock(${individualId}::bigint)
@@ -272,7 +626,7 @@ export async function addMemberToGroup(
       query = sql`
       WITH group_cte AS (
         SELECT group_id, ${beginsAt}::timestamp as _begins_at, ${endsAt}::timestamp as _ends_at
-        FROM groups WHERE name = ${groupName}
+        FROM groups WHERE fully_qualified_name = ${groupName}
       ),
       lock AS (
         SELECT pg_advisory_xact_lock(${individualId}::bigint)
@@ -311,7 +665,7 @@ export async function addMemberToGroup(
     case undefined:
       query = sql`
       WITH group_cte AS (
-        SELECT group_id FROM groups WHERE name = ${groupName}
+        SELECT group_id FROM groups WHERE fully_qualified_name = ${groupName}
       ),
       lock AS (
         SELECT pg_advisory_xact_lock(${individualId}::bigint)
@@ -345,7 +699,7 @@ export async function addMemberToGroup(
       query = sql`
         INSERT INTO individual_group_members (individual_id, group_id, begins_at, ends_at)
         SELECT ${individualId}, group_id, ${beginsAt}, ${endsAt}
-        FROM groups WHERE name = ${groupName}
+        FROM groups WHERE fully_qualified_name = ${groupName}
         RETURNING individual_group_member_id, begins_at, ends_at;
         `;
       break;
@@ -369,7 +723,7 @@ export async function removeGroupMember(
     .innerJoin('groups as G', 'G.group_id', 'M.group_id')
     .set({ deleted_at: sql`NOW()` })
     .where('M.individual_id', '=', individualId)
-    .where('G.name', '=', escapeGroupName(name).join('.'))
+    .where('G.fully_qualified_name', '=', escapeGroupName(name).join('.'))
     .where('M.deleted_at', 'is', null)
     .execute();
 }

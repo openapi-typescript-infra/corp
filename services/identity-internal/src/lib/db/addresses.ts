@@ -125,6 +125,42 @@ export async function getAddressesForIndividuals(
   return map;
 }
 
+export async function getAddressesForGroup(
+  app: IdentityInternal['App'],
+  groupId: string,
+  addressTypes: string[],
+): Promise<components['schemas']['IndividualAddress'][]> {
+  const rows = await app.locals.db
+    .selectFrom('group_addresses as GA')
+    .innerJoin('address_types as T', 'T.address_type_id', 'GA.address_type_id')
+    .innerJoin('addresses as A', 'A.address_id', 'GA.address_id')
+    .select([
+      'A.line_1',
+      'A.line_2',
+      'A.city',
+      'A.state',
+      'A.postal_code',
+      'A.country',
+      'GA.instance_name',
+      'T.name as address_type',
+    ])
+    .where('GA.group_id', '=', groupId)
+    .where('GA.deleted_at', 'is', null)
+    .where('T.name', 'in', addressTypes)
+    .orderBy('GA.group_address_id', 'desc')
+    .execute();
+
+  return rows.map(
+    (row) =>
+      ({
+        ...row,
+        line_1: row.line_1 || undefined,
+        line_2: row.line_2 || undefined,
+        instance_name: row.instance_name || undefined,
+      }) as components['schemas']['IndividualAddress'],
+  );
+}
+
 export async function getAddressId(
   app: IdentityInternal['App'],
   address: components['schemas']['ScopedAddress'],
@@ -239,6 +275,70 @@ export async function saveAddresses(
       .onConflict((oc) =>
         oc
           .columns(['individual_id', 'address_type_id', 'instance_name'])
+          .where('deleted_at', 'is', null)
+          .where('instance_name', 'is not', null)
+          .doUpdateSet({ address_id: (eb) => eb.ref('excluded.address_id') }),
+      )
+      .execute();
+  }
+}
+
+export async function saveGroupAddresses(
+  app: IdentityInternal['App'],
+  groupId: string,
+  addresses: components['schemas']['IndividualAddress'][],
+) {
+  if (!addresses.length) return;
+  await resolveAddressTypes(
+    app,
+    addresses.map((address) => address.address_type),
+  );
+  const addressIds = await Promise.all(
+    addresses.map((address) =>
+      getAddressId(app, {
+        ...address,
+        scope: 'provider',
+      } as components['schemas']['ScopedAddress']),
+    ),
+  );
+  const rows = addresses.map((address, index) => ({ ...address, id: addressIds[index] }));
+  const withoutInstance = rows.filter((address) => !address.instance_name);
+  const withInstance = rows.filter((address) => address.instance_name);
+
+  if (withoutInstance.length) {
+    await app.locals.db
+      .insertInto('group_addresses')
+      .values(
+        withoutInstance.map((address) => ({
+          group_id: groupId,
+          address_id: address.id,
+          address_type_id: AddressTypeCache[address.address_type],
+        })),
+      )
+      .onConflict((oc) =>
+        oc
+          .columns(['group_id', 'address_type_id'])
+          .where('deleted_at', 'is', null)
+          .where('instance_name', 'is', null)
+          .doUpdateSet({ address_id: (eb) => eb.ref('excluded.address_id') }),
+      )
+      .execute();
+  }
+
+  if (withInstance.length) {
+    await app.locals.db
+      .insertInto('group_addresses')
+      .values(
+        withInstance.map((address) => ({
+          group_id: groupId,
+          address_id: address.id,
+          address_type_id: AddressTypeCache[address.address_type],
+          instance_name: address.instance_name,
+        })),
+      )
+      .onConflict((oc) =>
+        oc
+          .columns(['group_id', 'address_type_id', 'instance_name'])
           .where('deleted_at', 'is', null)
           .where('instance_name', 'is not', null)
           .doUpdateSet({ address_id: (eb) => eb.ref('excluded.address_id') }),

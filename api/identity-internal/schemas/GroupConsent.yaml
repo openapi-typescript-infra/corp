@@ -1,0 +1,15 @@
+allOf:
+  - $ref: ./IndividualConsent.yaml
+  - type: object
+    required:
+      - actor_individual_uuid
+      - created_at
+    properties:
+      actor_individual_uuid:
+        type: string
+        format: uuid
+        description: The individual who granted or denied the consent for the group.
+      created_at:
+        type: string
+        format: date-time
+        description: When this consent decision was recorded.

@@ -1,0 +1,106 @@
+parameters:
+  - name: namespace
+    in: path
+    required: true
+    schema:
+      type: string
+  - name: identifier
+    in: path
+    required: true
+    schema:
+      type: string
+get:
+  operationId: getGroupByIdentifier
+  summary: Get a group by namespace and identifier
+  parameters:
+    - $ref: ../params/address_types.yaml
+    - $ref: ../params/consents.yaml
+    - name: consent_scope
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Retrieve consent decisions within this scope instead of unscoped decisions.
+    - $ref: ../params/profiles.yaml
+    - name: identifier_namespaces
+      in: query
+      required: false
+      allowReserved: true
+      schema:
+        type: array
+        maxItems: 20
+        items:
+          type: string
+    - name: parents
+      in: query
+      required: false
+      schema:
+        type: boolean
+    - name: children
+      in: query
+      required: false
+      schema:
+        type: boolean
+  responses:
+    200:
+      description: The matching group.
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/GroupWithId.yaml
+    404:
+      description: No matching group.
+patch:
+  operationId: updateGroupByIdentifier
+  summary: Update a group by namespace and identifier
+  description: |
+    Profile changes use JSON Patch and identifier changes are additive. Set
+    parent_group_id to move the group, or null to make it a root. Move a child
+    by patching that child.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+              minLength: 1
+              description: New local name for the group.
+            display_name:
+              type: string
+            group_type:
+              type: string
+            parent_group_id:
+              type: string
+              format: uuid
+              nullable: true
+            profiles:
+              type: array
+              maxItems: 20
+              items:
+                $ref: ../schemas/ProfileUpdateRequest.yaml
+            addresses:
+              type: array
+              maxItems: 20
+              items:
+                $ref: ../schemas/IndividualAddress.yaml
+            identifiers:
+              type: array
+              maxItems: 1000
+              items:
+                $ref: ../schemas/GroupIdentifierInput.yaml
+  responses:
+    200:
+      description: The updated group.
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/GroupWithId.yaml
+    400:
+      description: Invalid group update.
+    404:
+      description: Group or parent not found.
+    409:
+      description: Hierarchy or uniqueness conflict.
