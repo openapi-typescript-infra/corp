@@ -40,7 +40,7 @@
     "express"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^2.5.6",
+    "@biomejs/biome": "^2.5.7",
     "@openapi-typescript-infra/service-tester": "^7.2.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10"
@@ -55,9 +55,9 @@
     "@legendapp/state": "^3.0.0-beta.48",
     "@openapi-typescript-infra/service": "^6.15.0",
     "@stytch/nextjs": "^22.1.0",
-    "next": "^16.2.12",
+    "next": "^16.3.0",
     "next-urql": "^5.0.2",
-    "posthog-js": "^1.409.5",
+    "posthog-js": "^1.414.0",
     "urql": "^5.0.3"
   }
 }

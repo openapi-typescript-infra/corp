@@ -26,12 +26,12 @@
     "cpconfig": "@justtellme/cpconfig"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.6",
+    "@biomejs/biome": "^2.5.7",
     "@justtellme/cpconfig": "workspace:^",
     "@justtellme/service": "workspace:^",
     "@openapi-typescript-infra/service-tester": "^7.2.0",
-    "@types/node": "^26.1.2",
-    "@types/pg": "^8.20.3",
+    "@types/node": "^26.2.0",
+    "@types/pg": "^8.21.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10"
   },
