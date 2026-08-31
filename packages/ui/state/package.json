@@ -41,9 +41,9 @@
     "openapi-fetch": "^0.17.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.6",
+    "@biomejs/biome": "^2.5.11",
     "@justtellme/cpconfig": "workspace:^",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   }
 }
