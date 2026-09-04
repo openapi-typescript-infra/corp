@@ -260,6 +260,40 @@ resource "kubectl_manifest" "gateway" {
   ]
 }
 
+# Remove internal trust headers at the listener before routing or ExtAuth.
+# ExtAuth may add a newly minted x-auth-token after this early mutation, but a
+# value supplied by an internet client can reach neither the auth service nor
+# an application backend — including while ExtAuth is unavailable/fail-open.
+resource "kubectl_manifest" "sanitize_client_headers" {
+  yaml_body = yamlencode({
+    apiVersion = "gateway.envoyproxy.io/v1alpha1"
+    kind       = "ClientTrafficPolicy"
+    metadata = {
+      name      = "${var.environment}-sanitize-client-headers"
+      namespace = local.namespace
+    }
+    spec = {
+      targetRefs = [
+        {
+          group = "gateway.networking.k8s.io"
+          kind  = "Gateway"
+          name  = local.gateway_name
+        }
+      ]
+      headers = {
+        earlyRequestHeaders = {
+          remove = ["x-auth-token"]
+        }
+      }
+    }
+  })
+
+  depends_on = [
+    kubectl_manifest.gateway,
+    kubectl_manifest.envoy_gateway_crd,
+  ]
+}
+
 resource "kubectl_manifest" "public_tls_issuer" {
   count = local.public_tls_enabled ? 1 : 0
 

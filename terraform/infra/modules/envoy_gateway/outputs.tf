@@ -18,23 +18,20 @@ output "example_gateway_yaml" {
     # SECURITY MODEL
     #
     #   External request
-    #     → Cloudflare blocks any request carrying x-auth-token (WAF rule,
-    #       proxied/production traffic only)
+    #     → Cloudflare blocks any request carrying x-auth-token (defense in
+    #       depth for proxied/production traffic)
+    #     → The managed ClientTrafficPolicy removes x-auth-token at the Envoy
+    #       listener before routing or ExtAuth in every environment
     #     → Envoy ExtAuth calls authn-authz-internal at /envoy/<path>,
-    #       forwarding x-auth-token among the request headers
-    #     → Auth service REJECTS (400) any inbound request carrying
-    #       x-auth-token — this is the edge enforcement for every
-    #       environment, including non-proxied dev where the WAF rule
-    #       does not apply
-    #     → Otherwise the auth service returns a freshly minted x-auth-token
-    #       which Envoy injects for downstream services
+    #       forwarding only public authentication credentials
+    #     → The auth service returns a freshly minted x-auth-token, which
+    #       Envoy injects after the early removal step
     #     → Backend receives trusted x-auth-token
     #
     #   x-auth-token MUST NEVER be accepted from outside. It is set
-    #   exclusively by authn-authz-internal via ExtAuth, which is why the
-    #   SecurityPolicy below forwards it to ext_authz (so the auth service
-    #   can see and reject a spoofed one) and the auth service treats its
-    #   presence on an external request as a hard error.
+    #   exclusively by authn-authz-internal via ExtAuth. The listener-level
+    #   removal is the authoritative boundary; Cloudflare and auth-service
+    #   rejection remain defense in depth.
     # ──────────────────────────────────────────────────────────────────
     #
     # 1. Gateway — binds to the static IP provisioned by Terraform
@@ -85,16 +82,10 @@ output "example_gateway_yaml" {
     #
     #    Envoy sends every request to the auth service over HTTP at
     #    http://authn-authz-internal:<port>/envoy/<original-path>, forwarding
-    #    the headersToExtAuth headers. The auth service:
-    #      - REJECTS (400) any request that already carries x-auth-token — an
-    #        external client must never supply this internal-only header. This
-    #        is why x-auth-token is in headersToExtAuth below: so the auth
-    #        service can see and reject a spoofed one. It is the edge defense
-    #        for non-proxied environments (dev), where the Cloudflare WAF rule
-    #        does not run.
-    #      - Otherwise validates Authorization/Cookie and returns a freshly
-    #        minted x-auth-token in its response headers, which Envoy adds to
-    #        the upstream request (headersToBackend) before forwarding.
+    #    the public credential headers. The auth service validates
+    #    Authorization/Cookie and returns a freshly minted x-auth-token in its
+    #    response headers, which Envoy adds to the upstream request
+    #    (headersToBackend) before forwarding.
     ---
     apiVersion: gateway.envoyproxy.io/v1alpha1
     kind: SecurityPolicy
@@ -116,7 +107,6 @@ output "example_gateway_yaml" {
           headersToExtAuth:
             - Authorization
             - Cookie
-            - x-auth-token
           headersToBackend:
             - x-auth-token
     #
