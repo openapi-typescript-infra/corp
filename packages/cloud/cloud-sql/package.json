@@ -26,17 +26,17 @@
     "cpconfig": "@justtellme/cpconfig"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.6",
+    "@biomejs/biome": "^2.5.13",
     "@justtellme/cpconfig": "workspace:^",
     "@justtellme/service": "workspace:^",
     "@openapi-typescript-infra/service-tester": "^7.2.0",
-    "@types/node": "^26.1.2",
-    "@types/pg": "^8.20.3",
+    "@types/node": "^26.5.1",
+    "@types/pg": "^8.23.1",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10"
   },
   "dependencies": {
-    "@google-cloud/cloud-sql-connector": "^1.11.3",
-    "pg": "^8.22.0"
+    "@google-cloud/cloud-sql-connector": "^1.12.0",
+    "pg": "^8.23.0"
   }
 }
