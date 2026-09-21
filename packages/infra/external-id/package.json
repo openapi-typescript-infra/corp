@@ -28,9 +28,9 @@
     "cpconfig": "@justtellme/cpconfig"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.6",
+    "@biomejs/biome": "^2.5.14",
     "@justtellme/cpconfig": "workspace:^",
-    "@types/node": "^26.1.2",
+    "@types/node": "^26.6.1",
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10"
