@@ -61,7 +61,7 @@
     "@justtellme/identity-internal-client": "workspace:^",
     "@sesamecare-oss/async-rule-evaluator": "^1.2.0",
     "@types/jsonwebtoken": "^9.0.10",
-    "connect-redis": "^9.0.0",
+    "connect-redis": "^10.0.0",
     "express-session": "^1.19.0",
     "jsonwebtoken": "^9.0.3",
     "jwt-decode": "^4.0.0",
