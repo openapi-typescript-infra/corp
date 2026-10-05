@@ -74,7 +74,7 @@
     "@openapi-typescript-infra/service": "^6.15.0",
     "graphql": "^16.14.2",
     "graphql-query-complexity": "^1.1.1",
-    "graphql-scalars": "^1.25.0",
+    "graphql-scalars": "^2.0.0",
     "graphql-ws": "^6.2.0",
     "lodash-es": "^4.18.1",
     "ws": "^8.21.1"
