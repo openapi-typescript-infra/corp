@@ -1,0 +1,50 @@
+{
+  "name": "@justtellme/notification-internal",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Notification dispatch for email, push, SMS, and WhatsApp",
+  "main": "./src/index.ts",
+  "exports": "./src/index.ts",
+  "type": "module",
+  "types": "src/index.ts",
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "scripts": {
+    "test": "vitest",
+    "build": "make",
+    "watch": "nodemon",
+    "clean": "make clean",
+    "start": "start-service",
+    "repl": "start-service --repl",
+    "lint": "biome check ."
+  },
+  "config": {
+    "cpconfig": "@justtellme/cpconfig"
+  },
+  "engines": {
+    "node": ">24.0.0"
+  },
+  "author": "Max Metral <max@pyralis.com>",
+  "license": "UNLICENSED",
+  "keywords": [
+    "typescript",
+    "openapi",
+    "express",
+    "notifications"
+  ],
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.15",
+    "@openapi-typescript-infra/service-tester": "^7.2.0",
+    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.11"
+  },
+  "dependencies": {
+    "@google-cloud/pubsub": "^6.1.0",
+    "@justtellme/cpconfig": "workspace:^",
+    "@justtellme/notification-internal-client": "workspace:^",
+    "@justtellme/service": "workspace:^",
+    "@openapi-typescript-infra/service": "^6.16.0"
+  }
+}

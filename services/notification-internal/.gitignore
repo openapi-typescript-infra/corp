@@ -1,0 +1,7 @@
+# Managed by cpconfig
+/.commitlintrc.yaml
+/biome.jsonc
+/tsconfig.json
+/tsconfig.build.json
+/vitest.config.ts
+/tsconfig.tsup.json

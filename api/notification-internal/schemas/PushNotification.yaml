@@ -1,0 +1,50 @@
+type: object
+additionalProperties: false
+required:
+  - token
+properties:
+  token:
+    type: string
+    minLength: 1
+  title:
+    type: string
+    minLength: 1
+  body:
+    type: string
+    minLength: 1
+  silent:
+    type: boolean
+    description: Deliver data for background reconciliation without presenting an alert.
+  sound:
+    type: string
+  channel_id:
+    type: string
+    minLength: 1
+    description: Android notification channel identifier configured by the receiving app.
+  priority:
+    type: string
+    enum:
+      - default
+      - normal
+      - high
+    description: Android delivery priority.
+  interruption_level:
+    type: string
+    enum:
+      - passive
+      - active
+      - time-sensitive
+      - critical
+    description: iOS notification interruption level. Critical delivery also requires Apple entitlement and user permission.
+  tag:
+    type: string
+    minLength: 1
+    description: Android replacement/grouping key for related notifications.
+  thread_id:
+    type: string
+    minLength: 1
+    description: iOS grouping identifier for related notifications.
+  data:
+    type: object
+    additionalProperties: true
+    description: JSON-compatible transport data, including canonical realtime event payloads.

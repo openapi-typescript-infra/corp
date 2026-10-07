@@ -1,8 +1,10 @@
 import { fileURLToPath } from 'node:url';
+import { OpenTelemetry } from '@ai-sdk/otel';
 import { createTableCache, getPgPool } from '@justtellme/cloud-sql';
 import { useJTMService } from '@justtellme/service';
 import { combineActivities, Temporal } from '@openapi-typescript-infra/temporal-worker';
 import { TemplateManager } from '@sesamecare-oss/ai-templating';
+import { registerTelemetry } from 'ai';
 import type { Selectable } from 'kysely';
 import { Kysely, PostgresDialect } from 'kysely';
 import { createClient } from 'redis';
@@ -11,6 +13,9 @@ import { AiModels } from './lib/ai.js';
 import { setupLangfuseTelemetry } from './telemetry/langfuse.js';
 import { createAgentActivities } from './temporal/activities/index.js';
 import type { AgentInternal, AgentInternalLocals } from './types/index.js';
+
+// Register once per process; use the service's global OpenTelemetry provider.
+registerTelemetry(new OpenTelemetry({ runtimeContext: true }));
 
 export function service(): AgentInternal['Service'] {
   const base = useJTMService<AgentInternalLocals>();

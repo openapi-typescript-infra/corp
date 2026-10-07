@@ -1,0 +1,31 @@
+type: object
+additionalProperties: false
+required:
+  - channel
+properties:
+  notification_uuid:
+    type: string
+    format: uuid
+  idempotency_id:
+    type: string
+  channel:
+    $ref: ../enums/NotificationChannel.yaml
+  event_type:
+    type: string
+    description: Optional caller-defined event name for logging and provider metadata.
+  template:
+    $ref: ../enums/NotificationTemplate.yaml
+  template_data:
+    type: object
+    additionalProperties: true
+    description: Variables for the configured WhatsApp template.
+  email:
+    $ref: EmailNotification.yaml
+  push:
+    $ref: PushNotification.yaml
+  sms:
+    $ref: SmsNotification.yaml
+  whatsapp:
+    $ref: WhatsAppNotification.yaml
+  metadata:
+    $ref: NotificationMetadata.yaml

@@ -1,0 +1,3 @@
+base-service:
+  name: notification-internal
+  team: platform

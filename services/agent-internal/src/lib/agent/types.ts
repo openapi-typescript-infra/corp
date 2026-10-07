@@ -3,13 +3,15 @@ import type { ToolLoopAgent, ToolSet } from 'ai';
 
 import type { JsonObject } from '#src/generated/database.js';
 
-type SessionToolLoopAgent = ToolLoopAgent<never, ToolSet, never>;
+type SessionToolLoopAgent = ToolLoopAgent<never, ToolSet>;
 type SessionAgentCall = Parameters<SessionToolLoopAgent['stream']>[0];
 
 export type SessionModelMessage = Exclude<SessionAgentCall['messages'], undefined>[number];
 export type SessionAgent = Pick<SessionToolLoopAgent, 'stream'>;
 export type SessionStreamResult = Awaited<ReturnType<SessionAgent['stream']>>;
-export type SessionResponse = Awaited<SessionStreamResult['response']>;
+export type SessionResponse = {
+  messages: Awaited<SessionStreamResult['responseMessages']>;
+};
 export type SessionResponseMessage = SessionResponse['messages'][number];
 export type SessionStep = Awaited<SessionStreamResult['steps']>[number];
 

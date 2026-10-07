@@ -1,0 +1,11 @@
+type: object
+additionalProperties: false
+required:
+  - to
+properties:
+  to:
+    type: string
+    description: Recipient phone number in E.164 format.
+  from:
+    type: string
+    description: Optional WhatsApp-enabled Telnyx number override in E.164 format.

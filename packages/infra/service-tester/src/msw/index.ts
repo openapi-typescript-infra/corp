@@ -3,7 +3,7 @@ import { afterAll, afterEach, beforeEach, expect } from 'vitest';
 
 export function setupNetworkMocks(...handlers: Parameters<typeof setupServer>) {
   const server = setupServer(...handlers);
-  beforeEach(() => server.listen({ onUnhandledRequest: 'bypass' }));
+  beforeEach(() => server.listen({ onUnhandledFrame: 'bypass' }));
   afterEach(() => server.resetHandlers());
   afterAll(() => server.close());
 

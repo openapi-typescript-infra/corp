@@ -1,0 +1,22 @@
+type: object
+additionalProperties: false
+required:
+  - to
+  - subject
+properties:
+  to:
+    type: string
+    format: email
+  from:
+    type: string
+    format: email
+  reply_to:
+    type: string
+    format: email
+  subject:
+    type: string
+    minLength: 1
+  text:
+    type: string
+  html:
+    type: string

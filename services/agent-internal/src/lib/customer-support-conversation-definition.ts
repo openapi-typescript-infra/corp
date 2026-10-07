@@ -1,3 +1,4 @@
+import { modelMessageSchema } from 'ai';
 import type { components } from '#src/generated/service/index.js';
 import type { AgentInternal } from '#src/types/index.js';
 import {
@@ -40,7 +41,8 @@ export class CustomerSupportConversationDefinition extends ConversationDefinitio
 
     return {
       startingTools: toolNames,
-      messages: rendered.messages,
+      // Validate the v6 template output at the v7 model-message boundary.
+      messages: rendered.messages.map((message) => modelMessageSchema.parse(message)),
     };
   }
 }

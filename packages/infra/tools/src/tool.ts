@@ -1,7 +1,10 @@
 import type { FlexibleSchema } from '@ai-sdk/provider-utils';
-import { tool as aiTool, type Tool, type ToolExecutionOptions } from 'ai';
+import { type ToolExecutionOptions as AiToolExecutionOptions, tool as aiTool, type Tool } from 'ai';
 
 import type { ProcessClientResultSession, ToolUseSession } from './types.js';
+
+// Session data is injected by this package; these tools have no SDK context schema.
+export type ToolExecutionOptions = AiToolExecutionOptions<unknown>;
 
 export type ToolTag = string;
 
@@ -248,4 +251,4 @@ export function tool(config: ToolAny): ToolDefinition {
 }
 
 // Re-export for convenience so tool files don't need to import from 'ai'
-export type { Tool, ToolExecutionOptions };
+export type { Tool };

@@ -1,7 +1,7 @@
 import { execSync, spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { Box, Text, useApp, useInput, useStdout } from 'ink';
+import { Box, Text, useApp, useInput, useWindowSize } from 'ink';
 import React, { useEffect, useMemo, useState } from 'react';
 
 const MAX_LOG_LINES = 1200;
@@ -189,30 +189,12 @@ export function LocalRunnerApp({ rootDir }: LocalRunnerAppProps) {
   const [isQuitting, setIsQuitting] = useState(false);
   const [fullscreenLogs, setFullscreenLogs] = useState(false);
   const { exit } = useApp();
-  const { stdout } = useStdout();
-
-  const [termSize, setTermSize] = useState({
-    cols: stdout?.columns ?? 100,
-    rows: stdout?.rows ?? 30,
-  });
+  const { columns, rows } = useWindowSize();
+  const termSize = { cols: columns, rows };
 
   const processes = React.useRef(new Map<string, ServiceProcess>());
   const isQuittingRef = React.useRef(false);
   const logSequence = React.useRef(0);
-
-  useEffect(() => {
-    const onResize = () => {
-      setTermSize({
-        cols: stdout?.columns ?? 100,
-        rows: stdout?.rows ?? 30,
-      });
-    };
-
-    stdout?.on('resize', onResize);
-    return () => {
-      stdout?.off('resize', onResize);
-    };
-  }, [stdout]);
 
   useEffect(() => {
     return () => {
@@ -228,7 +210,7 @@ export function LocalRunnerApp({ rootDir }: LocalRunnerAppProps) {
         }
       }
     };
-  }, [definitions]);
+  }, []);
 
   const appendLogs = (nextLines: ServiceLogLine[]) => {
     if (nextLines.length === 0) {

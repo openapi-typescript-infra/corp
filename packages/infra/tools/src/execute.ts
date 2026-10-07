@@ -1,6 +1,6 @@
-import type { InferToolInput, InferToolOutput, Tool, ToolExecutionOptions } from 'ai';
+import type { InferToolInput, InferToolOutput, Tool } from 'ai';
 
-import type { ToolDefinition } from './tool.js';
+import type { ToolDefinition, ToolExecutionOptions } from './tool.js';
 import { getRegistry } from './tool.js';
 import type { ProcessClientResultSession, ToolUseSession } from './types.js';
 
@@ -54,6 +54,7 @@ export async function executeTool(
   }
 
   const result = await resolvedTool.execute(input, {
+    context: undefined,
     messages: [],
     toolCallId: 'test-tool-call',
     ...options,
@@ -97,6 +98,7 @@ export async function processToolClientResult(
     return clientResult;
   }
   return definition.processClientResult(session, clientResult, {
+    context: undefined,
     messages: [],
     toolCallId: 'tool-call',
     ...options,
@@ -127,6 +129,7 @@ export async function processStoredToolResult(
     return storedResult;
   }
   return definition.processToolResult(session, storedResult, {
+    context: undefined,
     messages: [],
     toolCallId: 'tool-call',
     ...options,

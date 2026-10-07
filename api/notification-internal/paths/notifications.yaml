@@ -1,0 +1,31 @@
+post:
+  operationId: sendNotification
+  summary: Send a notification
+  description: |
+    Dispatches a single email, push notification, SMS, or WhatsApp message. The same request
+    schema is accepted by the Pub/Sub consumer.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../schemas/NotificationRequest.yaml
+  responses:
+    '202':
+      description: Notification accepted and dispatched or intentionally skipped
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/NotificationResult.yaml
+    '400':
+      description: Invalid notification request
+      content:
+        application/json:
+          schema:
+            $ref: ../../common/Error.yaml
+    '502':
+      description: Provider failed to accept the notification
+      content:
+        application/json:
+          schema:
+            $ref: ../../common/Error.yaml

@@ -1,0 +1,6 @@
+type: string
+enum:
+  - email
+  - push
+  - sms
+  - whatsapp

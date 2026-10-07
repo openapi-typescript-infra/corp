@@ -40,16 +40,18 @@ export function encodeName({
   lastName,
   middleName,
   credentials,
+  suffix,
 }: {
   firstName: string | undefined;
   lastName: string;
   middleName?: string;
   credentials?: string;
+  suffix?: string;
 }) {
   const namePart = `${escapeNameComponent(lastName)}|${escapeNameComponent(firstName) || ''}${middleName ? '|' : ''}${
     escapeNameComponent(middleName) || ''
   }`;
-  return appendAttributes(namePart, { c: credentials });
+  return appendAttributes(namePart, { c: credentials, s: suffix });
 }
 
 export function canonicalizeName({
@@ -57,17 +59,22 @@ export function canonicalizeName({
   lastName,
   middleName,
   credentials,
+  suffix,
 }: {
   firstName: string;
   lastName: string;
   middleName?: string;
   credentials?: string;
+  suffix?: string;
 }) {
   const eFirst = escapeNameComponent(firstName)?.toLocaleLowerCase();
   const eLast = escapeNameComponent(lastName)?.toLocaleLowerCase();
   const eMiddle = escapeNameComponent(middleName)?.toLocaleLowerCase() || '';
   const namePart = `${eLast || ''}|${eFirst || ''}${eMiddle ? '|' : ''}${eMiddle || ''}`;
-  return appendAttributes(namePart, { c: credentials?.toLocaleLowerCase() });
+  return appendAttributes(namePart, {
+    c: credentials?.toLocaleLowerCase(),
+    s: suffix?.toLocaleLowerCase(),
+  });
 }
 
 /**
@@ -77,6 +84,7 @@ export function canonicalizeName({
  * The pipe-separated portion encodes name components for fast DB lookups.
  * Everything after the first unescaped `;` is key-value attributes:
  *   c = credentials (e.g. `c=MD`)
+ *   s = suffix (e.g. `s=Jr.` or `s=III`)
  *
  * Pipes within name components are escaped as `||`.
  */
@@ -110,6 +118,7 @@ export function parseName(encodedName: string) {
     firstName: parts[1],
     middleName: parts[2] || undefined,
     credentials: attrs.c || undefined,
+    suffix: attrs.s || undefined,
   };
 }
 
@@ -120,6 +129,7 @@ interface FlexibleNameComponents {
   last_name?: string | null;
   credentials?: string | null;
   title?: string | null;
+  suffix?: string | null;
 }
 
 export function getFullNameFromComponents({
@@ -129,8 +139,9 @@ export function getFullNameFromComponents({
   last_name,
   credentials,
   title,
+  suffix,
 }: FlexibleNameComponents = {}): string {
-  const nameParts = [title, firstName || first_name, lastName || last_name]
+  const nameParts = [title, firstName || first_name, lastName || last_name, suffix]
     .filter((part) => part)
     .join(' ');
   return credentials ? `${nameParts}, ${credentials}` : nameParts;

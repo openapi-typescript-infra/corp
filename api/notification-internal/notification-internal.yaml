@@ -1,0 +1,11 @@
+openapi: 3.0.1
+info:
+  title: notification-internal
+  description: Internal notification dispatch service
+  version: 1.0.0
+servers:
+  - url: http://notification-internal.jtm.svc.cluster.local
+    description: Within Kubernetes cluster only
+paths:
+  /notifications:
+    $ref: paths/notifications.yaml

@@ -1,0 +1,21 @@
+type: object
+additionalProperties: false
+required:
+  - channel
+  - status
+properties:
+  notification_uuid:
+    type: string
+    format: uuid
+  idempotency_id:
+    type: string
+  channel:
+    $ref: ../enums/NotificationChannel.yaml
+  status:
+    $ref: ../enums/NotificationStatus.yaml
+  provider:
+    type: string
+  provider_message_id:
+    type: string
+  error:
+    type: string

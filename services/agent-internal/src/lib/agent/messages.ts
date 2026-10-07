@@ -6,6 +6,7 @@ import type {
   ToolResultPart,
   UserContent,
 } from 'ai';
+import { modelMessageSchema } from 'ai';
 import type { JsonValue } from '#src/generated/database.js';
 
 import type { AddMessageInput } from '#src/lib/db.js';
@@ -143,9 +144,9 @@ function toUserContent(content: unknown): UserContent {
 
       if (isImageRefPart(part)) {
         parts.push({
-          type: 'image',
-          image: toUrlReference(part.url),
-          ...(part.media_type ? { mediaType: part.media_type } : {}),
+          type: 'file',
+          data: toUrlReference(part.url),
+          mediaType: part.media_type ?? 'image',
         });
         continue;
       }
@@ -247,6 +248,14 @@ function toAssistantContent(content: unknown, toolCalls?: unknown): AssistantCon
               ? { providerMetadata: toProviderMetadata(part.providerMetadata) }
               : {}),
           });
+          continue;
+        }
+
+        if (part.type === 'reasoning-file') {
+          const message = modelMessageSchema.parse({ role: 'assistant', content: [part] });
+          if (message.role === 'assistant' && Array.isArray(message.content)) {
+            parts.push(...message.content);
+          }
           continue;
         }
 

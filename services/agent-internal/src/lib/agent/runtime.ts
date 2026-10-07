@@ -142,12 +142,14 @@ export function createSessionAgent(
       },
       ...(options?.telemetry
         ? {
-            experimental_telemetry: {
-              isEnabled: true,
+            runtimeContext: options.telemetry.metadata,
+            telemetry: {
               recordInputs: true,
               recordOutputs: true,
               functionId: options.telemetry.functionId,
-              metadata: options.telemetry.metadata,
+              includeRuntimeContext: Object.fromEntries(
+                Object.keys(options.telemetry.metadata).map((key) => [key, true as const]),
+              ),
             },
           }
         : {}),
@@ -164,11 +166,19 @@ export async function runAgentLoop({
   onToolResult,
 }: RunAgentLoopInput): Promise<RunAgentLoopResult> {
   const startedAt = Date.now();
-  const result = await agent.stream({ messages });
+  // Stored system prompts are trusted server-side instructions. Keep them out
+  // of the model message array, which rejects system messages in AI SDK 7.
+  const instructions = messages
+    .filter((message) => message.role === 'system')
+    .map((message) => message.content);
+  const result = await agent.stream({
+    messages: messages.filter((message) => message.role !== 'system'),
+    ...(instructions.length > 0 ? { instructions: instructions.join('\n\n') } : {}),
+  });
 
   let text = '';
   const streamErrors: unknown[] = [];
-  for await (const part of result.fullStream) {
+  for await (const part of result.stream) {
     if (part.type === 'text-delta') {
       text += part.text;
       await onTextDelta?.(part.text);
@@ -189,10 +199,10 @@ export async function runAgentLoop({
     }
   }
 
-  let response: Awaited<typeof result.response>;
+  let responseMessages: Awaited<typeof result.responseMessages>;
   let steps: Awaited<typeof result.steps>;
   try {
-    [response, steps] = await Promise.all([result.response, result.steps]);
+    [responseMessages, steps] = await Promise.all([result.responseMessages, result.steps]);
   } catch (error) {
     if (streamErrors.length > 0) {
       const cause = streamErrors[0];
@@ -209,7 +219,7 @@ export async function runAgentLoop({
 
   return {
     text,
-    responseMessages: response.messages,
+    responseMessages,
     finishReason: lastStep?.finishReason ?? 'stop',
     rawFinishReason: lastStep?.rawFinishReason,
     toolResults: lastStep?.toolResults ?? [],
@@ -246,6 +256,7 @@ async function processCurrentTurnToolResults(
     const toolCallId = turnMsg.toolCallId ?? '';
     const processed = await processStoredToolResult(toolName, session, turnMsg.content, {
       toolCallId,
+      context: undefined,
       messages: [],
     });
 

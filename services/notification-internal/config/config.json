@@ -1,0 +1,4 @@
+{
+  "$schema": "tsschema://src/types/config#NotificationInternalConfigSchema",
+  "notifications": {}
+}
