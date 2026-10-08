@@ -83,7 +83,7 @@
     "@openapi-typescript-infra/service": "^6.16.0",
     "@stytch/nextjs": "^22.3.0",
     "next": "^16.4.0",
-    "posthog-js": "^1.438.2",
+    "posthog-js": "^1.438.3",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },

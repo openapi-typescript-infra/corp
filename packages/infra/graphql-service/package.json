@@ -45,10 +45,10 @@
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",
     "@graphql-codegen/add": "^7.1.1",
-    "@graphql-codegen/cli": "^7.4.4",
-    "@graphql-codegen/plugin-helpers": "^7.4.1",
+    "@graphql-codegen/cli": "^7.4.5",
+    "@graphql-codegen/plugin-helpers": "^7.4.2",
     "@graphql-codegen/typescript": "^6.1.1",
-    "@graphql-codegen/typescript-resolvers": "^6.1.0",
+    "@graphql-codegen/typescript-resolvers": "^6.1.1",
     "@justtellme/cpconfig": "workspace:^",
     "@openapi-typescript-infra/service-tester": "^7.2.0",
     "@semantic-release/commit-analyzer": "^13.0.1",
