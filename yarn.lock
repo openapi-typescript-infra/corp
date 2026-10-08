@@ -387,14 +387,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@asteasolutions/zod-to-openapi@npm:^7.3.4":
-  version: 7.3.4
-  resolution: "@asteasolutions/zod-to-openapi@npm:7.3.4"
+"@asteasolutions/zod-to-openapi@npm:^9.1.0":
+  version: 9.1.0
+  resolution: "@asteasolutions/zod-to-openapi@npm:9.1.0"
   dependencies:
-    openapi3-ts: "npm:^4.1.2"
+    openapi3-ts: "npm:^4.6.0"
   peerDependencies:
-    zod: ^3.20.2
-  checksum: 10/05e336e3c94264000abb03a71743925e3a48d10771afa8cdd9e1cf0a944cc82b3371d272d961fa63584e8ee26bda43aa9fba2737f503e6853ff20f5cf30a718a
+    zod: ^4.0.0
+  checksum: 10/da367785382d0c59f57ac2e4ff253842a7b732c7a9288dfeadea3f49d55c101d2348b49ecb59999473fd1e58a169d2c9d5137d0ecb33669198f57393e1a4728d
   languageName: node
   linkType: hard
 
@@ -4669,7 +4669,7 @@ __metadata:
   resolution: "@justtellme/tools@workspace:packages/infra/tools"
   dependencies:
     "@ai-sdk/provider-utils": "npm:^5.0.58"
-    "@asteasolutions/zod-to-openapi": "npm:^7.3.4"
+    "@asteasolutions/zod-to-openapi": "npm:^9.1.0"
     "@biomejs/biome": "npm:^2.5.15"
     "@justtellme/cpconfig": "workspace:^"
     "@toon-format/toon": "npm:^4.4.0"
@@ -16859,12 +16859,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openapi3-ts@npm:^4.1.2":
-  version: 4.5.0
-  resolution: "openapi3-ts@npm:4.5.0"
+"openapi3-ts@npm:^4.6.0":
+  version: 4.6.1
+  resolution: "openapi3-ts@npm:4.6.1"
   dependencies:
-    yaml: "npm:^2.8.0"
-  checksum: 10/83fc89459fc3b36049990a2b57eeff1b93d65550d110dcee3f822fd4bc009a0c3fae26d1064aced0736b72f31299f4cdef56c862fe95cf82384a182d30b76a4a
+    yaml: "npm:^2.9.0"
+  checksum: 10/00ab969a9d3f78d398c6fcbc2f406c6ebfa71f1a81662e1d1fb0921d3564082a822cddde4998d93e709381eae196da3ce8bb345ecd2916f14f46e48fe7a32b63
   languageName: node
   linkType: hard
 
@@ -21478,7 +21478,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.3.1, yaml@npm:^2.6.1, yaml@npm:^2.8.0, yaml@npm:^2.8.3, yaml@npm:^2.9.1":
+"yaml@npm:^2.3.1, yaml@npm:^2.6.1, yaml@npm:^2.8.3, yaml@npm:^2.9.0, yaml@npm:^2.9.1":
   version: 2.9.1
   resolution: "yaml@npm:2.9.1"
   bin:
