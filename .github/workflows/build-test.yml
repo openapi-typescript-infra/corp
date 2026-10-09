@@ -98,6 +98,14 @@ jobs:
           yarn workspaces foreach -At run ci-setup
           yarn turbo run build typecheck lint
 
+      - name: Test payment credits
+        working-directory: services/payment-internal
+        env:
+          PAYMENT_TEST_DATABASE_URL: postgresql://dbowner:onlyindev@localhost:25432/payment
+        run: >-
+          yarn vitest run src/lib/credit-ledger.integration.spec.ts
+          src/lib/credit-balances.integration.spec.ts src/lib/credits.integration.spec.ts
+
       - name: 📦 Check bundle sizes
         env:
           APP_ENV: production
