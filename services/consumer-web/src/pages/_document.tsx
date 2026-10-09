@@ -1,3 +1,4 @@
+// biome-ignore-all lint/security/noDangerouslySetInnerHtml: serializes trusted server-side environment into the hydration bootstrap.
 import { getNodeEnv } from '@openapi-typescript-infra/service';
 import type { DocumentProps } from 'next/document.js';
 import Document, { Head, Html, Main, NextScript } from 'next/document.js';
