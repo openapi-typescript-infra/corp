@@ -53,7 +53,7 @@ jobs:
       SERVICE_DIR: services/${{ inputs.service }}
       GCP_PROJECT: ${{ inputs.gcp-project != '' && inputs.gcp-project || vars.GCP_PROJECT_ID }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
@@ -118,7 +118,7 @@ jobs:
       GKE_REGION: ${{ inputs.gke-region }}
       NAMESPACE: ${{ inputs.namespace }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Authenticate to GCP via Workload Identity
         uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
