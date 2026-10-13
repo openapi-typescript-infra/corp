@@ -7,6 +7,8 @@ servers:
   - url: http://payment-internal.jtm.svc.cluster.local
     description: Within Kubernetes cluster only
 paths:
+  /payment/individuals/{individual_uuid}/credit_balances:
+    $ref: paths/individuals.individual_uuid.credit_balances.yaml
   /payment/transactions:
     $ref: paths/transactions.yaml
   /payment/transactions/{transaction_id}:

@@ -1,12 +1,20 @@
+import {
+  type RuleContext,
+  resolveSkillToolsForSpec,
+  type SkillSpec as TemplateSkillSpec,
+} from '@sesamecare-oss/ai-templating';
 import { tool } from 'ai';
 import { z } from 'zod/v3';
 
-export interface SkillSpec {
-  name: string;
-  description: string;
-  detail: string;
-  composable?: boolean;
+export interface SkillSpec extends Omit<TemplateSkillSpec, 'tools'> {
   tools?: string[];
+}
+
+export function resolveSkillSpecs(specs: TemplateSkillSpec[], context: RuleContext): SkillSpec[] {
+  return specs.map((spec) => ({
+    ...spec,
+    tools: resolveSkillToolsForSpec(spec, context),
+  }));
 }
 
 export function createSkillTools(

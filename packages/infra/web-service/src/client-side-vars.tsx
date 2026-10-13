@@ -1,8 +1,8 @@
 // biome-ignore-all lint/security/noDangerouslySetInnerHtml: serializes trusted server-side environment into the hydration bootstrap.
-import { getNodeEnv } from '@openapi-typescript-infra/service';
+import { getNodeEnv, type ValidEnv } from '@openapi-typescript-infra/service';
 
 export interface JTMClientSideVariables {
-  APP_ENV: 'development' | 'production' | 'staging' | 'test';
+  APP_ENV: ValidEnv;
   GRAPHQL_ENDPOINT: string;
   WHOAMI: string;
   COOKIE_DOMAIN: string;

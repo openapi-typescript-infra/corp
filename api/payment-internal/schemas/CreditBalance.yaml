@@ -1,0 +1,18 @@
+type: object
+additionalProperties: false
+required: [currency, scope_uuid, balance]
+properties:
+  currency:
+    type: string
+    description: Currency or unit identifier. Values of different currencies cannot be added together.
+    example: MINUTES
+  scope_uuid:
+    type: string
+    format: uuid
+    nullable: true
+    description: External redemption scope; null means unscoped. Balances in different scopes are not interchangeable.
+  balance:
+    type: string
+    pattern: '^[0-9]+(\.[0-9]+)?$'
+    description: Exact nonnegative available balance, including reserved debits, in the currency's agreed unit. Serialized as a decimal string to preserve precision.
+    example: '60.5'

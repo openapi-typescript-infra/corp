@@ -1,0 +1,38 @@
+get:
+  operationId: getCreditBalances
+  summary: Get an individual's available credit balances
+  description: |
+    Returns existing accounts separately by currency and scope, including zero
+    balances. Reserved debits already reduce the available balance. No currencies
+    or scopes are combined, and this read does not reserve credit or create accounts.
+    Internal callers must authorize access to the requested individual.
+  parameters:
+    - name: individual_uuid
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+      description: The individual whose balances are requested; never optional.
+    - name: currency
+      in: query
+      schema: { type: string, minLength: 1 }
+      description: Exact, case-sensitive currency identifier, such as USD, CAD or MINUTES. Omit for all currencies.
+    - name: scope_uuid
+      in: query
+      schema: { type: string, format: uuid }
+      description: Filter to one external redemption scope, such as a provider UUID. Omit to include all scopes and unscoped accounts.
+  responses:
+    '200':
+      description: Balances ordered by currency and scope (unscoped first); an empty list means no matching accounts.
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            required: [individual_uuid, balances]
+            properties:
+              individual_uuid: { type: string, format: uuid }
+              balances:
+                type: array
+                items: { $ref: ../schemas/CreditBalance.yaml }
+    '400':
+      description: Invalid individual UUID or query parameters.

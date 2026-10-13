@@ -32,7 +32,12 @@ import { extractToolCallsFromMessages } from '../tools/requests.js';
 import { diffToolNames } from '../tools/state.js';
 import { hasReturnToClient, resolveReturnToClientStatus } from '../tools/stop.js';
 import { toSessionModelMessages, toStoredAgentMessages } from './messages.js';
-import { createSkillTools, extractInvokedSkillNames, type SkillSpec } from './skills.js';
+import {
+  createSkillTools,
+  extractInvokedSkillNames,
+  resolveSkillSpecs,
+  type SkillSpec,
+} from './skills.js';
 import {
   createInteractiveTools,
   createToolRegistryFromSession,
@@ -457,7 +462,7 @@ export async function runStoredTurn(
     });
 
     const registry = createToolRegistryFromSession(toolUseSession);
-    const skills = resolveSkillsFromToolNames(app, registry, startTools);
+    const skills = resolveSkillsFromToolNames(app, registry, startTools, conversationType);
     const skillNameSet = new Set(skills.map((s) => s.name));
     const alreadyInvokedSkills = extractInvokedSkillNames(storedMessages, skillNameSet);
 
@@ -787,13 +792,14 @@ function resolveSkillsFromToolNames(
   app: AgentInternal['App'],
   registry: ToolRegistry,
   toolNames: readonly string[],
+  conversationType: string,
 ): SkillSpec[] {
   const registryNames = new Set(getAvailableToolNames(registry));
   const skillNames = toolNames.filter((name) => !registryNames.has(name));
   if (skillNames.length === 0) {
     return [];
   }
-  return app.locals.templates.getSkills(skillNames);
+  return resolveSkillSpecs(app.locals.templates.getSkills(skillNames), { flow: conversationType });
 }
 
 function addSkillEnabledTools(
