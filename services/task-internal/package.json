@@ -52,8 +52,8 @@
     "@justtellme/task-internal-client": "workspace:^",
     "@openapi-typescript-infra/service": "^6.16.0",
     "date-fns": "^4.4.0",
-    "db-migrate": "^1.0.0",
-    "db-migrate-pg": "^1.6.0",
+    "db-migrate": "^1.8.1",
+    "db-migrate-pg": "^1.7.1",
     "kysely": "^0.29.6",
     "pg": "^8.23.1"
   }

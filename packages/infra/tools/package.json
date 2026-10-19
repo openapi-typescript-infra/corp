@@ -40,7 +40,7 @@
     "@asteasolutions/zod-to-openapi": "^7.3.4",
     "@biomejs/biome": "^2.5.15",
     "@justtellme/cpconfig": "workspace:^",
-    "@types/node": "^26.6.4",
+    "@types/node": "^26.6.5",
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3",
@@ -48,10 +48,10 @@
     "yaml": "^2.9.1"
   },
   "dependencies": {
-    "@ai-sdk/provider-utils": "^5.0.58",
+    "@ai-sdk/provider-utils": "^5.0.62",
     "@toon-format/toon": "^4.4.0",
-    "ai": "^7.0.135",
+    "ai": "^7.0.143",
     "fast-xml-parser": "^5.11.2",
-    "zod": "^4.6.5"
+    "zod": "^4.6.7"
   }
 }

@@ -50,9 +50,9 @@
     "vitest": "^4.1.11"
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "^4.0.78",
-    "@ai-sdk/openai": "^4.0.91",
-    "@ai-sdk/otel": "^1.0.135",
+    "@ai-sdk/anthropic": "^4.0.82",
+    "@ai-sdk/openai": "^4.0.96",
+    "@ai-sdk/otel": "^1.0.143",
     "@justtellme/agent-internal-client": "workspace:^",
     "@justtellme/auth-token": "workspace:^",
     "@justtellme/cloud-sql": "workspace:^",
@@ -63,19 +63,19 @@
     "@openapi-typescript-infra/service": "^6.16.0",
     "@openapi-typescript-infra/temporal-worker": "^1.1.7",
     "@opentelemetry/api": "^1.9.1",
-    "@sesamecare-oss/ai-templating": "^2.4.0",
+    "@sesamecare-oss/ai-templating": "^2.5.0",
     "@temporalio/activity": "^1.24.0",
     "@temporalio/client": "^1.24.0",
     "@temporalio/worker": "^1.24.0",
     "@temporalio/workflow": "^1.24.0",
     "@toon-format/toon": "^4.4.0",
-    "ai": "^7.0.135",
-    "db-migrate": "^1.0.0",
-    "db-migrate-pg": "^1.6.0",
+    "ai": "^7.0.143",
+    "db-migrate": "^1.8.1",
+    "db-migrate-pg": "^1.7.1",
     "kysely": "^0.29.6",
     "langfuse": "^3.39.2",
     "pg": "^8.23.1",
     "redis": "^6.3.0",
-    "zod": "^4.6.5"
+    "zod": "^4.6.7"
   }
 }

@@ -30,13 +30,13 @@
     "@justtellme/cpconfig": "workspace:^",
     "@justtellme/service": "workspace:^",
     "@openapi-typescript-infra/service-tester": "^7.2.0",
-    "@types/node": "^26.6.4",
+    "@types/node": "^26.6.5",
     "@types/pg": "^8.23.1",
     "typescript": "^6.0.3",
     "vitest": "^4.1.11"
   },
   "dependencies": {
-    "@google-cloud/cloud-sql-connector": "^1.12.0",
+    "@google-cloud/cloud-sql-connector": "^1.12.1",
     "pg": "^8.23.1"
   }
 }
