@@ -33,9 +33,9 @@
     "express"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^2.5.15",
-    "@graphql-codegen/cli": "^7.4.5",
-    "@graphql-eslint/eslint-plugin": "^4.4.1",
+    "@biomejs/biome": "^2.6.2",
+    "@graphql-codegen/cli": "^7.4.6",
+    "@graphql-eslint/eslint-plugin": "^4.4.2",
     "@openapi-typescript-infra/service-tester": "^7.2.0",
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "eslint": "9.39.5",
@@ -46,7 +46,7 @@
     "@justtellme/cpconfig": "workspace:^",
     "@justtellme/graphql-service": "workspace:^",
     "@justtellme/identity-internal-client": "workspace:^",
-    "@openapi-typescript-infra/service": "^6.16.0",
+    "@openapi-typescript-infra/service": "^6.17.0",
     "dataloader": "^2.2.3",
     "graphql": "^16.14.2",
     "redis": "^6.3.0"
