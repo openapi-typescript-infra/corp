@@ -34,17 +34,17 @@
     "notifications"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^2.5.15",
+    "@biomejs/biome": "^2.6.2",
     "@openapi-typescript-infra/service-tester": "^7.2.0",
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "typescript": "^6.0.3",
     "vitest": "^4.1.11"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "^6.2.0",
+    "@google-cloud/pubsub": "^6.3.1",
     "@justtellme/cpconfig": "workspace:^",
     "@justtellme/notification-internal-client": "workspace:^",
     "@justtellme/service": "workspace:^",
-    "@openapi-typescript-infra/service": "^6.16.0"
+    "@openapi-typescript-infra/service": "^6.17.0"
   }
 }

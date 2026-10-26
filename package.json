@@ -38,15 +38,15 @@
 		"vitest": "^4.1.11"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.5.15",
+		"@biomejs/biome": "^2.6.2",
 		"@justtellme/cpconfig": "workspace:^",
 		"@openapi-typescript-infra/cluster-proxy": "^1.14.0",
 		"husky": "^9.1.7",
 		"lint-staged": "^17.6.0",
 		"node-gyp": "^13.1.0",
 		"nodemon": "^3.1.14",
-		"tsc-alias": "^1.9.7",
-		"turbo": "^2.11.7"
+		"tsc-alias": "^1.9.9",
+		"turbo": "^2.11.10"
 	},
 	"resolutions": {
 		"react": "19.2.3",
